@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:skripsi_mobile/screens/models/session.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Session, User;
@@ -11,6 +12,7 @@ abstract class AuthRepository {
 
 class SupabaseAuthRepository implements AuthRepository {
   SupabaseAuthRepository(this.supabase);
+
   final SupabaseClient supabase;
 
   static const webClientId =
@@ -69,7 +71,7 @@ class SupabaseAuthRepository implements AuthRepository {
 }
 
 // Repository Provider
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
+final authRepositoryProvider = Provider.autoDispose<AuthRepository>((ref) {
   return SupabaseAuthRepository(Supabase.instance.client);
 });
 

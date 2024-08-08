@@ -1,28 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skripsi_mobile/screens/auth/auth_controller.dart';
+import 'package:skripsi_mobile/controller/auth_controller.dart';
 import 'package:skripsi_mobile/theme.dart';
+import 'package:skripsi_mobile/utils/error_extension.dart';
 
 class SignIn extends ConsumerWidget {
   const SignIn({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authControllerProvider);
+    final state = ref.watch(authControllerProvider);
     final authController = ref.read(authControllerProvider.notifier);
-    ref.listen<AsyncValue>(
-      authControllerProvider,
-      (_, state) {
-        if (!state.isLoading && state.hasError) {
-          print(state.error);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(state.error.toString(),
-                    style: Fonts.semibold14.copyWith(fontSize: 12))),
-          );
-        }
-      },
-    );
+
+    ref.listen<AsyncValue>(authControllerProvider, (_, state) {
+      state.showSnackbarOnError(context);
+    });
 
     return Scaffold(
       body: Column(
@@ -54,7 +46,7 @@ class SignIn extends ConsumerWidget {
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       )),
-                  onPressed: authState.isLoading
+                  onPressed: state.isLoading
                       ? null
                       : authController.signInWithGoogle,
                   child: Container(
@@ -64,7 +56,7 @@ class SignIn extends ConsumerWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: authState.isLoading
+                      children: state.isLoading
                           ? [CircularProgressIndicator(color: AppColors.white)]
                           : [
                               Icon(
@@ -75,7 +67,7 @@ class SignIn extends ConsumerWidget {
                               const SizedBox(width: 12),
                               Text(
                                 'Masuk',
-                                style: Fonts.semibold16,
+                                style: Fonts.bold16,
                               ),
                             ],
                     ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:skripsi_mobile/theme.dart';
 
 class MilestoneScreen extends StatefulWidget {
   const MilestoneScreen({super.key});

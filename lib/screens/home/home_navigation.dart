@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skripsi_mobile/screens/home/home.dart';
-import 'package:skripsi_mobile/screens/home/home_test.dart';
+import 'package:skripsi_mobile/screens/home/home_screen.dart';
 import 'package:skripsi_mobile/shared/appbar/main_appbar.dart';
 import 'package:skripsi_mobile/utils/keys.dart';
 
@@ -22,10 +21,7 @@ class _HomeNavigationState extends State<HomeNavigation> {
             builder: (BuildContext context) {
               return Scaffold(
                 appBar: mainAppBar(title: 'Beranda'),
-                body: switch (settings.name) {
-                  '/home/detail' => const HomeTest(),
-                  _ => const HomeScreen()
-                },
+                body: switch (settings.name) { _ => const HomeScreen() },
               );
             });
       },

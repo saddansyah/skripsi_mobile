@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skripsi_mobile/screens/milestone/milestone.dart';
-import 'package:skripsi_mobile/shared/appbar/main_appbar.dart';
+import 'package:skripsi_mobile/screens/milestone/milestone_screen.dart';
 import 'package:skripsi_mobile/utils/keys.dart';
 
 class MilestoneNavigation extends StatefulWidget {

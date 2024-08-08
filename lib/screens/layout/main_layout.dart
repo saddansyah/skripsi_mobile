@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/screens/achievement/achievement_navigation.dart';
-import 'package:skripsi_mobile/screens/home/home.dart';
 import 'package:skripsi_mobile/screens/home/home_navigation.dart';
 import 'package:skripsi_mobile/screens/learn/learn_navigation.dart';
-import 'package:skripsi_mobile/screens/milestone/milestone.dart';
 import 'package:skripsi_mobile/screens/milestone/milestone_navigation.dart';
 import 'package:skripsi_mobile/screens/mission/mission_navigation.dart';
-import 'package:skripsi_mobile/shared/appbar/main_appbar.dart';
 import 'package:skripsi_mobile/shared/drawer/main_drawer.dart';
+import 'package:skripsi_mobile/shared/pageview/keep_alive_pageview.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/keys.dart';
 
@@ -23,16 +22,14 @@ class Destination {
 
 // Main Layout -----
 
-class MainLayout extends StatefulWidget {
+class MainLayout extends ConsumerStatefulWidget {
   const MainLayout({super.key});
 
   @override
-  State<MainLayout> createState() => _MainLayoutState();
+  ConsumerState<MainLayout> createState() => _MainLayoutState();
 }
 
-class _MainLayoutState extends State<MainLayout> {
-  int selectedIndex = 0;
-
+class _MainLayoutState extends ConsumerState<MainLayout> {
   final List<Destination> destinations = <Destination>[
     Destination(0, 'Beranda', Icons.home_filled),
     Destination(1, 'Milestone', Icons.stairs_rounded),
@@ -41,8 +38,12 @@ class _MainLayoutState extends State<MainLayout> {
     Destination(4, 'Capaian', Icons.star_rounded),
   ];
 
+  int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
+    final pageController = ref.watch(navigationPageProvider);
+
     return NavigatorPopHandler(
       onPop: () {
         final NavigatorState navigator =
@@ -50,18 +51,23 @@ class _MainLayoutState extends State<MainLayout> {
         navigator.pop();
       },
       child: Scaffold(
-        key: ScaffoldKeys.drawerKey,
+        key: ScaffoldKeys.mainLayoutKey,
         endDrawer: const MainDrawer(),
         body: SafeArea(
           top: false,
-          child: IndexedStack(
-            index: selectedIndex,
-            children: const <Widget>[
-              HomeNavigation(),
-              MilestoneNavigation(),
-              MissionNavigation(),
-              LearnNavigation(),
-              AchievementNavigation()
+          child: PageView(
+            controller: pageController.instance,
+            onPageChanged: (index) {
+              setState(() {
+                selectedIndex = index;
+              });
+            },
+            children: const <KeepAlivePageView>[
+              KeepAlivePageView(child: HomeNavigation()),
+              KeepAlivePageView(child: MilestoneNavigation()),
+              KeepAlivePageView(child: MissionNavigation()),
+              KeepAlivePageView(child: LearnNavigation()),
+              KeepAlivePageView(child: AchievementNavigation()),
             ],
           ),
         ),
@@ -72,9 +78,7 @@ class _MainLayoutState extends State<MainLayout> {
                     .currentState!
                     .popUntil((route) => route.isFirst);
               } else {
-                setState(() {
-                  selectedIndex = index;
-                });
+                ref.read(navigationPageProvider).animateTo(index);
               }
             },
             selectedIndex: selectedIndex,
@@ -92,3 +96,20 @@ class _MainLayoutState extends State<MainLayout> {
     );
   }
 }
+
+// Used for controllilng bottom navigation bar accross different navigations/screens
+
+class NavigationPageController {
+  final PageController instance;
+
+  NavigationPageController(this.instance);
+
+  void animateTo(int index) {
+    instance.animateToPage(index,
+        duration: const Duration(milliseconds: 300), curve: Curves.ease);
+  }
+}
+
+final navigationPageProvider = Provider((ref) {
+  return NavigationPageController(PageController());
+});

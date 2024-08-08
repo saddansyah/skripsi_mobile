@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skripsi_mobile/screens/achievement/achievement.dart';
+import 'package:skripsi_mobile/screens/achievement/achievement_screen.dart';
 import 'package:skripsi_mobile/shared/appbar/main_appbar.dart';
 import 'package:skripsi_mobile/utils/keys.dart';
 

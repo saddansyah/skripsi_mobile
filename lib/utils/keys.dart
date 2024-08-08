@@ -13,5 +13,8 @@ class NavigatorKeys {
 }
 
 class ScaffoldKeys {
-  static final GlobalKey<ScaffoldState> drawerKey = GlobalKey<ScaffoldState>();
+  static final GlobalKey<ScaffoldState> mainLayoutKey =
+      GlobalKey<ScaffoldState>();
+  static final GlobalKey<ScaffoldMessengerState> snackbarKey =
+      GlobalKey<ScaffoldMessengerState>();
 }

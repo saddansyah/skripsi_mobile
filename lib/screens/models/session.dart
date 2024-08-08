@@ -6,14 +6,16 @@ class Session {
   final String accessToken;
   final String refreshToken;
 
-  factory Session.fromJson(Map<String, dynamic> json) {
+  factory Session.fromMap(Map<String, dynamic> json) {
+    final data = json['data'][0];
+
     return Session(
-      accessToken: json['access_token'],
-      refreshToken: json['refresh_token'],
+      accessToken: data['access_token'],
+      refreshToken: data['refresh_token'],
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'access_token': accessToken,
       'refresh_token': refreshToken,
