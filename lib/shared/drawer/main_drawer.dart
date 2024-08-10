@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/repositories/auth_repository.dart';
 import 'package:skripsi_mobile/controller/auth_controller.dart';
 import 'package:skripsi_mobile/repositories/profile_repository.dart';
+import 'package:skripsi_mobile/shared/image/image_error.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/error_extension.dart';
 
@@ -16,7 +17,6 @@ class MainDrawer extends ConsumerStatefulWidget {
 }
 
 class _MainDrawerState extends ConsumerState<MainDrawer> {
-  
   @override
   Widget build(BuildContext context) {
     final authState = ref.read(authControllerProvider);
@@ -47,6 +47,8 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
                 child: Center(
                   child: profile.when(
                       data: (data) => Image.network(
+                            errorBuilder: (context, error, stackTrace) =>
+                                const ImageError(),
                             data.avatarUrl,
                             fit: BoxFit.fill,
                             loadingBuilder: (context, child, loadingProgress) {
@@ -94,11 +96,14 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                            color: AppColors.white,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(72)),
-                            border: Border.all(
-                                color: Colors.amberAccent, width: 2)),
+                          borderRadius: BorderRadius.all(Radius.circular(24)),
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.amber,
+                              AppColors.amber.withOpacity(0.6)
+                            ],
+                          ),
+                        ),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 9, vertical: 6),
                         child: Row(
@@ -106,7 +111,7 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
                           children: [
                             Icon(
                               Icons.star_rounded,
-                              color: AppColors.amber,
+                              color: AppColors.dark2,
                             ),
                             const SizedBox(width: 3),
                             Text(
@@ -115,7 +120,7 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
                                           data.totalPoint.toString()) ??
                                   '-',
                               style:
-                                  Fonts.bold16.copyWith(color: AppColors.amber),
+                                  Fonts.bold16.copyWith(color: AppColors.dark2),
                             )
                           ],
                         ),

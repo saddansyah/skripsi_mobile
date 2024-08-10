@@ -60,38 +60,39 @@ class _CollectListScreenState extends ConsumerState<CollectListScreen> {
                       flex: 3,
                       fit: FlexFit.tight,
                       child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          height: 36,
-                          decoration: BoxDecoration(
-                              color: AppColors.greenAccent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton(
-                              hint: Text(dummyDropdownItems[0].hint,
-                                  style: Fonts.semibold14.copyWith(
-                                      letterSpacing: 0.5, fontSize: 12)),
-                              items: dummyDropdownItems[0]
-                                  .menuItems
-                                  .map<DropdownMenuItem<String>>(
-                                (i) {
-                                  return DropdownMenuItem<String>(
-                                    value: i.value,
-                                    child: Text(i.title,
-                                        style: Fonts.semibold14.copyWith(
-                                            letterSpacing: 0.5, fontSize: 12)),
-                                  );
-                                },
-                              ).toList(),
-                              isExpanded: true,
-                              value: sortValue,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  sortValue = newValue!;
-                                });
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        height: 36,
+                        decoration: BoxDecoration(
+                            color: AppColors.greenAccent,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            hint: Text(dummyDropdownItems[0].hint,
+                                style: Fonts.semibold14.copyWith(
+                                    letterSpacing: 0.5, fontSize: 12)),
+                            items: dummyDropdownItems[0]
+                                .menuItems
+                                .map<DropdownMenuItem<String>>(
+                              (i) {
+                                return DropdownMenuItem<String>(
+                                  value: i.value,
+                                  child: Text(i.title,
+                                      style: Fonts.semibold14.copyWith(
+                                          letterSpacing: 0.5, fontSize: 12)),
+                                );
                               },
-                            ),
-                          )),
+                            ).toList(),
+                            isExpanded: true,
+                            value: sortValue,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                sortValue = newValue!;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
                     ),
 
                     SizedBox(width: 12),

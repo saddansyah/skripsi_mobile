@@ -1,16 +1,22 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:skripsi_mobile/repositories/auth_repository.dart';
 import 'package:skripsi_mobile/screens/mission/collect/collect_detail_screen.dart';
 import 'package:skripsi_mobile/screens/models/collect.dart';
+import 'package:skripsi_mobile/shared/image/image_with_token.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/constants/enums.dart';
 
-class CollectCard extends StatelessWidget {
+class CollectCard extends ConsumerWidget {
   const CollectCard({super.key, required this.collect});
 
   final Collect collect;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sessionStream = ref.watch(sessionProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: GestureDetector(
@@ -35,20 +41,7 @@ class CollectCard extends StatelessWidget {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                       color: AppColors.lightGrey),
-                  child: Image.network(
-                    collect.img,
-                    fit: BoxFit.fill,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return CircularProgressIndicator(
-                        color: AppColors.greenPrimary,
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : null,
-                      );
-                    },
-                  ),
+                  child: ImageWithToken(collect.img),
                 ),
               ),
               SizedBox(width: 12),
@@ -90,7 +83,7 @@ class CollectCard extends StatelessWidget {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Icon(
-                          Icons.apartment_rounded,
+                          Icons.location_pin,
                           size: 16,
                           color: AppColors.bluePrimary,
                         ),
@@ -114,7 +107,8 @@ class CollectCard extends StatelessWidget {
                               color: AppColors.dark2,
                             ),
                             Text(
-                              '${collect.createdAt}',
+                              DateFormat('yyyy/MM/dd')
+                                  .format(collect.createdAt.toLocal()),
                               style: Fonts.regular12
                                   .copyWith(color: AppColors.grey),
                             )

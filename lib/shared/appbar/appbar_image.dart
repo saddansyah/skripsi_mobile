@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/repositories/profile_repository.dart';
+import 'package:skripsi_mobile/shared/image/image_error.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/keys.dart';
 
@@ -33,6 +34,8 @@ class _AppBarImageState extends ConsumerState<AppBarImage> {
         clipBehavior: Clip.hardEdge,
         child: profile.when(
             data: (data) => Image.network(
+                  errorBuilder: (context, error, stackTrace) =>
+                      const ImageError(),
                   data.avatarUrl,
                   fit: BoxFit.fill,
                   loadingBuilder: (context, child, loadingProgress) {

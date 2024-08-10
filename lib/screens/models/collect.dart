@@ -35,8 +35,8 @@ class Collect {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'type': type,
-      'status': status,
+      'type': type.value,
+      'status': status.value,
       'img': img,
       'point': point,
       'created_at': createdAt.toIso8601String(),
@@ -86,17 +86,37 @@ class DetailedCollect extends Collect {
       updatedAt: DateTime.parse(json['updated_at']),
     );
   }
+}
 
-  @override
+class PayloadCollect {
+  PayloadCollect({
+    required this.type,
+    required this.containerId,
+    required this.kg,
+    required this.vol,
+    required this.info,
+    required this.isAnonim,
+    // Will be replaced after uploading the image
+    this.img = '-',
+  });
+
+  final WasteType type;
+  final String img;
+  final num kg;
+  final num vol;
+  final String info;
+  final bool isAnonim;
+  final int containerId;
+
   Map<String, dynamic> toMap() {
-    final map = super.toMap();
-    map.addAll({
+    return {
       'kg': kg,
       'vol': vol,
+      'type': type.value,
+      'img': img,
       'info': info,
       'is_anonim': isAnonim,
-      'updated_at': updatedAt.toIso8601String(),
-    });
-    return map;
+      'container_id': containerId,
+    };
   }
 }

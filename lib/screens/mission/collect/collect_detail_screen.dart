@@ -1,10 +1,13 @@
 import 'package:another_stepper/another_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:skripsi_mobile/repositories/collect_repository.dart';
 import 'package:skripsi_mobile/shared/appbar/appbar_image.dart';
 import 'package:skripsi_mobile/shared/error_screen.dart';
+import 'package:skripsi_mobile/shared/image/image_error.dart';
+import 'package:skripsi_mobile/shared/image/image_with_token.dart';
 import 'package:skripsi_mobile/shared/loading_screen.dart';
 import 'package:skripsi_mobile/shared/pills/waste_type_pill.dart';
 import 'package:skripsi_mobile/theme.dart';
@@ -46,11 +49,7 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                       expandedHeight: 180,
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.parallax,
-                        background: Image.network(
-                          d.img,
-                          colorBlendMode: BlendMode.color,
-                          fit: BoxFit.cover,
-                        ),
+                        background: ImageWithToken(d.img),
                       ),
                     ),
                     SliverList(
@@ -136,11 +135,57 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                       border: Border.all(
                                           width: 1, color: Colors.grey[350]!)),
                                   padding: const EdgeInsets.all(12),
-                                  child: Text('+5 ⭐ apabila disetujui Admin',
+                                  child: Text(
+                                      d.status == Status.accepted
+                                          ? 'Selamat! Kamu mendapat +5 ⭐'
+                                          : '+5 ⭐ apabila disetujui Admin',
                                       textAlign: TextAlign.center,
                                       style: Fonts.bold16.copyWith(
                                           fontSize: 14,
                                           color: AppColors.white)),
+                                ),
+                                SizedBox(height: 12),
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(12)),
+                                      border: Border.all(
+                                          width: 1, color: Colors.grey[350]!)),
+                                  padding: const EdgeInsets.all(12),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Lokasi Depo/Tong:  ',
+                                          style: Fonts.semibold14),
+                                      SizedBox(height: 12),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            'assets/svgs/container_icon.svg',
+                                            height: 36,
+                                            width: 36,
+                                          ),
+                                          SizedBox(width: 12),
+                                          Text(
+                                            'Depo Fakultas',
+                                            style: Fonts.bold16.copyWith(
+                                                fontSize: 14,
+                                                color: AppColors.bluePrimary),
+                                          ),
+                                          Spacer(),
+                                          IconButton(
+                                            iconSize: 24,
+                                            onPressed: () {},
+                                            icon: Icon(
+                                                Icons.navigate_next_rounded,
+                                                color: AppColors.greenPrimary),
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 SizedBox(height: 12),
                                 Container(
@@ -192,7 +237,7 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                             ),
                                           ),
                                           SizedBox(width: 3),
-                                          Text('Berat: ',
+                                          Text('Berat:',
                                               style: Fonts.semibold14),
                                           Container(
                                             padding: EdgeInsets.symmetric(
@@ -307,7 +352,7 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                                     ? '-'
                                                     : DateFormat(
                                                             'yyyy/MM/dd - hh:mm:ss')
-                                                        .format(d.createdAt
+                                                        .format(d.updatedAt
                                                             .toLocal()),
                                                 textStyle: Fonts.regular12),
                                             iconWidget: Container(

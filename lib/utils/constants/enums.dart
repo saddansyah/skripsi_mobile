@@ -37,3 +37,11 @@ enum Status {
   const Status(this.value);
   final String value;
 }
+
+enum Reporter {
+  user("Pengguna"),
+  anonim("Anonim");
+
+  const Reporter(this.title);
+  final String title;
+}

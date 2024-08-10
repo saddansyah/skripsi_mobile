@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/repositories/auth_repository.dart';
 import 'package:skripsi_mobile/screens/models/session.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' hide Session, User;
 
 class Api {
   static String baseUrl = 'http://10.0.2.2:8000/api';
@@ -28,26 +27,28 @@ class TokenInterceptor extends Interceptor {
     return super.onRequest(options, handler);
   }
 
-  @override
-  void onError(err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401) {
-      // Token expired, refresh token
-      try {
-        final refreshed =
-            await Supabase.instance.client.auth.refreshSession(s?.refreshToken);
+  // TODO -> (supposed to be) overidden by authStateChange
 
-        err.requestOptions.headers['Authorization'] =
-            'Bearer ${refreshed.session?.accessToken}';
+  // @override
+  // void onError(err, ErrorInterceptorHandler handler) async {
+  //   if (err.response?.statusCode == 401) {
+  //     // Token expired, refresh token
+  //     try {
+  //       // final refreshed =
+  //       //     await Supabase.instance.client.auth.refreshSession(s?.refreshToken);
 
-        final response = await Dio().fetch(err.requestOptions);
-        return handler.resolve(response);
-      } catch (e) {
-        return handler.reject(err);
-      }
-    }
+  //       err.requestOptions.headers['Authorization'] =
+  //           'Bearer ${refreshed.session?.accessToken}';
 
-    return super.onError(err, handler);
-  }
+  //       final response = await Dio().fetch(err.requestOptions);
+  //       return handler.resolve(response);
+  //     } catch (e) {
+  //       return handler.reject(err);
+  //     }
+  //   }
+
+  //   return super.onError(err, handler);
+  // }
 }
 
 final dioProvider = Provider.autoDispose<Dio>((ref) {
