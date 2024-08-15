@@ -1,19 +1,30 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skripsi_mobile/screens/models/user.dart';
-import 'package:skripsi_mobile/utils/interceptor.dart';
+import 'package:skripsi_mobile/models/user.dart';
+import 'package:skripsi_mobile/utils/api.dart';
+import 'package:skripsi_mobile/utils/storage.dart';
 
-class ProfileRepository {
+abstract class ProfileRepository {
+  Future<User> getMyProfile(CancelToken cancelToken);
+}
+
+class ProfileDioRepository implements ProfileRepository {
   final Dio fetcher;
+  final BaseStorage storage;
 
-  ProfileRepository(this.fetcher);
+  ProfileDioRepository(this.fetcher, this.storage);
 
-  Future<User> getMyProfile() async {
+  @override
+  Future<User> getMyProfile(CancelToken cancelToken) async {
     try {
-      final response = await fetcher.get('${Api.baseUrl}/my');
+      final response =
+          await fetcher.get('${Api.baseUrl}/my', cancelToken: cancelToken);
 
+      storage.write(
+          'profile', jsonEncode(response.data as Map<String, dynamic>));
       return User.fromMap(response.data);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionTimeout ||
@@ -26,23 +37,31 @@ class ProfileRepository {
   }
 }
 
-final profileRepositoryProvider =
-    Provider.autoDispose<ProfileRepository>((ref) {
-  return ProfileRepository(ref.watch(dioProvider));
+final profileRepositoryProvider = Provider<ProfileDioRepository>((ref) {
+  return ProfileDioRepository(
+      ref.watch(dioProvider), ref.watch(storageProvider));
 });
 
-final profileProvider = FutureProvider.autoDispose<User>((ref) async {
-  final link = ref.keepAlive();
+final profileProvider = FutureProvider<User>((ref) async {
   final cancelToken = CancelToken();
 
   final profileRepository = ref.watch(profileRepositoryProvider);
-  User user = await profileRepository.getMyProfile();
+  User user = await profileRepository.getMyProfile(cancelToken);
 
   ref.onDispose(() {
-    link.close();
     cancelToken.cancel();
   });
 
-
   return user;
+});
+
+final profileFromStorageProvider = FutureProvider.autoDispose((ref) async {
+  final storage = ref.watch(storageProvider);
+  final userFromStorage = await storage.read('profile');
+
+  if (userFromStorage == null) {
+    return null;
+  }
+
+  return User.fromMap(jsonDecode(userFromStorage));
 });

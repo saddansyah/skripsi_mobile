@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:skripsi_mobile/repositories/auth_repository.dart';
 import 'package:skripsi_mobile/screens/mission/collect/collect_detail_screen.dart';
-import 'package:skripsi_mobile/screens/models/collect.dart';
+import 'package:skripsi_mobile/models/collect.dart';
 import 'package:skripsi_mobile/shared/image/image_with_token.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/constants/enums.dart';
@@ -16,7 +16,6 @@ class CollectCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessionStream = ref.watch(sessionProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: GestureDetector(

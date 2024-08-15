@@ -102,8 +102,8 @@ class PayloadCollect {
 
   final WasteType type;
   final String img;
-  final num kg;
-  final num vol;
+  final double kg;
+  final double vol;
   final String info;
   final bool isAnonim;
   final int containerId;

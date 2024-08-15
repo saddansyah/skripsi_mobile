@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skripsi_mobile/screens/mission/collect/collect_list_screen.dart';
-import 'package:skripsi_mobile/screens/models/ui/menu.dart';
+import 'package:skripsi_mobile/models/ui/menu.dart';
 import 'package:skripsi_mobile/theme.dart';
 
 class Card extends StatelessWidget {

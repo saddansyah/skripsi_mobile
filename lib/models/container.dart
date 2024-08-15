@@ -4,9 +4,11 @@ class Container {
   final int id;
   final String name;
   final ContainerType type;
-  final int rating;
+  final num rating;
   final Status status;
-  final String cluster;
+  final int clusterId;
+  final String clusterName;
+  final String userId;
 
   Container({
     required this.id,
@@ -14,42 +16,33 @@ class Container {
     required this.type,
     required this.rating,
     required this.status,
-    required this.cluster,
+    required this.clusterId,
+    required this.clusterName,
+    required this.userId,
   });
 
   factory Container.fromMap(Map<String, dynamic> json) {
     return Container(
       id: json['id'],
       name: json['name'],
-      type: json['type'],
+      type: ContainerType.values.firstWhere((v) => v.value == json['type']),
       rating: json['rating'],
-      status: json['status'],
-      cluster: json['cluster'],
+      status: Status.values.firstWhere((v) => v.value == json['status']),
+      clusterId: json['cluster_id'],
+      clusterName: json['cluster_name'],
+      userId: json['user_id'],
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'type': type,
-      'rating': rating,
-      'status': status,
-      'cluster': cluster,
-    };
   }
 }
 
 class DetailedContainer extends Container {
-  final int maxKg;
-  final int maxVol;
-  final double lat;
-  final double long;
+  final num maxKg;
+  final num maxVol;
+  final num lat;
+  final num long;
   final int point;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final int clusterId;
-  final String userId;
 
   DetailedContainer({
     required super.id,
@@ -57,7 +50,8 @@ class DetailedContainer extends Container {
     required super.type,
     required super.rating,
     required super.status,
-    required super.cluster,
+    required super.clusterId,
+    required super.clusterName,
     required this.maxKg,
     required this.maxVol,
     required this.lat,
@@ -65,18 +59,16 @@ class DetailedContainer extends Container {
     required this.point,
     required this.createdAt,
     required this.updatedAt,
-    required this.clusterId,
-    required this.userId,
+    required super.userId,
   });
 
   factory DetailedContainer.fromMap(Map<String, dynamic> json) {
     return DetailedContainer(
       id: json['id'],
       name: json['name'],
-      type: json['type'],
+      type: ContainerType.values.firstWhere((v) => v.value == json['type']),
+      status: Status.values.firstWhere((v) => v.value == json['status']),
       rating: json['rating'],
-      status: json['status'],
-      cluster: json['cluster'],
       maxKg: json['max_kg'],
       maxVol: json['max_vol'],
       lat: json['lat'],
@@ -85,24 +77,39 @@ class DetailedContainer extends Container {
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       clusterId: json['cluster_id'],
+      clusterName: json['cluster_name'],
       userId: json['user_id'],
     );
   }
+}
 
-  @override
+class PayloadContainer {
+  PayloadContainer(
+      {required this.name,
+      required this.maxKg,
+      required this.maxVol,
+      required this.lat,
+      required this.long,
+      required this.type,
+      required this.clusterId});
+
+  final String name;
+  final double maxKg;
+  final double maxVol;
+  final double lat;
+  final double long;
+  final ContainerType type;
+  final int clusterId;
+
   Map<String, dynamic> toMap() {
-    final map = super.toMap();
-    map.addAll({
+    return {
+      'name': name,
       'max_kg': maxKg,
       'max_vol': maxVol,
       'lat': lat,
       'long': long,
-      'point': point,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-      'cluster_id': clusterId,
-      'user_id': userId,
-    });
-    return map;
+      'type': type.value,
+      'cluster_id': clusterId
+    };
   }
 }

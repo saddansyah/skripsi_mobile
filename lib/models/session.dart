@@ -1,4 +1,4 @@
-import 'package:skripsi_mobile/screens/models/user.dart';
+import 'package:skripsi_mobile/models/user.dart';
 
 class Session {
   Session({required this.accessToken, required this.refreshToken});

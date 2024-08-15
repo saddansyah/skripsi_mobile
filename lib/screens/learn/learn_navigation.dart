@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skripsi_mobile/screens/learn/learn_screen.dart';
-import 'package:skripsi_mobile/shared/appbar/main_appbar.dart';
+import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
 import 'package:skripsi_mobile/utils/keys.dart';
 
 class LearnNavigation extends StatefulWidget {
@@ -20,7 +20,7 @@ class _LearnNavigationState extends State<LearnNavigation> {
             settings: settings,
             builder: (BuildContext context) {
               return Scaffold(
-                appBar: mainAppBar(title: 'Belajar'),
+                appBar: StyledAppBar.main(title: 'Belajar'),
                 body: switch (settings.name) { _ => const LearnScreen() },
               );
             });

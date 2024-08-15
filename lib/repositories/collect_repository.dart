@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skripsi_mobile/screens/models/collect.dart';
-import 'package:skripsi_mobile/utils/interceptor.dart';
+import 'package:skripsi_mobile/models/collect.dart';
+import 'package:skripsi_mobile/utils/api.dart';
 
 abstract class CollectRepository {
-  Future<List<Collect>> getMyCollect();
+  Future<List<Collect>> getMyCollect(String query);
   Future<DetailedCollect> getMyCollectById(int id);
   Future<void> addMyCollect(PayloadCollect collect, File localImageFile);
+  Future<void> deleteMyCollect(int id, String img);
 }
 
 class CollectDioRepository implements CollectRepository {
@@ -17,9 +18,9 @@ class CollectDioRepository implements CollectRepository {
   CollectDioRepository(this.fetcher);
 
   @override
-  Future<List<Collect>> getMyCollect() async {
+  Future<List<Collect>> getMyCollect(String query) async {
     try {
-      final response = await fetcher.get('${Api.baseUrl}/collect');
+      final response = await fetcher.get('${Api.baseUrl}/collect/$query');
 
       // {message: string, data: []}
       final List<Collect> collects = (response.data['data'] as List<dynamic>)
@@ -64,9 +65,10 @@ class CollectDioRepository implements CollectRepository {
       });
       final response =
           await fetcher.post('${Api.baseUrl}/image/collect', data: formData);
-      final imgPath = 'https://gqukwmsjfyupbgvhdjob.supabase.co/storage/v1/object/authenticated/images/${response.data['data'][0]['path'] as String}';
+      final imgPath =
+          'https://gqukwmsjfyupbgvhdjob.supabase.co/storage/v1/object/authenticated/images/${response.data['data'][0]['path'] as String}';
 
-      // // Assign uploaded image path
+      // Assign uploaded image path
       final payload = collect.toMap();
       payload['img'] = imgPath;
 
@@ -77,7 +79,26 @@ class CollectDioRepository implements CollectRepository {
           e.type == DioExceptionType.receiveTimeout) {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
-        throw e;
+        throw 'Terjadi galat saat melakukan tambah data. Coba lagi.';
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteMyCollect(int id, String img) async {
+    try {
+      final imgPath = 'collect/${img.split('/collect/')[1]}';
+
+      await fetcher.delete('${Api.baseUrl}/collect/$id');
+      await fetcher.delete('${Api.baseUrl}/image?path=$imgPath');
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw 'Koneksi timeout. Terjadi kesalahan di server';
+      } else {
+        throw 'Terjadi galat saat melakukan hapus data. Coba lagi.';
       }
     } catch (e) {
       rethrow;
@@ -90,8 +111,9 @@ final collectRepositoryProvider =
   return CollectDioRepository(ref.watch(dioProvider));
 });
 
-final collectsProvider = FutureProvider.autoDispose<List<Collect>>((ref) {
-  return ref.watch(collectRepositoryProvider).getMyCollect();
+final collectsProvider =
+    FutureProvider.family.autoDispose<List<Collect>, String>((ref, query) {
+  return ref.watch(collectRepositoryProvider).getMyCollect(query);
 });
 
 final collectProvider =

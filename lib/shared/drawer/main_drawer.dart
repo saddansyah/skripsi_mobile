@@ -7,7 +7,9 @@ import 'package:skripsi_mobile/controller/auth_controller.dart';
 import 'package:skripsi_mobile/repositories/profile_repository.dart';
 import 'package:skripsi_mobile/shared/image/image_error.dart';
 import 'package:skripsi_mobile/theme.dart';
-import 'package:skripsi_mobile/utils/error_extension.dart';
+import 'package:skripsi_mobile/utils/extension.dart';
+
+import '../../screens/exception/error_screen.dart';
 
 class MainDrawer extends ConsumerStatefulWidget {
   const MainDrawer({super.key});
@@ -24,7 +26,7 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
     final profile = ref.watch(profileProvider);
 
     ref.listen<AsyncValue>(profileProvider, (_, s) {
-      s.showSnackbarOnError(context);
+      s.showErrorSnackbar(context);
     });
 
     return Drawer(
@@ -91,7 +93,8 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
                                     Text(d.rank, style: Fonts.regular12),
                                   ],
                                 ),
-                            error: (e, _) => Text('$e', style: Fonts.bold16),
+                            error: (e, _) => Scaffold(
+                                body: ErrorScreen(message: e.toString())),
                             loading: () => Text('...', style: Fonts.bold16)),
                       ),
                       Container(

@@ -45,3 +45,90 @@ enum Reporter {
   const Reporter(this.title);
   final String title;
 }
+
+// Dropdowns
+abstract class DropdownData {
+  String get title;
+  String get query;
+}
+
+enum DropdownCollectSort implements DropdownData {
+  oldest('Terlama', 'sortBy=created_at&order=asc'),
+  newest('Terbaru', 'sortBy=created_at&order=desc'),
+  idasc('ID (asc)', 'sortBy=id&order=asc'),
+  iddesc('ID (desc)', 'sortBy=id&order=desc'),
+  status('Status', 'sortBy=status&order=desc');
+
+  const DropdownCollectSort(this.title, this.query);
+
+  @override
+  final String title;
+
+  @override
+  final String query;
+}
+
+enum DropdownContainerSort implements DropdownData {
+  // TODO -> Terdekat
+  newest('Terbaru', 'sortBy=created_at&order=desc'),
+  favoritest('Terfavorit', 'sortBy=rating&order=asc'),
+  status('Status', 'sortBy=status&order=asc'),
+  atoz('A-Z', 'sortBy=name&order=asc'),
+  ztoa('Z-A', 'sortBy=name&order=desc');
+
+  const DropdownContainerSort(this.title, this.query);
+
+  @override
+  final String title;
+
+  @override
+  final String query;
+}
+
+enum DropdownWasteType implements DropdownData {
+  all('Semua', ''),
+  mixed('Mixed', 'type=mixed'),
+  b3('B3', 'type=b3'),
+  organik('Organik', 'type=organik'),
+  gunaUlang('Guna Ulang', 'type=guna_ulang'),
+  daurUlang('Daur Ulang', 'type=daur_ulang'),
+  residu('Residu', 'type=residu');
+
+  const DropdownWasteType(this.title, this.query);
+
+  @override
+  final String title;
+
+  @override
+  final String query;
+}
+
+enum DropdownContainerType implements DropdownData {
+  all('Semua', ''),
+  depo('Depo', 'type=depo'),
+  tong('Tong', 'type=tong'),
+  other('Lainnya', 'type=other');
+
+  const DropdownContainerType(this.title, this.query);
+
+  @override
+  final String title;
+
+  @override
+  final String query;
+}
+
+enum DropdownStatus implements DropdownData {
+  all('Semua', ''),
+  pending('Pending', 'status=pending'),
+  accepted('Accepted', 'status=accepted'),
+  rejected('Rejected', 'status=rejected');
+
+  const DropdownStatus(this.title, this.query);
+
+  @override
+  final String title;
+
+  @override
+  final String query;
+}

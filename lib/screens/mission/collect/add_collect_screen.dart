@@ -5,15 +5,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:skripsi_mobile/controller/collect_controller.dart';
-import 'package:skripsi_mobile/screens/models/collect.dart';
-import 'package:skripsi_mobile/screens/models/ui/input_card.dart';
+import 'package:skripsi_mobile/models/collect.dart';
+import 'package:skripsi_mobile/models/ui/input_card.dart';
+import 'package:skripsi_mobile/repositories/collect_repository.dart';
 import 'package:skripsi_mobile/shared/input/image_picker_input.dart';
 import 'package:skripsi_mobile/shared/input/waste_type_input.dart';
 import 'package:skripsi_mobile/shared/pills/added_point.pill.dart';
 import 'package:skripsi_mobile/shared/snackbar/snackbar.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/constants/enums.dart';
-import 'package:skripsi_mobile/utils/error_extension.dart';
+import 'package:skripsi_mobile/utils/extension.dart';
 import 'package:skripsi_mobile/utils/validator.dart';
 
 class AddCollectScreen extends ConsumerStatefulWidget {
@@ -70,7 +71,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
     if (!formKey.currentState!.validate() || selectedImage == null) {
       ScaffoldMessenger.of(context).showSnackBar(popSnackbar(
           'Input data tidak lengkap/invalid. Mohon isi dengan benar',
-          AppColors.red));
+          SnackBarType.error));
 
       return;
     }
@@ -78,8 +79,8 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
     final newCollect = PayloadCollect(
       type: selectedType,
       containerId: selectedContainer,
-      kg: int.parse(kgController.text.trim()),
-      vol: int.parse(volController.text.trim()),
+      kg: double.parse(kgController.text.trim()),
+      vol: double.parse(volController.text.trim()),
       info: infoController.text.trim(),
       isAnonim: selectedReporter == Reporter.anonim,
     );
@@ -94,7 +95,16 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
     final state = ref.watch(collectControllerProvider);
 
     ref.listen<AsyncValue>(collectControllerProvider, (_, state) {
-      state.showSnackbarOnError(context);
+      if (state.isLoading) {
+        state.showLoadingSnackbar(context, 'Menambah data');
+      }
+
+      if (!state.hasError && !state.isLoading) {
+        state.showSnackbar(context,
+            'Asyik! Poin akan kamu dapatkan ketika laporanmu disetujui Admin 🤩');
+        Navigator.of(context, rootNavigator: true).pop();
+        ref.invalidate(collectsProvider);
+      }
     });
 
     return Scaffold(
@@ -175,9 +185,6 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                       Text('Volume (L)*', style: Fonts.semibold14),
                       SizedBox(height: 12),
                       TextFormField(
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
                         controller: volController,
                         textAlignVertical: TextAlignVertical.center,
                         style: Fonts.regular14,
@@ -214,9 +221,6 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                       Text('Berat (kg)*', style: Fonts.semibold14),
                       SizedBox(height: 12),
                       TextFormField(
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
                         controller: kgController,
                         textAlignVertical: TextAlignVertical.center,
                         style: Fonts.regular14,
@@ -263,7 +267,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                           crossAxisSpacing: 18,
                           mainAxisSpacing: 18,
                         ),
-                        itemBuilder: (c, i) => WasteTypeInput(
+                        itemBuilder: (c, i) => CardInput<WasteType>(
                             type: wasteTypeInputCards[i],
                             updateType: updateType,
                             isSelected:

@@ -12,29 +12,38 @@ class WasteTypePill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 6,
-      children: [
-        Text('Tipe: ', style: Fonts.semibold14),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-          decoration: BoxDecoration(
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(
+        color: switch (type) {
+          WasteType.b3 => AppColors.redAccent,
+          WasteType.organik => AppColors.greenAccent,
+          WasteType.gunaUlang => AppColors.amberAccent,
+          WasteType.daurUlang => AppColors.blueAccent,
+          WasteType.residu => AppColors.lightGrey,
+          WasteType.mixed => AppColors.lightGrey,
+        },
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+      child: Wrap(
+        spacing: 3,
+        children: [
+          Icon(
+            Icons.cached_rounded,
+            size: iconSize,
             color: switch (type) {
-              WasteType.b3 => AppColors.redAccent,
-              WasteType.organik => AppColors.greenAccent,
-              WasteType.gunaUlang => AppColors.amberAccent,
-              WasteType.daurUlang => AppColors.blueAccent,
-              WasteType.residu => AppColors.lightGrey,
-              WasteType.mixed => AppColors.lightGrey,
+              WasteType.b3 => AppColors.red,
+              WasteType.organik => AppColors.greenPrimary,
+              WasteType.gunaUlang => AppColors.red,
+              WasteType.daurUlang => AppColors.bluePrimary,
+              WasteType.residu => AppColors.grey,
+              WasteType.mixed => AppColors.grey,
             },
-            borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
-          child: Wrap(
-            spacing: 3,
-            children: [
-              Icon(
-                Icons.cached_rounded,
-                size: iconSize,
+          Text(
+            type.value,
+            style: Fonts.semibold14.copyWith(
+                fontSize: fontSize,
                 color: switch (type) {
                   WasteType.b3 => AppColors.red,
                   WasteType.organik => AppColors.greenPrimary,
@@ -42,25 +51,10 @@ class WasteTypePill extends StatelessWidget {
                   WasteType.daurUlang => AppColors.bluePrimary,
                   WasteType.residu => AppColors.grey,
                   WasteType.mixed => AppColors.grey,
-                },
-              ),
-              Text(
-                type.value,
-                style: Fonts.semibold14.copyWith(
-                    fontSize: fontSize,
-                    color: switch (type) {
-                      WasteType.b3 => AppColors.red,
-                      WasteType.organik => AppColors.greenPrimary,
-                      WasteType.gunaUlang => AppColors.red,
-                      WasteType.daurUlang => AppColors.bluePrimary,
-                      WasteType.residu => AppColors.grey,
-                      WasteType.mixed => AppColors.grey,
-                    }),
-              )
-            ],
-          ),
-        ),
-      ],
+                }),
+          )
+        ],
+      ),
     );
   }
 }

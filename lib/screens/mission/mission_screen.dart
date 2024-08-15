@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/screens/layout/main_layout.dart';
-import 'package:skripsi_mobile/shared/appbar/main_appbar.dart';
+import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
 import 'package:skripsi_mobile/shared/card/card.dart';
-import 'package:skripsi_mobile/screens/models/ui/menu.dart';
+import 'package:skripsi_mobile/models/ui/menu.dart';
 import 'package:skripsi_mobile/theme.dart';
 
 class MissionScreen extends ConsumerWidget {
@@ -12,7 +12,7 @@ class MissionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: mainAppBar(title: 'Misi'),
+      appBar: StyledAppBar.main(title: 'Misi'),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
         child: Column(
@@ -97,7 +97,10 @@ class MissionScreen extends ConsumerWidget {
                   crossAxisSpacing: 24,
                   mainAxisSpacing: 24,
                 ),
-                itemBuilder: (m, i) => Card(missionMenu[i]),
+                itemBuilder: (m, i) => Card(
+                  missionMenu[i],
+                  isRootNavigator: true,
+                ),
               ),
             ),
           ],

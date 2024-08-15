@@ -50,6 +50,9 @@ ThemeData getPrimaryTheme(BuildContext context) {
     canvasColor: AppColors.white,
     colorScheme: ColorScheme.fromSeed(seedColor: AppColors.greenPrimary),
     scaffoldBackgroundColor: AppColors.white,
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: AppColors.white,
+    ),
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.white,
       foregroundColor: AppColors.dark1,

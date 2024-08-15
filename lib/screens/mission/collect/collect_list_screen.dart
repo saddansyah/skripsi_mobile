@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/repositories/collect_repository.dart';
-import 'package:skripsi_mobile/screens/models/ui/dropdown.dart'
-    hide DropdownMenuItem;
-import 'package:skripsi_mobile/shared/appbar/main_appbar.dart';
+import 'package:skripsi_mobile/screens/exception/error_screen.dart';
+import 'package:skripsi_mobile/screens/exception/not_found_screen.dart';
+import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
+import 'package:skripsi_mobile/shared/dropdown/dropdown.dart';
 import 'package:skripsi_mobile/shared/mission/collect/collect_card.dart';
 import 'package:skripsi_mobile/theme.dart';
+import 'package:skripsi_mobile/utils/constants/enums.dart';
 
 class CollectListScreen extends ConsumerStatefulWidget {
   const CollectListScreen({super.key});
@@ -15,19 +19,53 @@ class CollectListScreen extends ConsumerStatefulWidget {
 }
 
 class _CollectListScreenState extends ConsumerState<CollectListScreen> {
-  String? sortValue;
-  String? typeValue;
-  String? ratingValue;
-  final dropdownItems = dummyDropdownItems;
+  String? selectedSort;
+  String? selectedType;
+  String? selectedStatus;
+  String? searchQuery;
+
+  String contenatedFilterQuery() {
+    String query = '';
+
+    if (searchQuery != null) {
+      query += '${searchQuery!}&';
+    }
+
+    if (selectedSort != null) {
+      query += '${selectedSort!}&';
+    }
+
+    if (selectedType != null) {
+      query += '${selectedType!}&';
+    }
+
+    if (selectedStatus != null) {
+      query += '${selectedStatus!}&';
+    }
+
+    return '?$query';
+  }
+
+  Timer? _debounce;
+  void onChanged(String? query) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 600), () {
+      setState(() {
+        searchQuery = 'search=$query';
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final collects = ref.watch(collectsProvider);
+    final collects = ref.watch(collectsProvider(contenatedFilterQuery()));
+    final collectsCount = collects.value?.length;
 
     return Scaffold(
       appBar: AppBar(
         title: Wrap(children: [
           TextField(
+            onChanged: onChanged,
             decoration: InputDecoration(
                 isDense: true,
                 prefixIcon: Icon(Icons.search),
@@ -38,6 +76,12 @@ class _CollectListScreenState extends ConsumerState<CollectListScreen> {
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 filled: true,
                 fillColor: AppColors.lightGrey,
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        width: 2,
+                        style: BorderStyle.solid,
+                        color: AppColors.greenPrimary),
+                    borderRadius: BorderRadius.all(Radius.circular(24))),
                 enabledBorder: OutlineInputBorder(
                     borderSide:
                         BorderSide(color: AppColors.grey.withOpacity(0)),
@@ -47,162 +91,75 @@ class _CollectListScreenState extends ConsumerState<CollectListScreen> {
       ),
       body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-          child: SingleChildScrollView(
-            physics: const ScrollPhysics(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    // Sort
-                    Flexible(
-                      flex: 3,
-                      fit: FlexFit.tight,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        height: 36,
-                        decoration: BoxDecoration(
-                            color: AppColors.greenAccent,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12))),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            hint: Text(dummyDropdownItems[0].hint,
-                                style: Fonts.semibold14.copyWith(
-                                    letterSpacing: 0.5, fontSize: 12)),
-                            items: dummyDropdownItems[0]
-                                .menuItems
-                                .map<DropdownMenuItem<String>>(
-                              (i) {
-                                return DropdownMenuItem<String>(
-                                  value: i.value,
-                                  child: Text(i.title,
-                                      style: Fonts.semibold14.copyWith(
-                                          letterSpacing: 0.5, fontSize: 12)),
-                                );
-                              },
-                            ).toList(),
-                            isExpanded: true,
-                            value: sortValue,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                sortValue = newValue!;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
+          child: RefreshIndicator(
+            triggerMode: RefreshIndicatorTriggerMode.anywhere,
+            color: AppColors.greenPrimary,
+            onRefresh: () =>
+                ref.refresh(collectsProvider(contenatedFilterQuery()).future),
+            child: SingleChildScrollView(
+              physics: const ScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      // Sort
+                      Dropdown(
+                          hint: 'Urut',
+                          data: DropdownCollectSort.values,
+                          onChanged: (String? newValue) =>
+                              setState(() => selectedSort = newValue),
+                          selectedValue: selectedSort),
 
-                    SizedBox(width: 12),
+                      SizedBox(width: 12),
 
-                    // Type
-                    Flexible(
-                      flex: 3,
-                      fit: FlexFit.tight,
-                      child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          height: 36,
-                          decoration: BoxDecoration(
-                              color: AppColors.greenAccent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton(
-                              hint: Text(dummyDropdownItems[1].hint,
-                                  style: Fonts.semibold14.copyWith(
-                                      letterSpacing: 0.5, fontSize: 12)),
-                              items: dummyDropdownItems[1]
-                                  .menuItems
-                                  .map<DropdownMenuItem<String>>(
-                                (i) {
-                                  return DropdownMenuItem<String>(
-                                    value: i.value,
-                                    child: Text(i.title,
-                                        style: Fonts.semibold14.copyWith(
-                                            letterSpacing: 0.5, fontSize: 12)),
-                                  );
-                                },
-                              ).toList(),
-                              isExpanded: true,
-                              value: typeValue,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  typeValue = newValue!;
-                                });
-                              },
-                            ),
-                          )),
-                    ),
+                      Dropdown(
+                          hint: 'Tipe',
+                          data: DropdownWasteType.values,
+                          onChanged: (String? newValue) =>
+                              setState(() => selectedType = newValue),
+                          selectedValue: selectedType),
 
-                    SizedBox(width: 12),
+                      SizedBox(width: 12),
 
-                    // Rating
-                    Flexible(
-                      flex: 2,
-                      fit: FlexFit.tight,
-                      child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          height: 36,
-                          decoration: BoxDecoration(
-                              color: AppColors.greenAccent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton(
-                              hint: Text(dummyDropdownItems[2].hint,
-                                  style: Fonts.semibold14.copyWith(
-                                      letterSpacing: 0.5, fontSize: 12)),
-                              items: dummyDropdownItems[2]
-                                  .menuItems
-                                  .map<DropdownMenuItem<String>>(
-                                (i) {
-                                  return DropdownMenuItem<String>(
-                                    value: i.value,
-                                    child: Text(i.title,
-                                        style: Fonts.semibold14.copyWith(
-                                            letterSpacing: 0.5, fontSize: 12)),
-                                  );
-                                },
-                              ).toList(),
-                              isExpanded: true,
-                              value: ratingValue,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  ratingValue = newValue!;
-                                });
-                              },
-                            ),
-                          )),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 24),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text('Hasil Pencarian', style: Fonts.bold16),
-                    Text('${collects.value?.length ?? 'Menghitung'} Hasil',
-                        style: Fonts.regular12),
-                    SizedBox(height: 12),
-                    collects.when(
-                      data: (c) => ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: c.length,
-                          itemBuilder: (context, i) =>
-                              CollectCard(collect: c[i])),
-                      error: (e, _) => Text('$e', style: Fonts.bold16),
-                      loading: () => Center(
-                        child: CircularProgressIndicator(
-                            color: AppColors.greenPrimary),
-                      ),
-                    )
-                  ],
-                ),
-              ],
+                      Dropdown(
+                          hint: 'Status',
+                          data: DropdownStatus.values,
+                          onChanged: (String? newValue) =>
+                              setState(() => selectedStatus = newValue),
+                          selectedValue: selectedStatus),
+                    ],
+                  ),
+                  SizedBox(height: 24),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('Hasil Pencarian', style: Fonts.bold16),
+                      Text('${collects.value?.length ?? 'Menghitung'} Hasil',
+                          style: Fonts.regular12),
+                      SizedBox(height: 12),
+                      collectsCount == 0
+                          ? NotFoundScreen(message: 'Tidak ada data')
+                          : collects.when(
+                              data: (c) => ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: c.length,
+                                  itemBuilder: (context, i) =>
+                                      CollectCard(collect: c[i])),
+                              error: (e, _) =>
+                                  ErrorScreen(message: e.toString()),
+                              loading: () => Center(
+                                child: CircularProgressIndicator(
+                                    color: AppColors.greenPrimary),
+                              ),
+                            )
+                    ],
+                  ),
+                ],
+              ),
             ),
           )),
     );

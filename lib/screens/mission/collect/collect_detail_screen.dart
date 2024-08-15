@@ -3,16 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:skripsi_mobile/controller/collect_controller.dart';
+import 'package:skripsi_mobile/models/collect.dart';
 import 'package:skripsi_mobile/repositories/collect_repository.dart';
-import 'package:skripsi_mobile/shared/appbar/appbar_image.dart';
-import 'package:skripsi_mobile/shared/error_screen.dart';
-import 'package:skripsi_mobile/shared/image/image_error.dart';
+import 'package:skripsi_mobile/screens/exception/error_screen.dart';
+import 'package:skripsi_mobile/screens/mission/container/container_detail_screen.dart';
+import 'package:skripsi_mobile/screens/mission/map/map_screen.dart';
+import 'package:skripsi_mobile/shared/bottom_sheet/confirmation_bottom_sheet.dart';
 import 'package:skripsi_mobile/shared/image/image_with_token.dart';
-import 'package:skripsi_mobile/shared/loading_screen.dart';
+import 'package:skripsi_mobile/screens/exception/loading_screen.dart';
+import 'package:skripsi_mobile/shared/pills/added_point.pill.dart';
 import 'package:skripsi_mobile/shared/pills/waste_type_pill.dart';
+import 'package:skripsi_mobile/shared/snackbar/snackbar.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/constants/enums.dart';
-import 'package:skripsi_mobile/utils/error_extension.dart';
+import 'package:skripsi_mobile/utils/extension.dart';
 
 class CollectDetailScreen extends ConsumerStatefulWidget {
   const CollectDetailScreen({super.key, required this.id});
@@ -27,12 +33,47 @@ class CollectDetailScreen extends ConsumerStatefulWidget {
 class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
   num likeCount = 11294;
 
+  void handleDelete(DetailedCollect d) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return ConfirmationBottomSheet(
+          onConfirmPressed: () {
+            ref
+                .read(collectControllerProvider.notifier)
+                .deleteMyCollect(d.id, d.img);
+
+            Navigator.of(context).pop();
+          },
+          title: 'Apakah kamu yakin akan menghapus laporan?',
+          message:
+              'Poin kamu akan berkurang 5⭐ apabila masih dalam status Pending',
+          color: AppColors.red,
+          yes: 'Ya, hapus',
+          no: 'Tidak jadi deh',
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final collect = ref.watch(collectProvider(widget.id));
+    final state = ref.watch(collectControllerProvider);
 
-    ref.listen<AsyncValue>(collectsProvider, (_, state) {
-      state.showSnackbarOnError(context);
+    ref.listen<AsyncValue>(collectControllerProvider, (_, state) {
+      state.showErrorSnackbar(context);
+
+      if (state.isLoading) {
+        state.showLoadingSnackbar(context, 'Menghapus data');
+      }
+
+      if (!state.hasError && !state.isLoading) {
+        state.showSnackbar(
+            context, 'Sukses melakukan hapus data dengan ID ${widget.id}');
+        Navigator.of(context, rootNavigator: true).pop();
+        ref.invalidate(collectsProvider);
+      }
     });
 
     return Scaffold(
@@ -66,84 +107,84 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                   style: Fonts.regular14
                                       .copyWith(color: AppColors.grey),
                                 ),
+                                SizedBox(height: 6),
                                 Row(
                                   children: [
-                                    Text('Sampah ID ${widget.id}',
-                                        style: Fonts.bold18
-                                            .copyWith(fontSize: 21)),
-                                    SizedBox(width: 12),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 3),
-                                      decoration: BoxDecoration(
-                                        color: switch (d.status) {
-                                          Status.accepted =>
-                                            AppColors.greenAccent,
-                                          Status.pending => AppColors.lightGrey,
-                                          Status.rejected => AppColors.red,
-                                        },
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12)),
-                                      ),
-                                      child: Text(
-                                        d.status.value,
-                                        style: Fonts.semibold14.copyWith(
-                                          color: switch (d.status) {
-                                            Status.accepted =>
-                                              AppColors.greenPrimary,
-                                            Status.pending => AppColors.grey,
-                                            Status.rejected => Colors.red[600],
-                                          },
-                                        ),
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Text('Sampah ID ${widget.id}',
+                                              style: Fonts.bold18
+                                                  .copyWith(fontSize: 21)),
+                                          SizedBox(width: 12),
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 6, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color: switch (d.status) {
+                                                Status.accepted =>
+                                                  AppColors.greenAccent,
+                                                Status.pending =>
+                                                  AppColors.lightGrey,
+                                                Status.rejected =>
+                                                  AppColors.red,
+                                              },
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(12)),
+                                            ),
+                                            child: Text(
+                                              d.status.value,
+                                              style: Fonts.semibold14.copyWith(
+                                                color: switch (d.status) {
+                                                  Status.accepted =>
+                                                    AppColors.greenPrimary,
+                                                  Status.pending =>
+                                                    AppColors.grey,
+                                                  Status.rejected =>
+                                                    Colors.red[600],
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Spacer(),
-                                    Wrap(
-                                      alignment: WrapAlignment.center,
-                                      crossAxisAlignment:
-                                          WrapCrossAlignment.center,
-                                      children: [
-                                        IconButton(
-                                            color: AppColors.bluePrimary,
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                                Icons.thumb_up_outlined)),
-                                        Text(
-                                            likeCount > 1000
-                                                ? '${(likeCount / 1000).toStringAsFixed(1)}K'
-                                                : likeCount.toString(),
-                                            style: Fonts.semibold16.copyWith(
-                                                color: AppColors.bluePrimary)),
-                                      ],
-                                    )
+                                    SizedBox(width: 6),
+                                    d.status == Status.accepted
+                                        ? AddedPointPill(point: d.point)
+                                        : const SizedBox(width: 0),
                                   ],
                                 ),
                                 SizedBox(height: 12),
-                                Container(
-                                  width: double.infinity,
-                                  clipBehavior: Clip.hardEdge,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          colorFilter: ColorFilter.mode(
-                                              AppColors.dark1.withOpacity(0.2),
-                                              BlendMode.darken),
-                                          image: AssetImage(
-                                              'assets/images/milestone_map.png')),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(12)),
-                                      border: Border.all(
-                                          width: 1, color: Colors.grey[350]!)),
-                                  padding: const EdgeInsets.all(12),
-                                  child: Text(
-                                      d.status == Status.accepted
-                                          ? 'Selamat! Kamu mendapat +5 ⭐'
-                                          : '+5 ⭐ apabila disetujui Admin',
-                                      textAlign: TextAlign.center,
-                                      style: Fonts.bold16.copyWith(
-                                          fontSize: 14,
-                                          color: AppColors.white)),
-                                ),
+                                d.status != Status.accepted
+                                    ? Container(
+                                        width: double.infinity,
+                                        clipBehavior: Clip.hardEdge,
+                                        decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                colorFilter: ColorFilter.mode(
+                                                    AppColors.dark1
+                                                        .withOpacity(0.2),
+                                                    BlendMode.darken),
+                                                image: AssetImage(
+                                                    'assets/images/milestone_map.png')),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(12)),
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Colors.grey[350]!)),
+                                        padding: const EdgeInsets.all(12),
+                                        child: Text(
+                                          'Kamu akan mendapatkan poin tambahan apabila laporanmu disetujui Admin 🤩',
+                                          textAlign: TextAlign.center,
+                                          style: Fonts.bold16.copyWith(
+                                              fontSize: 14,
+                                              color: AppColors.white),
+                                        ),
+                                      )
+                                    : const SizedBox(width: 0),
                                 SizedBox(height: 12),
                                 Container(
                                   width: double.infinity,
@@ -168,16 +209,28 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                             width: 36,
                                           ),
                                           SizedBox(width: 12),
-                                          Text(
-                                            'Depo Fakultas',
-                                            style: Fonts.bold16.copyWith(
-                                                fontSize: 14,
-                                                color: AppColors.bluePrimary),
+                                          Expanded(
+                                            child: Text(
+                                              d.containerName,
+                                              style: Fonts.bold16.copyWith(
+                                                  fontSize: 14,
+                                                  color: AppColors.bluePrimary),
+                                            ),
                                           ),
-                                          Spacer(),
+                                          SizedBox(width: 6),
                                           IconButton(
                                             iconSize: 24,
-                                            onPressed: () {},
+                                            onPressed: state.isLoading
+                                                ? null
+                                                : () {
+                                                    Navigator.of(context,
+                                                            rootNavigator: true)
+                                                        .push(MaterialPageRoute(
+                                                            builder: (_) =>
+                                                                ContainerDetailScreen(
+                                                                    id: d
+                                                                        .containerId)));
+                                                  },
                                             icon: Icon(
                                                 Icons.navigate_next_rounded,
                                                 color: AppColors.greenPrimary),
@@ -200,7 +253,14 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      WasteTypePill(type: d.type),
+                                      Wrap(
+                                        spacing: 6,
+                                        children: [
+                                          Text('Tipe: ',
+                                              style: Fonts.semibold14),
+                                          WasteTypePill(type: d.type),
+                                        ],
+                                      ),
                                       SizedBox(height: 12),
                                       Wrap(
                                         spacing: 6,
@@ -344,7 +404,7 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                             title: StepperText(
                                               d.status == Status.rejected
                                                   ? "Laporan ditolak Admin"
-                                                  : "Laporan disetujui Admin (+10 ⭐)",
+                                                  : "Laporan disetujui Admin (+5 ⭐)",
                                               textStyle: Fonts.semibold14,
                                             ),
                                             subtitle: StepperText(
@@ -410,45 +470,6 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                   padding: const EdgeInsets.all(12),
                                   child: Column(
                                     children: [
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            elevation: 0,
-                                            backgroundColor:
-                                                AppColors.greenPrimary,
-                                            foregroundColor: AppColors.white,
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(12)),
-                                            )),
-                                        onPressed: () {},
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          height: 60,
-                                          width: double.infinity,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.edit_rounded,
-                                                color: AppColors.white,
-                                                weight: 100,
-                                              ),
-                                              const SizedBox(width: 9),
-                                              Text(
-                                                'Edit Laporan',
-                                                style: Fonts.bold16,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Divider(
-                                        indent: 12,
-                                        endIndent: 12,
-                                      ),
                                       OutlinedButton(
                                         style: OutlinedButton.styleFrom(
                                             side: BorderSide(
@@ -459,7 +480,11 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(12)),
                                             )),
-                                        onPressed: () {},
+                                        onPressed: state.isLoading
+                                            ? null
+                                            : () {
+                                                handleDelete(d);
+                                              },
                                         child: Container(
                                           alignment: Alignment.center,
                                           height: 60,
@@ -469,18 +494,23 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                                 MainAxisAlignment.center,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.delete_rounded,
-                                                color: AppColors.red,
-                                                weight: 100,
-                                              ),
-                                              const SizedBox(width: 9),
-                                              Text(
-                                                'Hapus Laporan',
-                                                style: Fonts.bold16,
-                                              ),
-                                            ],
+                                            children: state.isLoading
+                                                ? [
+                                                    CircularProgressIndicator(
+                                                        color: AppColors.red)
+                                                  ]
+                                                : [
+                                                    Icon(
+                                                      Icons.delete_rounded,
+                                                      color: AppColors.red,
+                                                      weight: 100,
+                                                    ),
+                                                    const SizedBox(width: 9),
+                                                    Text(
+                                                      'Hapus Laporan',
+                                                      style: Fonts.bold16,
+                                                    ),
+                                                  ],
                                           ),
                                         ),
                                       ),

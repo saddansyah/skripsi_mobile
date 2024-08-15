@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skripsi_mobile/screens/home/home_screen.dart';
-import 'package:skripsi_mobile/shared/appbar/main_appbar.dart';
+import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
 import 'package:skripsi_mobile/utils/keys.dart';
 
 class HomeNavigation extends StatefulWidget {
@@ -20,7 +20,7 @@ class _HomeNavigationState extends State<HomeNavigation> {
             settings: settings,
             builder: (BuildContext context) {
               return Scaffold(
-                appBar: mainAppBar(title: 'Beranda'),
+                appBar: StyledAppBar.main(title: 'Beranda'),
                 body: switch (settings.name) { _ => const HomeScreen() },
               );
             });

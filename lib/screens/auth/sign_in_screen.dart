@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/controller/auth_controller.dart';
+import 'package:skripsi_mobile/repositories/auth_repository.dart';
 import 'package:skripsi_mobile/theme.dart';
-import 'package:skripsi_mobile/utils/error_extension.dart';
+import 'package:skripsi_mobile/utils/extension.dart';
 
 class SignIn extends ConsumerWidget {
   const SignIn({super.key});
@@ -13,7 +14,7 @@ class SignIn extends ConsumerWidget {
     final authController = ref.read(authControllerProvider.notifier);
 
     ref.listen<AsyncValue>(authControllerProvider, (_, state) {
-      state.showSnackbarOnError(context);
+      state.showErrorSnackbar(context);
     });
 
     return Scaffold(
@@ -46,9 +47,8 @@ class SignIn extends ConsumerWidget {
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       )),
-                  onPressed: state.isLoading
-                      ? null
-                      : authController.signInWithGoogle,
+                  onPressed:
+                      state.isLoading ? null : authController.signInWithGoogle,
                   child: Container(
                     alignment: Alignment.center,
                     height: 60,

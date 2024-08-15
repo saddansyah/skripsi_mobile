@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:skripsi_mobile/screens/models/ui/input_card.dart';
+import 'package:skripsi_mobile/models/ui/input_card.dart';
 import 'package:skripsi_mobile/theme.dart';
-import 'package:skripsi_mobile/utils/constants/enums.dart';
 
-class WasteTypeInput extends StatelessWidget {
-  const WasteTypeInput(
+class CardInput<T> extends StatelessWidget {
+  const CardInput(
       {super.key,
       required this.type,
       required this.updateType,
       required this.isSelected});
 
-  final InputCard<WasteType> type;
-  final void Function(WasteType) updateType;
+  final InputCard<T> type;
+  final void Function(T) updateType;
   final bool isSelected;
 
   @override

@@ -87,7 +87,7 @@ class _ImagePickerInputState extends State<ImagePickerInput> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.photo_camera_rounded,
+                        Icons.add_a_photo_rounded,
                         color: AppColors.grey,
                       ),
                       const SizedBox(height: 6),

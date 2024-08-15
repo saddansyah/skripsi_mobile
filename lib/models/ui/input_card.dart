@@ -10,6 +10,27 @@ class InputCard<T> {
   InputCard(this.value, this.title, this.description, this.img);
 }
 
+final List<InputCard<ContainerType>> containerTypeInputCards = [
+  InputCard(
+    ContainerType.depo,
+    'Depo',
+    'Depo adalah tempat sampah sentral yang ada di setiap fakultas di UGM',
+    'assets/svgs/container_icon.svg',
+  ),
+  InputCard(
+    ContainerType.tong,
+    'Tong',
+    'Tong adalah tempat sampah kecil yang tersebar di kampus',
+    'assets/svgs/container_icon.svg',
+  ),
+  InputCard(
+    ContainerType.other,
+    'Lainnya',
+    'Apabila tidak masuk dua kategori yang lain, dapat dimasukkan ke Lainnya',
+    'assets/svgs/container_icon.svg',
+  ),
+];
+
 final List<InputCard<WasteType>> wasteTypeInputCards = [
   InputCard(
     WasteType.b3,
