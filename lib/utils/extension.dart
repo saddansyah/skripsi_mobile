@@ -6,11 +6,9 @@ import 'package:skripsi_mobile/utils/keys.dart';
 
 extension AsyncValueUI on AsyncValue {
   void showErrorSnackbar(BuildContext context, [String? message]) {
-    if (hasError && !isLoading) {
-      ScaffoldKeys.snackbarKey.currentState!.removeCurrentSnackBar();
-      ScaffoldKeys.snackbarKey.currentState!.showSnackBar(
-          popSnackbar(message ?? error.toString(), SnackBarType.error));
-    }
+    ScaffoldKeys.snackbarKey.currentState!.removeCurrentSnackBar();
+    ScaffoldKeys.snackbarKey.currentState!.showSnackBar(
+        popSnackbar(message ?? error.toString(), SnackBarType.error));
   }
 
   void showSnackbar(BuildContext context, String message) {
@@ -25,6 +23,6 @@ extension AsyncValueUI on AsyncValue {
         message,
         SnackBarType.info,
         CircularProgressIndicator(color: AppColors.white),
-        const Duration(seconds: 10)));
+        const Duration(seconds: 30)));
   }
 }

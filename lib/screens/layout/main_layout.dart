@@ -62,12 +62,12 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
                 selectedIndex = index;
               });
             },
-            children: const <KeepAlivePageView>[
-              KeepAlivePageView(child: HomeNavigation()),
-              KeepAlivePageView(child: MilestoneNavigation()),
-              KeepAlivePageView(child: MissionNavigation()),
-              KeepAlivePageView(child: LearnNavigation()),
-              KeepAlivePageView(child: AchievementNavigation()),
+            children: const [
+              HomeNavigation(),
+              MilestoneNavigation(),
+              MissionNavigation(),
+              LearnNavigation(),
+              AchievementNavigation(),
             ],
           ),
         ),

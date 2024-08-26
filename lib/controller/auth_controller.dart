@@ -12,6 +12,7 @@ class AuthController extends AsyncNotifier<Session?> {
     final refreshToken = await storage.read('refreshToken');
 
     if (refreshToken != null) {
+      // Fetch and store a new one
       return await ref.read(authRepositoryProvider).refreshToken(refreshToken);
     } else {
       return null;

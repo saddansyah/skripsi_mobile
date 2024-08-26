@@ -5,6 +5,7 @@ import 'package:skripsi_mobile/models/session.dart';
 
 class Api {
   static String baseUrl = 'http://10.0.2.2:8000/api';
+  // static String baseUrl = 'https://skripsi-be-local.saddansyah.my.id/api';
 
   static BaseOptions dioOptions = BaseOptions(
     connectTimeout: const Duration(seconds: 10),
@@ -30,8 +31,8 @@ class TokenInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401) {
-      try {
+    try {
+      if (err.response?.statusCode == 401) {
         await ref
             .read(authControllerProvider.notifier)
             .refreshToken(s!.refreshToken);
@@ -44,10 +45,10 @@ class TokenInterceptor extends Interceptor {
           final response = await Dio().fetch(err.requestOptions);
           return handler.resolve(response);
         }
-      } catch (e) {
-        return handler.reject(err);
+      } else {
+        handler.reject(err);
       }
-    } else {
+    } catch (e) {
       handler.reject(err);
     }
   }

@@ -6,10 +6,12 @@ class ErrorScreen extends StatelessWidget {
       {super.key,
       required this.message,
       this.isButton = true,
+      this.buttonText = 'Kembali',
       this.onPressed,
       this.isRefreshing = false});
 
   final String message;
+  final String buttonText;
   final void Function()? onPressed;
   final bool isRefreshing;
   final bool isButton;
@@ -65,7 +67,7 @@ class ErrorScreen extends StatelessWidget {
                           ? [CircularProgressIndicator(color: AppColors.grey)]
                           : [
                               Text(
-                                'Kembali',
+                                buttonText,
                                 style: Fonts.bold16,
                               ),
                             ],

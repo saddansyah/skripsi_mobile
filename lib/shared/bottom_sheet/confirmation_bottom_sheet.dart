@@ -9,12 +9,14 @@ class ConfirmationBottomSheet extends StatelessWidget {
     required this.onConfirmPressed,
     required this.title,
     required this.message,
+    this.onDismissPressed,
     this.color,
     this.yes,
     this.no,
   });
 
   final void Function() onConfirmPressed;
+  final void Function()? onDismissPressed;
   final String title;
   final String message;
   final Color? color;
@@ -41,7 +43,7 @@ class ConfirmationBottomSheet extends StatelessWidget {
                   SizedBox(height: 12),
                   Text(
                     message,
-                    style: Fonts.regular12,
+                    style: Fonts.regular14,
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -58,7 +60,8 @@ class ConfirmationBottomSheet extends StatelessWidget {
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                           )),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed:
+                          onDismissPressed ?? () => Navigator.of(context).pop(),
                       child: Container(
                         alignment: Alignment.center,
                         height: 60,

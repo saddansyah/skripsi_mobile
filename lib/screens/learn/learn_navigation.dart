@@ -17,13 +17,10 @@ class _LearnNavigationState extends State<LearnNavigation> {
       key: NavigatorKeys.learnKey,
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
-            settings: settings,
-            builder: (BuildContext context) {
-              return Scaffold(
-                appBar: StyledAppBar.main(title: 'Belajar'),
-                body: switch (settings.name) { _ => const LearnScreen() },
-              );
-            });
+          settings: settings,
+          builder: (context) =>
+              switch (settings.name) { _ => const LearnScreen() },
+        );
       },
     );
   }

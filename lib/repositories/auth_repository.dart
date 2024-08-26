@@ -16,7 +16,6 @@ abstract class AuthRepository {
   Future<Session?> signInWithGoogle();
   Future<Session?> signOut();
   Future<Session?> refreshToken(String refreshToken);
-  Stream<Session?> authStateChange();
 }
 
 class HttpAuthRepository implements AuthRepository {
@@ -101,57 +100,6 @@ class HttpAuthRepository implements AuthRepository {
   }
 
   @override
-  Stream<Session?> authStateChange() async* {
-    try {
-      Response<ResponseBody> rs = await fetcher.get<ResponseBody>(
-        '${Api.baseUrl}/auth/state',
-        options: Options(headers: {
-          "Accept": "text/event-stream",
-          "Cache-Control": "no-cache",
-        }, responseType: ResponseType.stream), // set responseType to `stream`
-      );
-
-      StreamTransformer<Uint8List, List<int>> unit8Transformer =
-          StreamTransformer.fromHandlers(
-        handleData: (data, sink) {
-          sink.add(List<int>.from(data));
-        },
-      );
-
-      final Stream<Session?> sessionStream = rs.data!.stream
-          .transform(unit8Transformer)
-          .transform(const Utf8Decoder())
-          .transform(const LineSplitter())
-          .where((s) => s.startsWith('data'))
-          .map((s) => s.substring(6))
-          .map((s) => jsonDecode(s))
-          .map((s) {
-        print(s);
-        return s['data'] == null ? null : Session.fromMap(s['data']);
-      });
-
-      await for (final session in sessionStream) {
-        yield session;
-      }
-    } on HttpException catch (e) {
-      throw DioException(
-          requestOptions: RequestOptions(path: '${Api.baseUrl}/auth/state'),
-          error: e.message,
-          message: 'Galat pada sesi login',
-          type: DioExceptionType.badResponse);
-    } on DioException catch (e) {
-      if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.receiveTimeout) {
-        throw 'Koneksi timeout. Terjadi kesalahan di server';
-      } else {
-        throw 'Terjadi galat pada server';
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
   Future<Session?> refreshToken(String refreshToken) async {
     try {
       final response = await fetcher.post(
@@ -181,10 +129,4 @@ final authRepositoryProvider = Provider.autoDispose<AuthRepository>((ref) {
     Dio(Api.dioOptions),
     ref.watch(storageProvider),
   );
-});
-
-// TODO -> Deprected
-final sessionProvider = StreamProvider.autoDispose<Session?>((ref) {
-  ref.keepAlive();
-  return ref.watch(authRepositoryProvider).authStateChange();
 });

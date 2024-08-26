@@ -25,13 +25,14 @@ class ProfileDioRepository implements ProfileRepository {
 
       storage.write(
           'profile', jsonEncode(response.data as Map<String, dynamic>));
-      return User.fromMap(response.data);
+      return User.fromMap(response.data['data'][0]);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
-        throw 'Terjadi galat pada server';
+        print(e);
+        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }
@@ -62,6 +63,5 @@ final profileFromStorageProvider = FutureProvider.autoDispose((ref) async {
   if (userFromStorage == null) {
     return null;
   }
-
   return User.fromMap(jsonDecode(userFromStorage));
 });

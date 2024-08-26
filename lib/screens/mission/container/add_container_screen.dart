@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:skripsi_mobile/controller/collect_controller.dart';
 import 'package:skripsi_mobile/controller/container_controller.dart';
 import 'package:skripsi_mobile/models/cluster.dart';
 import 'package:skripsi_mobile/models/container.dart' as model;
@@ -12,7 +10,7 @@ import 'package:skripsi_mobile/repositories/container_repository.dart';
 import 'package:skripsi_mobile/screens/mission/container/map_select_screen.dart';
 import 'package:skripsi_mobile/shared/bottom_sheet/select_bottom_sheet.dart';
 import 'package:skripsi_mobile/shared/input/decoration/styled_input_decoration.dart';
-import 'package:skripsi_mobile/shared/input/waste_type_input.dart';
+import 'package:skripsi_mobile/shared/input/card_input.dart';
 import 'package:skripsi_mobile/shared/pills/added_point.pill.dart';
 import 'package:skripsi_mobile/shared/snackbar/snackbar.dart';
 import 'package:skripsi_mobile/theme.dart';
@@ -120,8 +118,10 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
     final state = ref.watch(containerControllerProvider);
     final clusters = ref.watch(clustersProvider);
 
-    ref.listen<AsyncValue>(containerControllerProvider, (_, state) {
-      state.showErrorSnackbar(context);
+    ref.listen<AsyncValue>(containerControllerProvider, (_, s) {
+      if (s.hasError && !s.isLoading) {
+        s.showErrorSnackbar(context);
+      }
 
       if (state.isLoading) {
         state.showLoadingSnackbar(context, 'Menambah data');
@@ -155,7 +155,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
-                      border: Border.all(width: 1, color: Colors.grey[350]!)),
+                      border: Border.all(width: 2, color: Colors.grey[350]!)),
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -349,7 +349,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
-                      border: Border.all(width: 1, color: Colors.grey[350]!)),
+                      border: Border.all(width: 2, color: Colors.grey[350]!)),
                   padding: const EdgeInsets.all(12),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(

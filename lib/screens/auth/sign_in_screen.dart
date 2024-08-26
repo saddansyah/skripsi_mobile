@@ -13,8 +13,10 @@ class SignIn extends ConsumerWidget {
     final state = ref.watch(authControllerProvider);
     final authController = ref.read(authControllerProvider.notifier);
 
-    ref.listen<AsyncValue>(authControllerProvider, (_, state) {
-      state.showErrorSnackbar(context);
+    ref.listen<AsyncValue>(authControllerProvider, (_, s) {
+      if (s.hasError && !s.isLoading) {
+        s.showErrorSnackbar(context);
+      }
     });
 
     return Scaffold(

@@ -33,7 +33,8 @@ class CollectDioRepository implements CollectRepository {
           e.type == DioExceptionType.receiveTimeout) {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
-        throw 'Terjadi galat pada server';
+        print(e);
+        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }
@@ -49,7 +50,8 @@ class CollectDioRepository implements CollectRepository {
           e.type == DioExceptionType.receiveTimeout) {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
-        throw 'Terjadi galat pada server';
+        print(e);
+        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }

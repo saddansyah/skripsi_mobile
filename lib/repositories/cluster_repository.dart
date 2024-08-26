@@ -29,7 +29,8 @@ class ClusterDioRepository implements ClusterRepository {
           e.type == DioExceptionType.receiveTimeout) {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
-        throw 'Terjadi galat pada server';
+        print(e);
+        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }
@@ -45,7 +46,8 @@ class ClusterDioRepository implements ClusterRepository {
           e.type == DioExceptionType.receiveTimeout) {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
-        throw 'Terjadi galat pada server';
+        print(e);
+        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }

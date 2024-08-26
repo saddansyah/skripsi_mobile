@@ -7,7 +7,7 @@ import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/exception/not_found_screen.dart';
 import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
 import 'package:skripsi_mobile/shared/dropdown/dropdown.dart';
-import 'package:skripsi_mobile/shared/mission/collect/collect_card.dart';
+import 'package:skripsi_mobile/shared/card/collect_card.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/constants/enums.dart';
 
@@ -140,22 +140,21 @@ class _CollectListScreenState extends ConsumerState<CollectListScreen> {
                       Text('${collects.value?.length ?? 'Menghitung'} Hasil',
                           style: Fonts.regular12),
                       SizedBox(height: 12),
-                      collectsCount == 0
-                          ? NotFoundScreen(message: 'Tidak ada data')
-                          : collects.when(
-                              data: (c) => ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: c.length,
-                                  itemBuilder: (context, i) =>
-                                      CollectCard(collect: c[i])),
-                              error: (e, _) =>
-                                  ErrorScreen(message: e.toString()),
-                              loading: () => Center(
-                                child: CircularProgressIndicator(
-                                    color: AppColors.greenPrimary),
-                              ),
-                            )
+                      collects.when(
+                        data: (c) => c.isEmpty
+                            ? NotFoundScreen(message: 'Tidak ada data')
+                            : ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: c.length,
+                                itemBuilder: (context, i) =>
+                                    CollectCard(collect: c[i])),
+                        error: (e, _) => ErrorScreen(message: e.toString()),
+                        loading: () => Center(
+                          child: CircularProgressIndicator(
+                              color: AppColors.greenPrimary),
+                        ),
+                      )
                     ],
                   ),
                 ],

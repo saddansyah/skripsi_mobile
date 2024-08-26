@@ -69,7 +69,6 @@ enum DropdownCollectSort implements DropdownData {
 }
 
 enum DropdownContainerSort implements DropdownData {
-  // TODO -> Terdekat
   newest('Terbaru', 'sortBy=created_at&order=desc'),
   favoritest('Terfavorit', 'sortBy=rating&order=asc'),
   status('Status', 'sortBy=status&order=asc'),
@@ -125,6 +124,37 @@ enum DropdownStatus implements DropdownData {
   rejected('Rejected', 'status=rejected');
 
   const DropdownStatus(this.title, this.query);
+
+  @override
+  final String title;
+
+  @override
+  final String query;
+}
+
+enum DropdownLearnCategory implements DropdownData {
+  all('Semua', ''),
+  reuse('Reuse', 'category=Reuse'),
+  reduce('Reduce', 'category=Reduce'),
+  recycle('Recycle', 'category=Recycle'),
+  wasteSorting('Pemilahan Sampah', 'category=Pemilahan+Sampah');
+
+  const DropdownLearnCategory(this.title, this.query);
+
+  @override
+  final String title;
+
+  @override
+  final String query;
+}
+
+enum DropdownLearnSort implements DropdownData {
+  newest('Terbaru', 'sortBy=created_at&order=desc'),
+  oldest('Terlama', 'sortBy=created_at&order=asc'),
+  atoz('A-Z', 'sortBy=title&order=asc'),
+  ztoa('Z-A', 'sortBy=title&order=desc');
+
+  const DropdownLearnSort(this.title, this.query);
 
   @override
   final String title;

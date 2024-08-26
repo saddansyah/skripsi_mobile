@@ -28,7 +28,7 @@ class _ImagePickerInputState extends State<ImagePickerInput> {
           width: double.infinity,
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(12)),
-              border: Border.all(width: 1, color: Colors.grey[350]!)),
+              border: Border.all(width: 2, color: Colors.grey[350]!)),
           padding: const EdgeInsets.all(24),
           child: widget.selectedImage != null
               ? Stack(

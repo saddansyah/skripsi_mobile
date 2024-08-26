@@ -21,7 +21,7 @@ class CardInput<T> extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: isSelected ? AppColors.greenAccent : AppColors.white,
-          border: Border.all(width: 1, color: Colors.grey[350]!),
+          border: Border.all(width: 2, color: Colors.grey[350]!),
           borderRadius: BorderRadius.all(Radius.circular(24)),
         ),
         child: Column(

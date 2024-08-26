@@ -5,6 +5,8 @@ class Container {
   final String name;
   final ContainerType type;
   final num rating;
+  final num lat;
+  final num long;
   final Status status;
   final int clusterId;
   final String clusterName;
@@ -16,6 +18,8 @@ class Container {
     required this.type,
     required this.rating,
     required this.status,
+    required this.lat,
+    required this.long,
     required this.clusterId,
     required this.clusterName,
     required this.userId,
@@ -27,6 +31,8 @@ class Container {
       name: json['name'],
       type: ContainerType.values.firstWhere((v) => v.value == json['type']),
       rating: json['rating'],
+      lat: json['lat'],
+      long: json['long'],
       status: Status.values.firstWhere((v) => v.value == json['status']),
       clusterId: json['cluster_id'],
       clusterName: json['cluster_name'],
@@ -38,8 +44,6 @@ class Container {
 class DetailedContainer extends Container {
   final num maxKg;
   final num maxVol;
-  final num lat;
-  final num long;
   final int point;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -52,10 +56,10 @@ class DetailedContainer extends Container {
     required super.status,
     required super.clusterId,
     required super.clusterName,
+    required super.lat,
+    required super.long,
     required this.maxKg,
     required this.maxVol,
-    required this.lat,
-    required this.long,
     required this.point,
     required this.createdAt,
     required this.updatedAt,

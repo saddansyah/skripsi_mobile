@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:skripsi_mobile/controller/container_controller.dart';
 import 'package:skripsi_mobile/models/container.dart' as model;
 import 'package:skripsi_mobile/repositories/container_repository.dart';
+import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/repositories/profile_repository.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/exception/loading_screen.dart';
@@ -18,6 +19,7 @@ import 'package:skripsi_mobile/shared/snackbar/snackbar.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/constants/enums.dart';
 import 'package:skripsi_mobile/utils/extension.dart';
+import 'package:skripsi_mobile/utils/location.dart';
 
 class ContainerDetailScreen extends ConsumerStatefulWidget {
   const ContainerDetailScreen({super.key, required this.id});
@@ -59,16 +61,18 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
   Widget build(BuildContext context) {
     final container = ref.watch(containerProvider(widget.id));
     final state = ref.watch(containerControllerProvider);
-    final profile = ref.watch(profileProvider);
-    ref.listen<AsyncValue>(containerControllerProvider, (_, state) {
-      state.showErrorSnackbar(context);
+    final currentPosition = ref.watch(currentPositionProvider);
 
-      if (state.isLoading) {
-        state.showLoadingSnackbar(context, 'Menghapus data');
+    final profile = ref.watch(profileProvider);
+    ref.listen<AsyncValue>(containerControllerProvider, (_, s) {
+      s.showErrorSnackbar(context);
+
+      if (s.isLoading) {
+        s.showLoadingSnackbar(context, 'Menghapus data');
       }
 
-      if (!state.hasError && !state.isLoading) {
-        state.showSnackbar(context,
+      if (!s.hasError && !s.isLoading) {
+        s.showSnackbar(context,
             'Sukses melakukan hapus permohonan depo/tong baru dengan ID ${widget.id}');
         ref.invalidate(containersProvider);
         Navigator.of(context, rootNavigator: true).pop();
@@ -232,7 +236,7 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(12)),
                                     border: Border.all(
-                                        width: 1, color: Colors.grey[350]!)),
+                                        width: 2, color: Colors.grey[350]!)),
                                 padding: const EdgeInsets.all(12),
                                 child: Text(
                                   'Kamu akan mendapatkan poin tambahan apabila laporanmu disetujui Admin 🤩',
@@ -249,11 +253,56 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(12)),
                               border: Border.all(
-                                  width: 1, color: Colors.grey[350]!)),
+                                  width: 2, color: Colors.grey[350]!)),
                           padding: const EdgeInsets.all(12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Wrap(
+                                spacing: 6,
+                                children: [
+                                  Text('Jarak darimu: ',
+                                      style: Fonts.semibold14),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.blueAccent,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(12)),
+                                    ),
+                                    child: Wrap(
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      spacing: 3,
+                                      children: [
+                                        Icon(
+                                          Icons.pin_drop_outlined,
+                                          size: 16,
+                                          color: AppColors.bluePrimary,
+                                        ),
+                                        Text(
+                                          Location.getFormattedDistance(
+                                            Location.getDistance(
+                                                currentPosition.valueOrNull
+                                                        ?.latitude ??
+                                                    0,
+                                                currentPosition.valueOrNull
+                                                        ?.longitude ??
+                                                    0,
+                                                d.lat.toDouble(),
+                                                d.long.toDouble()),
+                                          ),
+                                          style: Fonts.semibold14.copyWith(
+                                              fontSize: 12,
+                                              color: AppColors.bluePrimary),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 12),
                               Wrap(
                                 spacing: 6,
                                 children: [
@@ -368,7 +417,7 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(12)),
                               border: Border.all(
-                                  width: 1, color: Colors.grey[350]!)),
+                                  width: 2, color: Colors.grey[350]!)),
                           padding: const EdgeInsets.all(12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -449,7 +498,7 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(12)),
                               border: Border.all(
-                                  width: 1, color: Colors.grey[350]!)),
+                                  width: 2, color: Colors.grey[350]!)),
                           padding: const EdgeInsets.all(12),
                           child: Column(
                             children: [

@@ -1,23 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Container;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
-import 'package:skripsi_mobile/models/user.dart';
+import 'package:skripsi_mobile/models/container.dart';
 import 'package:skripsi_mobile/repositories/container_repository.dart';
+import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/repositories/profile_repository.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/exception/not_found_screen.dart';
 import 'package:skripsi_mobile/screens/mission/container/add_container_screen.dart';
 import 'package:skripsi_mobile/shared/dropdown/dropdown.dart';
-import 'package:skripsi_mobile/shared/image/image_with_token.dart';
-import 'package:skripsi_mobile/shared/mission/container/container_card.dart';
+import 'package:skripsi_mobile/shared/card/container_card.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/constants/enums.dart';
 import 'package:skripsi_mobile/utils/extension.dart';
-import 'package:skripsi_mobile/utils/storage.dart';
+import 'package:skripsi_mobile/utils/location.dart';
 
 class ContainerScreen extends ConsumerStatefulWidget {
   const ContainerScreen({super.key});
@@ -65,22 +64,19 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final containers = ref.watch(containersProvider(contenatedFilterQuery()));
-    final profile = ref.watch(profileFromStorageProvider);
+    final profile = ref.watch(profileProvider);
+    final currentPosition = ref.watch(currentPositionProvider);
 
     final containerCountByUserId =
         containers.value?.where((d) => d.userId == profile.value?.id).length;
     final containerCount = containers.value?.length;
 
-    ref.listen<AsyncValue>(containersProvider(contenatedFilterQuery()),
-        (_, state) {
-      state.showErrorSnackbar(context);
+    ref.listen<AsyncValue>(containersProvider(contenatedFilterQuery()), (_, s) {
+      if (s.hasError && !s.isLoading) {
+        s.showErrorSnackbar(context);
+      }
     });
 
     return DefaultTabController(
@@ -202,23 +198,40 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
                         Text('${containerCount ?? 'Menghitung'} Hasil',
                             style: Fonts.regular12),
                         SizedBox(height: 12),
-                        containerCount == 0
-                            ? NotFoundScreen(message: 'Tidak ada data')
-                            : containers.when(
-                                data: (c) => ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: c.length,
-                                  itemBuilder: (context, i) =>
-                                      ContainerCard(container: c[i]),
-                                ),
-                                error: (e, _) =>
-                                    ErrorScreen(message: e.toString()),
-                                loading: () => Center(
-                                  child: CircularProgressIndicator(
-                                      color: AppColors.greenPrimary),
-                                ),
-                              )
+                        containers.when(
+                          data: (c) {
+                            return c.isEmpty
+                                ? NotFoundScreen(message: 'Tidak ada data')
+                                : ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: c.length,
+                                    itemBuilder: (context, i) {
+                                      return ContainerCard(
+                                        container: c[i],
+                                        distance: Location.getFormattedDistance(
+                                          Location.getDistance(
+                                            currentPosition
+                                                    .valueOrNull?.latitude ??
+                                                0,
+                                            currentPosition
+                                                    .valueOrNull?.longitude ??
+                                                0,
+                                            c[i].lat.toDouble(),
+                                            c[i].long.toDouble(),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                          },
+                          error: (e, _) => ErrorScreen(message: e.toString()),
+                          loading: () => Center(
+                            child: CircularProgressIndicator(
+                                color: AppColors.greenPrimary),
+                          ),
+                        )
                       ],
                     )
                   ],
@@ -243,30 +256,69 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
                         Text('${containerCountByUserId ?? 'Menghitung'} Hasil',
                             style: Fonts.regular12),
                         SizedBox(height: 12),
-                        containerCountByUserId == 0
-                            ? NotFoundScreen(message: 'Tidak ada data')
-                            : containers.when(
-                                data: (c) => ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: c
-                                      .where(
-                                          (d) => d.userId == profile.value?.id)
-                                      .length,
-                                  itemBuilder: (context, i) => ContainerCard(
-                                      isStatusShowed: true,
-                                      container: c
-                                          .where((d) =>
-                                              d.userId == profile.value?.id)
-                                          .toList()[i]),
-                                ),
-                                error: (e, _) =>
-                                    ErrorScreen(message: e.toString()),
-                                loading: () => Center(
-                                  child: CircularProgressIndicator(
-                                      color: AppColors.greenPrimary),
-                                ),
-                              )
+                        containers.when(
+                          data: (c) {
+                            final distances = c
+                                .map(
+                                  (container) => Location.getDistance(
+                                    currentPosition.valueOrNull?.latitude ?? 0,
+                                    currentPosition.valueOrNull?.longitude ?? 0,
+                                    container.lat.toDouble(),
+                                    container.long.toDouble(),
+                                  ),
+                                )
+                                .toList();
+
+                            // Sort nearest
+                            distances.sort((a, b) => a.compareTo(b));
+                            return c.isEmpty
+                                ? NotFoundScreen(message: 'Tidak ada data')
+                                : ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: c
+                                        .where((d) =>
+                                            d.userId == profile.value?.id)
+                                        .length,
+                                    itemBuilder: (context, i) => ContainerCard(
+                                        distance: Location.getFormattedDistance(
+                                          Location.getDistance(
+                                            currentPosition
+                                                    .valueOrNull?.latitude ??
+                                                0,
+                                            currentPosition
+                                                    .valueOrNull?.longitude ??
+                                                0,
+                                            c
+                                                .where((d) =>
+                                                    d.userId ==
+                                                    profile.value?.id)
+                                                .toList()[i]
+                                                .lat
+                                                .toDouble(),
+                                            c
+                                                .where((d) =>
+                                                    d.userId ==
+                                                    profile.value?.id)
+                                                .toList()[i]
+                                                .long
+                                                .toDouble(),
+                                          ),
+                                        ),
+                                        isStatusShowed: true,
+                                        container: c
+                                            .where((d) =>
+                                                d.userId == profile.value?.id)
+                                            .toList()[i]),
+                                  );
+                          },
+                          error: (e, _) => ErrorScreen(message: e.toString()),
+                          loading: () => Center(
+                            child: CircularProgressIndicator(
+                                color: AppColors.greenPrimary),
+                          ),
+                        )
                       ],
                     )
                   ],

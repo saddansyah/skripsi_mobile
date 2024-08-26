@@ -18,12 +18,8 @@ class _AchievementNavigationState extends State<AchievementNavigation> {
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
             settings: settings,
-            builder: (BuildContext context) {
-              return Scaffold(
-                appBar: StyledAppBar.main(title: 'Capaian'),
-                body: switch (settings.name) { _ => const AchievementScreen() },
-              );
-            });
+            builder: (BuildContext context) =>
+                switch (settings.name) { _ => const AchievementScreen() });
       },
     );
   }

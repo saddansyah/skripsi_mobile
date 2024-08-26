@@ -61,15 +61,17 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
     final collect = ref.watch(collectProvider(widget.id));
     final state = ref.watch(collectControllerProvider);
 
-    ref.listen<AsyncValue>(collectControllerProvider, (_, state) {
-      state.showErrorSnackbar(context);
-
-      if (state.isLoading) {
-        state.showLoadingSnackbar(context, 'Menghapus data');
+    ref.listen<AsyncValue>(collectControllerProvider, (_, s) {
+      if (s.hasError && !s.isLoading) {
+        s.showErrorSnackbar(context);
       }
 
-      if (!state.hasError && !state.isLoading) {
-        state.showSnackbar(
+      if (s.isLoading) {
+        s.showLoadingSnackbar(context, 'Menghapus data');
+      }
+
+      if (!s.hasError && !s.isLoading) {
+        s.showSnackbar(
             context, 'Sukses melakukan hapus data dengan ID ${widget.id}');
         Navigator.of(context, rootNavigator: true).pop();
         ref.invalidate(collectsProvider);
@@ -192,7 +194,7 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(12)),
                                       border: Border.all(
-                                          width: 1, color: Colors.grey[350]!)),
+                                          width: 2, color: Colors.grey[350]!)),
                                   padding: const EdgeInsets.all(12),
                                   child: Column(
                                     crossAxisAlignment:
@@ -247,7 +249,7 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(12)),
                                       border: Border.all(
-                                          width: 1, color: Colors.grey[350]!)),
+                                          width: 2, color: Colors.grey[350]!)),
                                   padding: const EdgeInsets.all(12),
                                   child: Column(
                                     crossAxisAlignment:
@@ -339,7 +341,7 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(12)),
                                       border: Border.all(
-                                          width: 1, color: Colors.grey[350]!)),
+                                          width: 2, color: Colors.grey[350]!)),
                                   padding: const EdgeInsets.all(12),
                                   child: Column(
                                     crossAxisAlignment:
@@ -367,7 +369,7 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(12)),
                                       border: Border.all(
-                                          width: 1, color: Colors.grey[350]!)),
+                                          width: 2, color: Colors.grey[350]!)),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -466,7 +468,7 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(12)),
                                       border: Border.all(
-                                          width: 1, color: Colors.grey[350]!)),
+                                          width: 2, color: Colors.grey[350]!)),
                                   padding: const EdgeInsets.all(12),
                                   child: Column(
                                     children: [

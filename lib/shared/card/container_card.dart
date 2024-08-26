@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:skripsi_mobile/models/container.dart' as model;
 import 'package:skripsi_mobile/screens/mission/container/container_detail_screen.dart';
 import 'package:skripsi_mobile/shared/pills/container_type_pill.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/constants/enums.dart';
+import 'package:skripsi_mobile/utils/location.dart';
 
 class ContainerCard extends StatelessWidget {
-  const ContainerCard(
-      {super.key, required this.container, this.isStatusShowed = false});
+  const ContainerCard({
+    super.key,
+    required this.container,
+    this.isStatusShowed = false,
+    required this.distance,
+  });
 
   final bool isStatusShowed;
   final model.Container container;
+  final String distance;
 
   @override
   Widget build(BuildContext context) {
@@ -112,10 +119,10 @@ class ContainerCard extends StatelessWidget {
                             color: AppColors.grey,
                           ),
                           Text(
-                            '1xx m',
+                            distance,
                             style: Fonts.regular14
                                 .copyWith(fontSize: 12, color: AppColors.grey),
-                          )
+                          ),
                         ],
                       ),
                     ],

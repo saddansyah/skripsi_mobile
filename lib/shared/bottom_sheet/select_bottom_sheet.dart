@@ -102,7 +102,7 @@ class _SelectButtomSheetState<T extends HasId>
                                   Radius.circular(18),
                                 ),
                                 border: Border.all(
-                                    width: 1, color: Colors.grey[350]!),
+                                    width: 2, color: Colors.grey[350]!),
                               ),
                               child: Row(
                                 children: [

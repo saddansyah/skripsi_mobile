@@ -26,7 +26,9 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
     final profile = ref.watch(profileProvider);
 
     ref.listen<AsyncValue>(profileProvider, (_, s) {
-      s.showErrorSnackbar(context);
+      if (s.hasError && !s.isLoading) {
+        s.showErrorSnackbar(context);
+      }
     });
 
     return Drawer(

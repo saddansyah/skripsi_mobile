@@ -9,7 +9,7 @@ import 'package:skripsi_mobile/models/collect.dart';
 import 'package:skripsi_mobile/models/ui/input_card.dart';
 import 'package:skripsi_mobile/repositories/collect_repository.dart';
 import 'package:skripsi_mobile/shared/input/image_picker_input.dart';
-import 'package:skripsi_mobile/shared/input/waste_type_input.dart';
+import 'package:skripsi_mobile/shared/input/card_input.dart';
 import 'package:skripsi_mobile/shared/pills/added_point.pill.dart';
 import 'package:skripsi_mobile/shared/snackbar/snackbar.dart';
 import 'package:skripsi_mobile/theme.dart';
@@ -127,7 +127,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
-                      border: Border.all(width: 1, color: Colors.grey[350]!)),
+                      border: Border.all(width: 2, color: Colors.grey[350]!)),
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -364,7 +364,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
-                      border: Border.all(width: 1, color: Colors.grey[350]!)),
+                      border: Border.all(width: 2, color: Colors.grey[350]!)),
                   padding: const EdgeInsets.all(12),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(

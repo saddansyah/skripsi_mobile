@@ -33,7 +33,8 @@ class ContainerDioRepository implements ContainerRepository {
           e.type == DioExceptionType.receiveTimeout) {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
-        throw 'Terjadi galat pada server';
+        print(e);
+        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }
@@ -43,15 +44,14 @@ class ContainerDioRepository implements ContainerRepository {
     try {
       final response = await fetcher.get('${Api.baseUrl}/container/$id');
 
-      print(response.data['data'][0]['rating'].runtimeType);
-
       return DetailedContainer.fromMap(response.data['data'][0]);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
-        throw 'Terjadi galat pada server';
+        print(e);
+        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }

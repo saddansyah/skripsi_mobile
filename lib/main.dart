@@ -2,19 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:skripsi_mobile/controller/auth_controller.dart';
 import 'package:skripsi_mobile/screens/auth/sign_in_screen.dart';
 import 'package:skripsi_mobile/screens/layout/main_layout.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/exception/loading_screen.dart';
 import 'package:skripsi_mobile/theme.dart';
+import 'package:skripsi_mobile/utils/api.dart';
 import 'package:skripsi_mobile/utils/extension.dart';
 import 'package:skripsi_mobile/utils/keys.dart';
 
-void main() {
-  ErrorWidget.builder = (FlutterErrorDetails details) => Scaffold(
-        body: ErrorScreen(message: 'Terdapat kesalahan. Mohon refresh.'),
-      );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  print(await Permission.camera.isGranted);
+  print(await Permission.location.isGranted);
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -33,7 +36,9 @@ class MyApp extends StatelessWidget {
           final session = ref.watch(authControllerProvider);
 
           ref.listen<AsyncValue>(authControllerProvider, (e, s) {
-            s.showErrorSnackbar(context);
+            if (s.hasError && !s.isLoading) {
+              s.showErrorSnackbar(context);
+            }
           });
 
           return session.when(
@@ -47,14 +52,16 @@ class MyApp extends StatelessWidget {
               return Scaffold(
                 body: ErrorScreen(
                     isRefreshing: session.isRefreshing,
-                    onPressed: () => ref.refresh(authControllerProvider),
+                    onPressed: () {
+                      ref.invalidate(authControllerProvider);
+                    },
                     message: error.toString()),
               );
             },
             loading: () => const Scaffold(
-                body: LoadingScreen(
-                    message:
-                        'Aplikasi sedang mempersiapkan semuanya untukmu 😁')),
+              body: LoadingScreen(
+                  message: 'Aplikasi sedang mempersiapkan semuanya untukmu 😁'),
+            ),
           );
         },
       ),
