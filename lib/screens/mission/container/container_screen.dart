@@ -90,7 +90,7 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
                 onChanged: onChanged,
                 decoration: InputDecoration(
                   isDense: true,
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   hintText: 'Contoh: Depo (case-sensitive)',
                   hintStyle: Fonts.semibold14.copyWith(color: AppColors.grey),
                   labelText: 'Cari depo/tong',
@@ -103,11 +103,13 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
                           width: 2,
                           style: BorderStyle.solid,
                           color: AppColors.greenPrimary),
-                      borderRadius: BorderRadius.all(Radius.circular(24))),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(24))),
                   enabledBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(color: AppColors.grey.withOpacity(0)),
-                      borderRadius: BorderRadius.all(Radius.circular(24))),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(24))),
                 ),
               ),
             ],
@@ -128,7 +130,7 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
@@ -140,14 +142,14 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
                           onChanged: (String? newValue) =>
                               setState(() => selectedSort = newValue),
                           selectedValue: selectedSort),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Dropdown(
                           hint: 'Tipe',
                           data: DropdownContainerType.values,
                           onChanged: (String? newValue) =>
                               setState(() => selectedType = newValue),
                           selectedValue: selectedType),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Dropdown(
                           hint: 'Status',
                           data: DropdownStatus.values,
@@ -184,57 +186,65 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-              child: SingleChildScrollView(
-                physics: const ScrollPhysics(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text('Hasil Pencarian', style: Fonts.bold16),
-                        Text('${containerCount ?? 'Menghitung'} Hasil',
-                            style: Fonts.regular12),
-                        SizedBox(height: 12),
-                        containers.when(
-                          data: (c) {
-                            return c.isEmpty
-                                ? NotFoundScreen(message: 'Tidak ada data')
-                                : ListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: c.length,
-                                    itemBuilder: (context, i) {
-                                      return ContainerCard(
-                                        container: c[i],
-                                        distance: Location.getFormattedDistance(
-                                          Location.getDistance(
-                                            currentPosition
-                                                    .valueOrNull?.latitude ??
-                                                0,
-                                            currentPosition
-                                                    .valueOrNull?.longitude ??
-                                                0,
-                                            c[i].lat.toDouble(),
-                                            c[i].long.toDouble(),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  ref.refresh(containersProvider(contenatedFilterQuery()));
+                  ref.refresh(currentPositionProvider);
+                },
+                child: SingleChildScrollView(
+                  physics: const ScrollPhysics(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text('Hasil Pencarian', style: Fonts.bold16),
+                          Text('${containerCount ?? 'Menghitung'} Hasil',
+                              style: Fonts.regular12),
+                          const SizedBox(height: 12),
+                          containers.when(
+                            data: (c) {
+                              return c.isEmpty
+                                  ? const NotFoundScreen(
+                                      message: 'Tidak ada data')
+                                  : ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: c.length,
+                                      itemBuilder: (context, i) {
+                                        return ContainerCard(
+                                          container: c[i],
+                                          distance:
+                                              Location.getFormattedDistance(
+                                            Location.getDistance(
+                                              currentPosition
+                                                      .valueOrNull?.latitude ??
+                                                  0,
+                                              currentPosition
+                                                      .valueOrNull?.longitude ??
+                                                  0,
+                                              c[i].lat.toDouble(),
+                                              c[i].long.toDouble(),
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                          },
-                          error: (e, _) => ErrorScreen(message: e.toString()),
-                          loading: () => Center(
-                            child: CircularProgressIndicator(
-                                color: AppColors.greenPrimary),
-                          ),
-                        )
-                      ],
-                    )
-                  ],
+                                        );
+                                      },
+                                    );
+                            },
+                            error: (e, _) => ErrorScreen(message: e.toString()),
+                            loading: () => Center(
+                              child: CircularProgressIndicator(
+                                  color: AppColors.greenPrimary),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -242,86 +252,76 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
             // Milik saya
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-              child: SingleChildScrollView(
-                physics: const ScrollPhysics(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text('Hasil Pencarian', style: Fonts.bold16),
-                        Text('${containerCountByUserId ?? 'Menghitung'} Hasil',
-                            style: Fonts.regular12),
-                        SizedBox(height: 12),
-                        containers.when(
-                          data: (c) {
-                            final distances = c
-                                .map(
-                                  (container) => Location.getDistance(
-                                    currentPosition.valueOrNull?.latitude ?? 0,
-                                    currentPosition.valueOrNull?.longitude ?? 0,
-                                    container.lat.toDouble(),
-                                    container.long.toDouble(),
-                                  ),
-                                )
-                                .toList();
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  ref.refresh(containersProvider(contenatedFilterQuery()));
+                  ref.refresh(currentPositionProvider);
+                },
+                child: SingleChildScrollView(
+                  physics: const ScrollPhysics(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text('Hasil Pencarian', style: Fonts.bold16),
+                          Text(
+                              '${containerCountByUserId ?? 'Menghitung'} Hasil',
+                              style: Fonts.regular12),
+                          const SizedBox(height: 12),
+                          containers.when(
+                            data: (c) {
+                              final myContainers = c
+                                  .where((d) => d.userId == profile.value?.id)
+                                  .toList();
 
-                            // Sort nearest
-                            distances.sort((a, b) => a.compareTo(b));
-                            return c.isEmpty
-                                ? NotFoundScreen(message: 'Tidak ada data')
-                                : ListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: c
-                                        .where((d) =>
-                                            d.userId == profile.value?.id)
-                                        .length,
-                                    itemBuilder: (context, i) => ContainerCard(
-                                        distance: Location.getFormattedDistance(
-                                          Location.getDistance(
-                                            currentPosition
-                                                    .valueOrNull?.latitude ??
-                                                0,
-                                            currentPosition
-                                                    .valueOrNull?.longitude ??
-                                                0,
-                                            c
-                                                .where((d) =>
-                                                    d.userId ==
-                                                    profile.value?.id)
-                                                .toList()[i]
-                                                .lat
-                                                .toDouble(),
-                                            c
-                                                .where((d) =>
-                                                    d.userId ==
-                                                    profile.value?.id)
-                                                .toList()[i]
-                                                .long
-                                                .toDouble(),
-                                          ),
-                                        ),
-                                        isStatusShowed: true,
-                                        container: c
-                                            .where((d) =>
-                                                d.userId == profile.value?.id)
-                                            .toList()[i]),
-                                  );
-                          },
-                          error: (e, _) => ErrorScreen(message: e.toString()),
-                          loading: () => Center(
-                            child: CircularProgressIndicator(
-                                color: AppColors.greenPrimary),
-                          ),
-                        )
-                      ],
-                    )
-                  ],
+                              return myContainers.isEmpty
+                                  ? const NotFoundScreen(
+                                      message: 'Tidak ada data')
+                                  : ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: c
+                                          .where((d) =>
+                                              d.userId == profile.value?.id)
+                                          .length,
+                                      itemBuilder: (context, i) =>
+                                          ContainerCard(
+                                              distance:
+                                                  Location.getFormattedDistance(
+                                                Location.getDistance(
+                                                  currentPosition.valueOrNull
+                                                          ?.latitude ??
+                                                      0,
+                                                  currentPosition.valueOrNull
+                                                          ?.longitude ??
+                                                      0,
+                                                  myContainers[i]
+                                                      .lat
+                                                      .toDouble(),
+                                                  myContainers[i]
+                                                      .long
+                                                      .toDouble(),
+                                                ),
+                                              ),
+                                              isStatusShowed: true,
+                                              container: myContainers[i]),
+                                    );
+                            },
+                            error: (e, _) => ErrorScreen(message: e.toString()),
+                            loading: () => Center(
+                              child: CircularProgressIndicator(
+                                  color: AppColors.greenPrimary),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

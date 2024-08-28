@@ -4,6 +4,7 @@ import 'package:skripsi_mobile/screens/mission/collect/add_collect_screen.dart';
 import 'package:skripsi_mobile/screens/mission/collect/collect_list_screen.dart';
 import 'package:skripsi_mobile/screens/mission/collect/collect_screen.dart';
 import 'package:skripsi_mobile/screens/mission/container/container_screen.dart';
+import 'package:skripsi_mobile/screens/mission/map/map_screen.dart';
 import 'package:skripsi_mobile/theme.dart';
 
 class Menu {
@@ -18,7 +19,7 @@ class Menu {
 List<Menu> missionMenu = [
   Menu('Kumpul Sampah', '-', const CollectScreen()),
   Menu('Temuan Sampah', '-', const CollectScreen()),
-  Menu('Cari Depo/Tong', '-', const ArContainerScreen()),
+  Menu('Cari Depo/Tong', '-', const MapScreen()),
   Menu('Data Depo/Tong', '-', const ContainerScreen()),
 ];
 

@@ -4,8 +4,8 @@ import 'package:skripsi_mobile/controller/auth_controller.dart';
 import 'package:skripsi_mobile/models/session.dart';
 
 class Api {
-  static String baseUrl = 'http://10.0.2.2:8000/api';
-  // static String baseUrl = 'https://skripsi-be-local.saddansyah.my.id/api';
+  // static String baseUrl = 'http://10.0.2.2:8000/api';
+  static String baseUrl = 'https://skripsi-be-local.saddansyah.my.id/api';
 
   static BaseOptions dioOptions = BaseOptions(
     connectTimeout: const Duration(seconds: 10),

@@ -11,15 +11,17 @@ import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/repositories/profile_repository.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/exception/loading_screen.dart';
-import 'package:skripsi_mobile/screens/mission/map/map_screen.dart';
+import 'package:skripsi_mobile/screens/mission/ar/ar_container_screen.dart';
+import 'package:skripsi_mobile/screens/mission/collect/add_collect_screen.dart';
+import 'package:skripsi_mobile/screens/mission/map/view_only_map_screen.dart';
 import 'package:skripsi_mobile/shared/bottom_sheet/confirmation_bottom_sheet.dart';
 import 'package:skripsi_mobile/shared/pills/added_point.pill.dart';
 import 'package:skripsi_mobile/shared/pills/container_type_pill.dart';
-import 'package:skripsi_mobile/shared/snackbar/snackbar.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/constants/enums.dart';
 import 'package:skripsi_mobile/utils/extension.dart';
 import 'package:skripsi_mobile/utils/location.dart';
+import 'dart:math' as math;
 
 class ContainerDetailScreen extends ConsumerStatefulWidget {
   const ContainerDetailScreen({super.key, required this.id});
@@ -149,10 +151,8 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                                   Navigator.of(context, rootNavigator: true)
                                       .push(
                                     MaterialPageRoute(
-                                      builder: (context) => MapScreen(
-                                        initialCoord: LatLng(d.lat.toDouble(),
-                                            d.long.toDouble()),
-                                      ),
+                                      builder: (context) =>
+                                          ViewOnlyMapScreen(container: d),
                                     ),
                                   );
                                 },
@@ -193,7 +193,8 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                             d.status == Status.accepted &&
                                     d.userId == profile.value?.id
                                 ? AddedPointPill(point: d.point)
-                                : const SizedBox(width: 0)
+                                : const SizedBox(width: 0),
+                            SizedBox(width: 6),
                           ],
                         ),
                         SizedBox(height: 6),
@@ -514,13 +515,15 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                                 onPressed: state.isLoading
                                     ? null
                                     : () {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(popSnackbar(
-                                          'Belum diimplementasi. Tunggu updatenya ya 😉',
-                                          SnackBarType.info,
-                                          CircularProgressIndicator(
-                                              color: AppColors.white),
-                                        ));
+                                        Navigator.of(
+                                          context,
+                                          rootNavigator: true,
+                                        ).push(
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                ArContainerScreen(container: d),
+                                          ),
+                                        );
                                       },
                                 child: Container(
                                   alignment: Alignment.center,
@@ -537,13 +540,70 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                                           ]
                                         : [
                                             Icon(
-                                              Icons.star_rounded,
+                                              Icons.view_in_ar_rounded,
                                               color: AppColors.white,
                                               weight: 100,
                                             ),
                                             const SizedBox(width: 12),
                                             Text(
-                                              'Berikan Evidence Rating',
+                                              'Navigasi AR',
+                                              style: Fonts.bold16,
+                                            ),
+                                          ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 12),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    backgroundColor: AppColors.greenPrimary,
+                                    foregroundColor: AppColors.white,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(12)),
+                                    )),
+                                onPressed: state.isLoading
+                                    ? null
+                                    : () {
+                                        Navigator.of(
+                                          context,
+                                          rootNavigator: true,
+                                        ).push(
+                                          MaterialPageRoute(
+                                            builder: (_) => AddCollectScreen(
+                                              container: model.NearestContainer(
+                                                  id: d.id,
+                                                  name: d.name,
+                                                  distance: 0,
+                                                  lat: 0,
+                                                  long: 0),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: 60,
+                                  width: double.infinity,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: state.isLoading
+                                        ? [
+                                            CircularProgressIndicator(
+                                                color: AppColors.white)
+                                          ]
+                                        : [
+                                            Icon(
+                                              Icons.recycling_rounded,
+                                              color: AppColors.white,
+                                              weight: 100,
+                                            ),
+                                            const SizedBox(width: 12),
+                                            Text(
+                                              'Kumpul Sampah',
                                               style: Fonts.bold16,
                                             ),
                                           ],

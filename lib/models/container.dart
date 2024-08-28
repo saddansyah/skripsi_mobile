@@ -117,3 +117,29 @@ class PayloadContainer {
     };
   }
 }
+
+class NearestContainer {
+  final int id;
+  final String name;
+  final num distance;
+  final num lat;
+  final num long;
+
+  NearestContainer({
+    required this.id,
+    required this.name,
+    required this.distance,
+    required this.lat,
+    required this.long,
+  });
+
+  factory NearestContainer.fromMap(Map<String, dynamic> json) {
+    return NearestContainer(
+      id: json['id'],
+      name: json['name'],
+      distance: json['distance'],
+      lat: json['lat'],
+      long: json['long'],
+    );
+  }
+}

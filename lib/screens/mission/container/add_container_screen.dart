@@ -7,6 +7,7 @@ import 'package:skripsi_mobile/models/container.dart' as model;
 import 'package:skripsi_mobile/models/ui/input_card.dart';
 import 'package:skripsi_mobile/repositories/cluster_repository.dart';
 import 'package:skripsi_mobile/repositories/container_repository.dart';
+import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/screens/mission/container/map_select_screen.dart';
 import 'package:skripsi_mobile/shared/bottom_sheet/select_bottom_sheet.dart';
 import 'package:skripsi_mobile/shared/input/decoration/styled_input_decoration.dart';
@@ -117,6 +118,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(containerControllerProvider);
     final clusters = ref.watch(clustersProvider);
+    final currentPosition = ref.watch(currentPositionProvider);
 
     ref.listen<AsyncValue>(containerControllerProvider, (_, s) {
       if (s.hasError && !s.isLoading) {
@@ -253,6 +255,14 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                         onPressed: state.isLoading
                             ? null
                             : () {
+                                updateLocation(
+                                  LatLng(
+                                      currentPosition.value?.latitude ??
+                                          selectedLocation.latitude,
+                                      currentPosition.value?.latitude ??
+                                          selectedLocation.longitude),
+                                );
+
                                 Navigator.of(context, rootNavigator: true).push(
                                   MaterialPageRoute(
                                     builder: (_) => MapSelectScreen(

@@ -118,7 +118,7 @@ class _LearnDetailScreenState extends ConsumerState<LearnDetailScreen> {
                                     h3: Fonts.semibold16,
                                     h4: Fonts.semibold14,
                                     p: Fonts.regular14),
-                                data: ''' ${l.content} '''.trim()),
+                                data: l.content.trim()),
                           ),
                           SizedBox(height: 12),
                           Divider(),

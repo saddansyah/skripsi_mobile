@@ -12,24 +12,37 @@ import 'package:skripsi_mobile/screens/mission/container/container_detail_screen
 import 'package:skripsi_mobile/shared/card/nearest_container_card.dart';
 import 'package:skripsi_mobile/theme.dart';
 
-class MapScreen extends ConsumerStatefulWidget {
-  const MapScreen({super.key});
+class MapContainerSelectScreen extends ConsumerStatefulWidget {
+  const MapContainerSelectScreen(
+      {super.key,
+      required this.selectedContainer,
+      required this.updateContainer});
+
+  final model.NearestContainer selectedContainer;
+  final void Function(model.NearestContainer) updateContainer;
 
   @override
-  ConsumerState<MapScreen> createState() => _MapScreenState();
+  ConsumerState<MapContainerSelectScreen> createState() =>
+      _MapContainerSelectScreenState();
 }
 
-class _MapScreenState extends ConsumerState<MapScreen> {
+class _MapContainerSelectScreenState
+    extends ConsumerState<MapContainerSelectScreen> {
   static final controller = MapController();
-  List<Marker> allMarkers = [];
-  bool isNearestShowed = false;
+
+  // For local state
+  late model.NearestContainer selected = widget.selectedContainer;
+  void updateLocalSelected(model.NearestContainer newSelected) {
+    setState(() {
+      selected = newSelected;
+    });
+    widget.updateContainer(newSelected);
+  }
 
   @override
   Widget build(BuildContext context) {
     final currentPosition = ref.watch(streamPositionProvider);
-    final currentStaticPosition = ref.watch(currentPositionProvider);
-    final heading = ref.watch(streamNavigationHeadingProvider);
-    final nearest = ref.watch(nearestContainerProvider(50));
+    final nearestContainers = ref.watch(nearestContainerProvider(50));
 
     return Scaffold(
         appBar: AppBar(
@@ -41,26 +54,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         floatingActionButton: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            FloatingActionButton.extended(
-              heroTag: 'nearestContainer',
-              onPressed: () {
-                setState(() {
-                  isNearestShowed = !isNearestShowed;
-                });
-              },
-              foregroundColor: AppColors.white,
-              backgroundColor: AppColors.greenPrimary,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(24)),
-              ),
-              enableFeedback: true,
-              icon: const Icon(Icons.location_pin),
-              label: Text(
-                'Depo/Tong Terdekat',
-                style: Fonts.semibold14,
-              ),
-            ),
-            SizedBox(width: 6),
             FloatingActionButton(
               heroTag: 'myLocation',
               onPressed: () {
@@ -68,6 +61,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     LatLng(currentPosition.value?.latitude ?? 0,
                         currentPosition.value?.longitude ?? 0),
                     18);
+                controller.fitCamera(CameraFit.insideBounds(
+                    maxZoom: 17,
+                    minZoom: 17,
+                    bounds: LatLngBounds(
+                      LatLng(nearestContainers.value?.first.lat.toDouble() ?? 0,
+                          nearestContainers.value?.first.long.toDouble() ?? 0),
+                      LatLng(currentPosition.value?.latitude.toDouble() ?? 0,
+                          currentPosition.value?.longitude.toDouble() ?? 0),
+                    )));
               },
               foregroundColor: AppColors.white,
               backgroundColor: AppColors.bluePrimary,
@@ -79,7 +81,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ),
           ],
         ),
-        body: nearest.when(
+        body: nearestContainers.when(
           data: (c) => Stack(
             children: [
               FlutterMap(
@@ -88,8 +90,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     interactionOptions:
                         InteractionOptions(flags: InteractiveFlag.all),
                     backgroundColor: AppColors.lightGrey,
-                    initialCenter: LatLng(currentPosition.value!.latitude,
-                        currentPosition.value!.longitude),
+                    initialCenter: LatLng(
+                        currentPosition.value?.latitude ??
+                            widget.selectedContainer.lat.toDouble(),
+                        currentPosition.value?.longitude ??
+                            widget.selectedContainer.long.toDouble()),
                     initialZoom: 18),
                 children: [
                   TileLayer(
@@ -104,43 +109,27 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           currentPosition.value?.longitude ?? 0),
                       width: 48,
                       height: 48,
-                      child: AnimatedRotation(
-                        duration: const Duration(milliseconds: 200),
-                        turns: heading.value! / 360,
-                        child: Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(99)),
-                              color: AppColors.greenPrimary,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.greenSecondary,
-                                  blurRadius: 12,
-                                  spreadRadius: 3,
-                                ),
-                              ]),
-                          child: Icon(
-                            Icons.navigation_rounded,
-                            color: AppColors.white,
-                            size: 24,
-                          ),
-                        ),
+                      child: Icon(
+                        Icons.my_location_rounded,
+                        color: AppColors.bluePrimary,
+                        size: 36,
+                        shadows: [
+                          Shadow(
+                            color: AppColors.blueSecondary,
+                            blurRadius: 36,
+                          )
+                        ],
                       ),
                     ),
                     ...c.map((_c) {
                       return Marker(
+                        width: 150,
+                        height: 150,
                         rotate: true,
                         point: LatLng(_c.lat.toDouble(), _c.long.toDouble()),
-                        width: 90,
-                        height: 90,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.of(context, rootNavigator: true).push(
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        ContainerDetailScreen(id: _c.id)));
+                            updateLocalSelected(_c);
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -154,8 +143,38 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                 softWrap: true,
                               ),
                               const SizedBox(height: 3),
-                              SvgPicture.asset(
-                                  'assets/svgs/container_icon.svg'),
+                              Container(
+                                decoration: BoxDecoration(
+                                    boxShadow: selected.id == _c.id
+                                        ? [
+                                            BoxShadow(
+                                              color: AppColors.greenSecondary,
+                                              blurRadius: 12,
+                                              spreadRadius: 3,
+                                            ),
+                                          ]
+                                        : null),
+                                child: SvgPicture.asset(
+                                    'assets/svgs/container_icon.svg'),
+                              ),
+                              const SizedBox(height: 3),
+                              selected.id == _c.id
+                                  ? Container(
+                                      padding: EdgeInsets.all(3),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.greenPrimary,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Terpilih',
+                                        style: Fonts.semibold14.copyWith(
+                                            fontSize: 12,
+                                            color: AppColors.white),
+                                      ),
+                                    )
+                                  : const SizedBox(height: 0),
                             ],
                           ),
                         ),
@@ -163,33 +182,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     })
                   ])
                 ],
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                left: 0,
-                child: nearest.when(
-                  error: (e, s) => Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Text(
-                      'Tidak ada data',
-                      style: Fonts.semibold14,
-                    ),
-                  ),
-                  loading: () =>
-                      LinearProgressIndicator(color: AppColors.greenPrimary),
-                  data: (d) => NearestContainerCard(
-                      isVisible: isNearestShowed,
-                      controller: controller,
-                      currentStaticPosition: currentStaticPosition.value!,
-                      bound: LatLngBounds(
-                        LatLng(currentStaticPosition.value?.latitude ?? 0,
-                            currentStaticPosition.value?.longitude ?? 0),
-                        LatLng(nearest.value?.first.lat.toDouble() ?? 0,
-                            nearest.value?.first.long.toDouble() ?? 0),
-                      ),
-                      container: d.first),
-                ),
               ),
             ],
           ),

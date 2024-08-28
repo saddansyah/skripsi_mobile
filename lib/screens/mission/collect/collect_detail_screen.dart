@@ -9,7 +9,7 @@ import 'package:skripsi_mobile/models/collect.dart';
 import 'package:skripsi_mobile/repositories/collect_repository.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/mission/container/container_detail_screen.dart';
-import 'package:skripsi_mobile/screens/mission/map/map_screen.dart';
+import 'package:skripsi_mobile/screens/mission/map/view_only_map_screen.dart';
 import 'package:skripsi_mobile/shared/bottom_sheet/confirmation_bottom_sheet.dart';
 import 'package:skripsi_mobile/shared/image/image_with_token.dart';
 import 'package:skripsi_mobile/screens/exception/loading_screen.dart';

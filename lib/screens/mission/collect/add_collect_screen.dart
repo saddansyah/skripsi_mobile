@@ -4,10 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:skripsi_mobile/controller/collect_controller.dart';
 import 'package:skripsi_mobile/models/collect.dart';
+import 'package:skripsi_mobile/models/container.dart' as model;
 import 'package:skripsi_mobile/models/ui/input_card.dart';
 import 'package:skripsi_mobile/repositories/collect_repository.dart';
+import 'package:skripsi_mobile/repositories/container_repository.dart';
+import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
+import 'package:skripsi_mobile/screens/mission/collect/map_container_select_screen.dart';
+import 'package:skripsi_mobile/shared/card/nearest_container_card.dart';
+import 'package:skripsi_mobile/shared/input/decoration/styled_input_decoration.dart';
 import 'package:skripsi_mobile/shared/input/image_picker_input.dart';
 import 'package:skripsi_mobile/shared/input/card_input.dart';
 import 'package:skripsi_mobile/shared/pills/added_point.pill.dart';
@@ -18,7 +25,9 @@ import 'package:skripsi_mobile/utils/extension.dart';
 import 'package:skripsi_mobile/utils/validator.dart';
 
 class AddCollectScreen extends ConsumerStatefulWidget {
-  const AddCollectScreen({super.key});
+  const AddCollectScreen({super.key, this.container});
+
+  final model.NearestContainer? container;
 
   @override
   ConsumerState<AddCollectScreen> createState() => _AddCollectScreenState();
@@ -38,7 +47,14 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
   final kgController = TextEditingController();
   final infoController = TextEditingController();
 
-  int selectedContainer = 1;
+  model.NearestContainer selectedContainer =
+      model.NearestContainer(id: 1, name: '-', distance: 0, lat: 0, long: 0);
+  void updateContainer(model.NearestContainer container) {
+    setState(() {
+      selectedContainer = container;
+    });
+  }
+
   Reporter selectedReporter = Reporter.user;
 
   // Waste type
@@ -78,7 +94,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
 
     final newCollect = PayloadCollect(
       type: selectedType,
-      containerId: selectedContainer,
+      containerId: selectedContainer.id,
       kg: double.parse(kgController.text.trim()),
       vol: double.parse(volController.text.trim()),
       info: infoController.text.trim(),
@@ -93,6 +109,16 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(collectControllerProvider);
+    final nearestContainer = ref.watch(nearestContainerProvider(50));
+
+    ref.listen(nearestContainerProvider(50), (_, s) {
+      if (s.hasValue) {
+        setState(() {
+          selectedContainer =
+              widget.container != null ? widget.container! : s.value!.first;
+        });
+      }
+    });
 
     ref.listen<AsyncValue>(collectControllerProvider, (_, state) {
       if (state.isLoading) {
@@ -138,47 +164,69 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                         children: [
                           Flexible(
                             child: TextFormField(
-                              initialValue: 'Container 1',
                               readOnly: true,
                               textAlignVertical: TextAlignVertical.center,
                               style: Fonts.regular14,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                enabledBorder: const OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(12)),
-                                    borderSide: BorderSide(
-                                        width: 0, style: BorderStyle.none)),
-                                focusedBorder: const OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(12)),
-                                    borderSide: BorderSide(
-                                        width: 0, style: BorderStyle.none)),
-                                suffixIcon: Icon(Icons.location_pin),
-                                suffixIconColor: AppColors.grey,
-                                border: InputBorder.none,
-                                filled: true,
-                                fillColor: AppColors.lightGrey,
-                                focusColor: AppColors.lightGrey,
-                              ),
+                              decoration: StyledInputDecoration.basic(
+                                  selectedContainer.name),
                               keyboardType: TextInputType.text,
                             ),
                           ),
                           SizedBox(width: 12),
-                          CircleAvatar(
-                            backgroundColor: AppColors.greenPrimary,
-                            child: IconButton(
-                                onPressed: () {},
+                          nearestContainer.when(
+                            data: (data) {
+                              return CircleAvatar(
+                                backgroundColor: AppColors.greenPrimary,
+                                child: IconButton(
+                                    onPressed: () {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .push(
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              MapContainerSelectScreen(
+                                                  selectedContainer:
+                                                      selectedContainer,
+                                                  updateContainer:
+                                                      updateContainer),
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.map_rounded,
+                                      color: AppColors.white,
+                                    )),
+                              );
+                            },
+                            error: (error, stackTrace) => CircleAvatar(
+                              backgroundColor: AppColors.greenPrimary,
+                              child: IconButton(
+                                onPressed: null,
+                                color: AppColors.grey,
                                 icon: Icon(
                                   Icons.map_rounded,
                                   color: AppColors.white,
-                                )),
+                                ),
+                              ),
+                            ),
+                            loading: () => CircleAvatar(
+                              backgroundColor: AppColors.greenPrimary,
+                              child: IconButton(
+                                onPressed: null,
+                                color: AppColors.grey,
+                                icon: CircularProgressIndicator(
+                                  color: AppColors.white,
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            ),
                           )
                         ],
                       ),
                       SizedBox(height: 12),
                       Text(
-                        'Default: Depo/Tong terdekat',
+                        widget.container != null
+                            ? 'Default: Depo/Tong terpilih'
+                            : 'Default: Depo/Tong terdekat',
                         style: Fonts.regular12.copyWith(color: AppColors.grey),
                       ),
                       SizedBox(height: 24),
@@ -188,28 +236,8 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                         controller: volController,
                         textAlignVertical: TextAlignVertical.center,
                         style: Fonts.regular14,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          hintText: 'Contoh: 1.2',
-                          enabledBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                              borderSide: BorderSide(
-                                  width: 0, style: BorderStyle.none)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                              borderSide: BorderSide(
-                                  width: 2,
-                                  style: BorderStyle.solid,
-                                  color: AppColors.greenPrimary)),
-                          suffixIcon: Icon(Icons.unfold_more_rounded),
-                          suffixIconColor: AppColors.grey,
-                          border: InputBorder.none,
-                          filled: true,
-                          fillColor: AppColors.lightGrey,
-                          focusColor: AppColors.lightGrey,
-                        ),
+                        decoration: StyledInputDecoration.basic('Contoh: 1.2',
+                            const Icon(Icons.unfold_more_rounded)),
                         keyboardType: TextInputType.numberWithOptions(
                             signed: false, decimal: true),
                         validator: (value) => textfieldValidator(
@@ -224,28 +252,8 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                         controller: kgController,
                         textAlignVertical: TextAlignVertical.center,
                         style: Fonts.regular14,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          hintText: 'Contoh: 2.1',
-                          enabledBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                              borderSide: BorderSide(
-                                  width: 0, style: BorderStyle.none)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                              borderSide: BorderSide(
-                                  width: 2,
-                                  style: BorderStyle.solid,
-                                  color: AppColors.greenPrimary)),
-                          suffixIcon: Icon(Icons.unfold_more_rounded),
-                          suffixIconColor: AppColors.grey,
-                          border: InputBorder.none,
-                          filled: true,
-                          fillColor: AppColors.lightGrey,
-                          focusColor: AppColors.lightGrey,
-                        ),
+                        decoration: StyledInputDecoration.basic('Contoh: 1.2',
+                            const Icon(Icons.unfold_more_rounded)),
                         keyboardType: TextInputType.numberWithOptions(
                             signed: false, decimal: true),
                         validator: (value) => textfieldValidator(
@@ -326,29 +334,9 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                         controller: infoController,
                         textAlignVertical: TextAlignVertical.center,
                         style: Fonts.regular14,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          hintText:
-                              'Contoh: Hari ini saya mengumpulkan sampah di dekat Fakultas Teknik...',
-                          enabledBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                              borderSide: BorderSide(
-                                  width: 0, style: BorderStyle.none)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                              borderSide: BorderSide(
-                                  width: 2,
-                                  style: BorderStyle.solid,
-                                  color: AppColors.greenPrimary)),
-                          suffixIcon: Icon(Icons.messenger_rounded),
-                          suffixIconColor: AppColors.grey,
-                          border: InputBorder.none,
-                          filled: true,
-                          fillColor: AppColors.lightGrey,
-                          focusColor: AppColors.lightGrey,
-                        ),
+                        decoration: StyledInputDecoration.basic(
+                            'Contoh: Hari Ini Saya Mengumpulkan ...',
+                            const Icon(Icons.messenger_rounded)),
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         validator: (value) => textfieldValidator(

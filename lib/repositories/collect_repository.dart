@@ -7,6 +7,7 @@ import 'package:skripsi_mobile/utils/api.dart';
 
 abstract class CollectRepository {
   Future<List<Collect>> getMyCollect(String query);
+  Future<CollectSummary> getMyCollectSummary();
   Future<DetailedCollect> getMyCollectById(int id);
   Future<void> addMyCollect(PayloadCollect collect, File localImageFile);
   Future<void> deleteMyCollect(int id, String img);
@@ -106,6 +107,23 @@ class CollectDioRepository implements CollectRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<CollectSummary> getMyCollectSummary() async {
+    try {
+      final response = await fetcher.get('${Api.baseUrl}/collect/summary');
+
+      return CollectSummary.fromMap(response.data['data'][0]);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw 'Koneksi timeout. Terjadi kesalahan di server';
+      } else {
+        print(e);
+        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+      }
+    }
+  }
 }
 
 final collectRepositoryProvider =
@@ -121,4 +139,9 @@ final collectsProvider =
 final collectProvider =
     FutureProvider.family.autoDispose<DetailedCollect, int>((ref, id) {
   return ref.watch(collectRepositoryProvider).getMyCollectById(id);
+});
+
+final collectSummaryProvider =
+    FutureProvider.autoDispose<CollectSummary>((ref) {
+  return ref.watch(collectRepositoryProvider).getMyCollectSummary();
 });

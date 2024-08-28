@@ -1,11 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:skripsi_mobile/models/container.dart';
+import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/utils/api.dart';
 
 abstract class ContainerRepository {
   Future<List<Container>> getContainer(String query);
   Future<DetailedContainer> getContainerById(int id);
+  Future<List<NearestContainer>> getNearestContainer(LatLng latlng, int limit);
   Future<void> addContainer(PayloadContainer container);
   Future<void> updateContainer(PayloadContainer container, int id);
   Future<void> deleteContainer(int id);
@@ -90,6 +93,31 @@ class ContainerDioRepository implements ContainerRepository {
   }
 
   @override
+  Future<List<NearestContainer>> getNearestContainer(
+      LatLng latlng, int limit) async {
+    try {
+      final response = await fetcher.get(
+          '${Api.baseUrl}/container/public/nearest?lat=${latlng.latitude}&long=${latlng.longitude}&limit=$limit');
+
+      // {message: string, data: []}
+      final List<NearestContainer> containers =
+          (response.data['data'] as List<dynamic>)
+              .map((d) => NearestContainer.fromMap(d as Map<String, dynamic>))
+              .toList();
+
+      return containers;
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw 'Koneksi timeout. Terjadi kesalahan di server';
+      } else {
+        print(e);
+        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+      }
+    }
+  }
+
+  @override
   Future<void> updateContainer(PayloadContainer container, int id) {
     // TODO: implement updateContainer
     throw UnimplementedError();
@@ -109,4 +137,12 @@ final containersProvider =
 final containerProvider =
     FutureProvider.family.autoDispose<DetailedContainer, int>((ref, id) {
   return ref.watch(containerRepositoryProvider).getContainerById(id);
+});
+
+final nearestContainerProvider = FutureProvider.family
+    .autoDispose<List<NearestContainer>, int>((ref, limit) async {
+  final currentPosition = await ref.watch(currentPositionProvider.future);
+
+  return ref.watch(containerRepositoryProvider).getNearestContainer(
+      LatLng(currentPosition.latitude, currentPosition.longitude), limit);
 });

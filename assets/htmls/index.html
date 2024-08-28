@@ -72,61 +72,69 @@
         const loading = document.getElementById("loading");
         const el = document.querySelector("[gps-new-camera]");
 
+        const query = new URLSearchParams(window.location.search);
+        const id = parseInt(query.get("id"));
+
         el.addEventListener("gps-camera-update-position", async (e) => {
+            alert('AR siap!');
+
             if (!downloaded) {
                 try {
-                    const response = await axios.get('https://skripsi-be-local.saddansyah.my.id/api/container/public/6');
+                    const url = `https://skripsi-be-local.saddansyah.my.id/api/container/public/${isNaN(id) ? 1 : id}`;
+                    console.log(url);
+                    const response = await axios.get(url);
 
                     if (response) {
                         loading.style.display = 'none';
                         ar.style.display = 'block';
+
+
+                        for (const prop of response.data.data) {
+                            // Group of entities
+                            const compoundEntity = document.createElement("a-entity");
+                            compoundEntity.setAttribute('gps-new-entity-place', {
+                                latitude: prop.lat,
+                                longitude: prop.long,
+                            });
+                            compoundEntity.setAttribute("clicker", {});
+                            compoundEntity.setAttribute("look-at", "[gps-new-camera]");
+
+                            // Icon
+                            const iconSize = 75;
+                            const icon = document.createElement("a-image");
+                            icon.setAttribute("src", "#container_icon");
+                            icon.setAttribute("height", iconSize);
+                            icon.setAttribute("width", iconSize);
+                            icon.setAttribute("position", {
+                                x: 0,
+                                y: 0,
+                                z: 0
+                            });
+                            icon.setAttribute("animation", "easing: linear; property: rotation; to: 0 360 0; loop: true; dur: 5000");
+
+                            // Text
+                            const text = document.createElement("a-text");
+                            const textScale = 50;
+                            text.setAttribute("scale", {
+                                x: textScale,
+                                y: textScale,
+                                z: textScale
+                            });
+                            text.setAttribute("position", {
+                                x: 0,
+                                y: 50,
+                                z: 0
+                            });
+                            text.setAttribute("value", prop.name);
+                            text.setAttribute("align", "center");
+
+                            // Merge all elements altogether
+                            compoundEntity.appendChild(icon);
+                            compoundEntity.appendChild(text);
+                            document.querySelector("a-scene").appendChild(compoundEntity);
+                        }
+                        downloaded = true;
                     }
-
-                    for (const prop of response.data.data) {
-                        // Group of entities
-                        const compoundEntity = document.createElement("a-entity");
-                        compoundEntity.setAttribute('gps-new-entity-place', {
-                            latitude: prop.lat,
-                            longitude: prop.long,
-                        });
-                        compoundEntity.setAttribute("clicker", {});
-                        compoundEntity.setAttribute("look-at", "[gps-new-camera]");
-
-                        // Icon
-                        const iconSize = 75;
-                        const icon = document.createElement("a-image");
-                        icon.setAttribute("src", "#container_icon");
-                        icon.setAttribute("height", iconSize);
-                        icon.setAttribute("width", iconSize);
-                        icon.setAttribute("position", {
-                            x: 0,
-                            y: 0,
-                            z: 0
-                        });
-                        icon.setAttribute("animation", "easing: linear; property: rotation; to: 0 360 0; loop: true; dur: 5000");
-
-                        // Text
-                        const text = document.createElement("a-text");
-                        const textScale = 50;
-                        text.setAttribute("scale", {
-                            x: textScale,
-                            y: textScale,
-                            z: textScale
-                        });
-                        text.setAttribute("position", {
-                            x: 0,
-                            y: 50,
-                            z: 0
-                        });
-                        text.setAttribute("value", prop.name);
-                        text.setAttribute("align", "center");
-
-                        // Merge all elements altogether
-                        compoundEntity.appendChild(icon);
-                        compoundEntity.appendChild(text);
-                        document.querySelector("a-scene").appendChild(compoundEntity);
-                    }
-                    downloaded = true;
                 }
                 catch (e) {
                     console.error(e);

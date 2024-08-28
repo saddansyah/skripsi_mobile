@@ -19,10 +19,7 @@ class _HomeNavigationState extends State<HomeNavigation> {
         return MaterialPageRoute(
             settings: settings,
             builder: (BuildContext context) {
-              return Scaffold(
-                appBar: StyledAppBar.main(title: 'Beranda'),
-                body: switch (settings.name) { _ => const HomeScreen() },
-              );
+              return switch (settings.name) { _ => const HomeScreen() };
             });
       },
     );

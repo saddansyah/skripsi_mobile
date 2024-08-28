@@ -1,40 +1,31 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skripsi_mobile/models/container.dart' as model;
+import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/theme.dart';
+import 'package:skripsi_mobile/utils/location.dart';
+import 'dart:math' as math;
 
-class ArContainerScreen extends StatefulWidget {
-  const ArContainerScreen({super.key});
+class ArContainerScreen extends ConsumerStatefulWidget {
+  const ArContainerScreen({super.key, required this.container});
+
+  final model.Container container;
 
   @override
-  State<ArContainerScreen> createState() => _ArContainerScreenState();
+  ConsumerState<ArContainerScreen> createState() => _ArContainerScreenState();
 }
 
-class _ArContainerScreenState extends State<ArContainerScreen> {
+class _ArContainerScreenState extends ConsumerState<ArContainerScreen> {
   InAppWebViewController? webViewController;
   InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 3000);
 
   bool isAgreed = false;
-  bool isPermissionsGranted = false;
 
   @override
   void initState() {
     super.initState();
     localhostServer.start();
-
-    Permission.camera.request();
-    Permission.location.request();
-
-    Future.wait([
-      Permission.camera.isGranted,
-      Permission.location.isGranted,
-    ]).then((p) {
-      setState(() {
-        isPermissionsGranted = p[0] && p[1];
-      });
-    });
   }
 
   @override
@@ -44,7 +35,10 @@ class _ArContainerScreenState extends State<ArContainerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (isAgreed && isPermissionsGranted) {
+    final currentPosition = ref.watch(streamPositionProvider);
+    final heading = ref.watch(streamNavigationHeadingProvider);
+
+    if (isAgreed) {
       return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -57,26 +51,97 @@ class _ArContainerScreenState extends State<ArContainerScreen> {
           title: Text('Cari Depo/Tong (AR)', style: Fonts.semibold16),
           centerTitle: false,
         ),
-        body: InAppWebView(
-          onWebViewCreated: (controller) async {
-            webViewController = controller;
-          },
-          initialUrlRequest: URLRequest(
-              url: WebUri("http://127.0.0.1:3000/assets/htmls/index.html")),
-          onGeolocationPermissionsShowPrompt: (controller, origin) async {
-            return GeolocationPermissionShowPromptResponse(
-                allow: true, origin: origin, retain: true);
-          },
-          initialSettings: InAppWebViewSettings(
-            geolocationEnabled: true,
-            mediaPlaybackRequiresUserGesture: false,
-          ),
-          onPermissionRequest: (controller, permissionRequest) async {
-            return PermissionResponse(
-              resources: permissionRequest.resources,
-              action: PermissionResponseAction.GRANT,
-            );
-          },
+        body: Column(
+          children: [
+            Expanded(
+              child: Stack(
+                children: [
+                  InAppWebView(
+                    onWebViewCreated: (controller) async {
+                      webViewController = controller;
+                    },
+                    initialUrlRequest: URLRequest(
+                        url: WebUri.uri(Uri.parse(
+                            "http://127.0.0.1:3000/assets/htmls/index.html?id=${widget.container.id}"))),
+                    onGeolocationPermissionsShowPrompt:
+                        (controller, origin) async {
+                      return GeolocationPermissionShowPromptResponse(
+                          allow: true, origin: origin, retain: true);
+                    },
+                    initialSettings: InAppWebViewSettings(
+                      geolocationEnabled: true,
+                      mediaPlaybackRequiresUserGesture: false,
+                    ),
+                    onPermissionRequest: (controller, permissionRequest) async {
+                      return PermissionResponse(
+                        resources: permissionRequest.resources,
+                        action: PermissionResponseAction.GRANT,
+                      );
+                    },
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    left: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(24)),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            widget.container.name,
+                            style: Fonts.semibold16,
+                          ),
+                          subtitle: Text(
+                            Location.getFormattedDistance(
+                              Location.getDistance(
+                                  currentPosition.valueOrNull?.latitude ?? 0,
+                                  currentPosition.valueOrNull?.longitude ?? 0,
+                                  widget.container.lat.toDouble(),
+                                  widget.container.long.toDouble()),
+                            ),
+                            style: Fonts.regular14,
+                          ),
+                          trailing: Icon(Icons.location_pin,
+                              color: AppColors.greenPrimary),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: -180,
+                    right: 0,
+                    left: 0,
+                    child: Transform(
+                      transform: Matrix4.identity()..rotateX(math.pi / 4),
+                      child: AnimatedRotation(
+                        duration: const Duration(milliseconds: 200),
+                        turns: (heading.value! -
+                                Location.getBearing(
+                                    currentPosition.value?.latitude ?? 0,
+                                    currentPosition.value?.longitude ?? 0,
+                                    widget.container.lat.toDouble(),
+                                    widget.container.long.toDouble())) /
+                            -360,
+                        child: CircleAvatar(
+                          radius: 200,
+                          backgroundColor: AppColors.greenPrimary,
+                          child: Icon(
+                            Icons.arrow_upward_rounded,
+                            color: AppColors.white,
+                            size: 300,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       );
     } else {
@@ -99,17 +164,10 @@ class _ArContainerScreenState extends State<ArContainerScreen> {
                 direction: Axis.vertical,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 spacing: 6,
-                children: isPermissionsGranted
-                    ? [
-                        Text('Selamat Datang di Fitur AR', style: Fonts.bold18),
-                        Text('...', style: Fonts.regular14),
-                      ]
-                    : [
-                        Text('Maaf :(', style: Fonts.bold18),
-                        Text(
-                            'Akses lokasi dan kamera diharuskan untuk memulai fitur AR',
-                            style: Fonts.regular14),
-                      ],
+                children: [
+                  Text('Selamat Datang di Fitur AR', style: Fonts.bold18),
+                  Text('...', style: Fonts.regular14),
+                ],
               ),
               SizedBox(height: 36),
               ElevatedButton(

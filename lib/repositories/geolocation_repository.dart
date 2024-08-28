@@ -1,12 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:skripsi_mobile/repositories/collect_repository.dart';
+import 'package:flutter_compass/flutter_compass.dart';
 
 abstract class GeolocationRepository {
   Future<void> serviceCheck();
   Future<Position> getCurrentPosition();
   Future<Position?> getLastKnownPosition();
   Stream<Position?> getPositionStream();
+  Stream<ServiceStatus?> getServiceStatusStream();
+  Stream<double?> getNavigationHeading();
 }
 
 class GeolocationImplRepository implements GeolocationRepository {
@@ -35,9 +37,26 @@ class GeolocationImplRepository implements GeolocationRepository {
   }
 
   @override
+  Stream<ServiceStatus> getServiceStatusStream() async* {
+    try {
+      final initialStatus = await Geolocator.isLocationServiceEnabled()
+          ? ServiceStatus.enabled
+          : ServiceStatus.disabled;
+      yield initialStatus;
+
+      final statusStream = Geolocator.getServiceStatusStream();
+
+      await for (final status in statusStream) {
+        yield status;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Stream<Position> getPositionStream() {
     try {
-      serviceCheck();
       return Geolocator.getPositionStream();
     } catch (e) {
       rethrow;
@@ -49,7 +68,6 @@ class GeolocationImplRepository implements GeolocationRepository {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('Location services are disabled.');
@@ -68,6 +86,19 @@ class GeolocationImplRepository implements GeolocationRepository {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
   }
+
+  @override
+  Stream<double?> getNavigationHeading() async* {
+    try {
+      final events = FlutterCompass.events;
+
+      await for (final e in events!) {
+        yield e.heading;
+      }
+    } catch (e) {
+      throw 'Terjadi galat saat menggunakan navigasi';
+    }
+  }
 }
 
 final geolocationRepositoryProvider =
@@ -80,14 +111,21 @@ final geolocationRepositoryProvider =
   );
 });
 
-final streamPositionProvider = StreamProvider.autoDispose((ref) {
-  return ref.watch(geolocationRepositoryProvider).getPositionStream();
-});
-
 final lastPositionProvider = FutureProvider.autoDispose((ref) {
   return ref.watch(geolocationRepositoryProvider).getLastKnownPosition();
 });
 
 final currentPositionProvider = FutureProvider.autoDispose((ref) {
   return ref.watch(geolocationRepositoryProvider).getCurrentPosition();
+});
+final streamPositionProvider = StreamProvider.autoDispose((ref) {
+  return ref.watch(geolocationRepositoryProvider).getPositionStream();
+});
+
+final locationServiceProvider = StreamProvider.autoDispose((ref) {
+  return ref.watch(geolocationRepositoryProvider).getServiceStatusStream();
+});
+
+final streamNavigationHeadingProvider = StreamProvider.autoDispose((ref) {
+  return ref.watch(geolocationRepositoryProvider).getNavigationHeading();
 });

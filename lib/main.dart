@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -53,7 +54,11 @@ class MyApp extends StatelessWidget {
                 body: ErrorScreen(
                     isRefreshing: session.isRefreshing,
                     onPressed: () {
-                      ref.invalidate(authControllerProvider);
+                      if (error.toString().contains('401')) {
+                        ref.read(authControllerProvider.notifier).signOut();
+                      } else {
+                        ref.invalidate(authControllerProvider);
+                      }
                     },
                     message: error.toString()),
               );

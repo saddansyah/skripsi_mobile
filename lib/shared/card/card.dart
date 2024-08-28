@@ -11,10 +11,8 @@ class Card extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () =>
-          // Navigator.of(context, rootNavigator: true).pushNamed(menu.to),
-          Navigator.of(context, rootNavigator: isRootNavigator)
-              .push(MaterialPageRoute(builder: (_) => menu.to)),
+      onTap: () => Navigator.of(context, rootNavigator: isRootNavigator)
+          .push(MaterialPageRoute(builder: (_) => menu.to)),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(24)),

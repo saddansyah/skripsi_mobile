@@ -120,3 +120,21 @@ class PayloadCollect {
     };
   }
 }
+
+class CollectSummary {
+  final int dailyCollectCount;
+  final WasteType? mostCollectType;
+
+  CollectSummary(
+      {required this.dailyCollectCount, required this.mostCollectType});
+
+  factory CollectSummary.fromMap(Map<String, dynamic> json) {
+    return CollectSummary(
+      dailyCollectCount: json['daily_collect_count'],
+      mostCollectType: json['most_collect_type'] == null
+          ? null
+          : WasteType.values
+              .firstWhere((v) => v.value == json['most_collect_type']),
+    );
+  }
+}

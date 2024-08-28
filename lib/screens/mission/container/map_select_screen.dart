@@ -46,33 +46,37 @@ class _MapSelectScreenState extends State<MapSelectScreen> {
         label: Text('Pilih Lokasi', style: Fonts.bold16),
         icon: const Icon(Icons.add_rounded),
       ),
-      body: FlutterMap(
-        mapController: mapController,
-        options: MapOptions(
-            onTap: (tapPosition, point) {
-              setState(() {
-                selectedCoord = point;
-              });
-
-              widget.updateCoord(selectedCoord);
-            },
-            interactionOptions: InteractionOptions(flags: InteractiveFlag.all),
-            backgroundColor: AppColors.lightGrey,
-            initialCenter: widget.initialCoord,
-            initialZoom: 18),
+      body: Stack(
         children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName: 'com.saddansyah.skripsi_mobile',
+          FlutterMap(
+            mapController: mapController,
+            options: MapOptions(
+                onTap: (tapPosition, point) {
+                  setState(() {
+                    selectedCoord = point;
+                  });
+          
+                  widget.updateCoord(selectedCoord);
+                },
+                interactionOptions: InteractionOptions(flags: InteractiveFlag.all),
+                backgroundColor: AppColors.lightGrey,
+                initialCenter: widget.initialCoord,
+                initialZoom: 18),
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.saddansyah.skripsi_mobile',
+              ),
+              MarkerLayer(markers: [
+                Marker(
+                  point: selectedCoord,
+                  width: 48,
+                  height: 48,
+                  child: SvgPicture.asset('assets/svgs/container_icon.svg'),
+                ),
+              ])
+            ],
           ),
-          MarkerLayer(markers: [
-            Marker(
-              point: selectedCoord,
-              width: 48,
-              height: 48,
-              child: SvgPicture.asset('assets/svgs/container_icon.svg'),
-            ),
-          ])
         ],
       ),
     );

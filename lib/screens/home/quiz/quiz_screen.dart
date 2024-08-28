@@ -98,7 +98,6 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         ref.read(timerControllerProvider(initialTime).notifier);
     final state = ref.watch(quizControllerProvider);
     final quiz = ref.watch(quizProvider);
-    final session = ref.watch(authControllerProvider);
 
     ref.listen(quizControllerProvider, (_, s) {
       if (s.hasError && !s.isLoading) {
@@ -263,116 +262,119 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                     return Input(_q, _q);
                   }).toList();
 
-                  return Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(24),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(18),
-                          ),
-                          color: AppColors.bluePrimary,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Kuis #Q${q.id}',
-                                  style: Fonts.bold18
-                                      .copyWith(color: AppColors.white),
-                                ),
-                                SizedBox(width: 12),
-                                AddedPointPill(point: 5),
-                              ],
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(24),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(18),
                             ),
-                            SizedBox(height: 12),
-                            Container(
-                              width: double.infinity,
-                              height: 180,
-                              decoration: BoxDecoration(
-                                color: AppColors.blueSecondary.withOpacity(0.3),
+                            color: AppColors.bluePrimary,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'Kuis #Q${q.id}',
+                                    style: Fonts.bold18
+                                        .copyWith(color: AppColors.white),
+                                  ),
+                                  SizedBox(width: 12),
+                                  AddedPointPill(point: 3),
+                                ],
+                              ),
+                              SizedBox(height: 12),
+                              Container(
+                                width: double.infinity,
+                                height: 180,
+                                decoration: BoxDecoration(
+                                  color:
+                                      AppColors.blueSecondary.withOpacity(0.3),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12)),
+                                ),
+                                clipBehavior: Clip.hardEdge,
+                                child: ImageWithToken(q.img),
+                              ),
+                              SizedBox(height: 12),
+                              Text(
+                                q.question,
+                                style: Fonts.semibold14
+                                    .copyWith(color: AppColors.white),
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 12),
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(24),
+                            ),
+                            border:
+                                Border.all(width: 2, color: Colors.grey[350]!),
+                          ),
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                itemCount: options.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, i) {
+                                  return QuizSelectInput(
+                                      isSelected:
+                                          selectedAnswer == options[i].value,
+                                      index: i,
+                                      input: options[i],
+                                      updateSelected: updateSelected);
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 12),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: state.isLoading
+                                  ? AppColors.grey
+                                  : AppColors.greenPrimary,
+                              foregroundColor: AppColors.white,
+                              shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(12)),
-                              ),
-                              clipBehavior: Clip.hardEdge,
-                              child: ImageWithToken(q.img),
+                              )),
+                          onPressed: state.isLoading
+                              ? null
+                              : () {
+                                  handleSubmit(q);
+                                },
+                          child: Container(
+                            padding: EdgeInsets.all(24),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: state.isLoading
+                                  ? [
+                                      CircularProgressIndicator(
+                                          color: AppColors.white)
+                                    ]
+                                  : [
+                                      Text(
+                                        'Kumpul Jawaban',
+                                        style: Fonts.bold16,
+                                      ),
+                                    ],
                             ),
-                            SizedBox(height: 12),
-                            Text(
-                              q.question,
-                              style: Fonts.semibold14
-                                  .copyWith(color: AppColors.white),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                      Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(24),
-                          ),
-                          border:
-                              Border.all(width: 2, color: Colors.grey[350]!),
-                        ),
-                        child: Column(
-                          children: [
-                            ListView.builder(
-                              itemCount: options.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, i) {
-                                return QuizSelectInput(
-                                    isSelected:
-                                        selectedAnswer == options[i].value,
-                                    index: i,
-                                    input: options[i],
-                                    updateSelected: updateSelected);
-                              },
-                            )
-                          ],
-                        ),
-                      ),
-                      Spacer(),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: state.isLoading
-                                ? AppColors.grey
-                                : AppColors.greenPrimary,
-                            foregroundColor: AppColors.white,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                            )),
-                        onPressed: state.isLoading
-                            ? null
-                            : () {
-                                handleSubmit(q);
-                              },
-                        child: Container(
-                          padding: EdgeInsets.all(24),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: state.isLoading
-                                ? [
-                                    CircularProgressIndicator(
-                                        color: AppColors.white)
-                                  ]
-                                : [
-                                    Text(
-                                      'Kumpul Jawaban',
-                                      style: Fonts.bold16,
-                                    ),
-                                  ],
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 },
               ),

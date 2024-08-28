@@ -31,17 +31,14 @@ class CollectCard extends ConsumerWidget {
           ),
           child: Row(
             children: [
-              Hero(
-                tag: collect.id,
-                child: Container(
-                  height: 72,
-                  width: 72,
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      color: AppColors.lightGrey),
-                  child: ImageWithToken(collect.img),
-                ),
+              Container(
+                height: 72,
+                width: 72,
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    color: AppColors.lightGrey),
+                child: ImageWithToken(collect.img),
               ),
               SizedBox(width: 12),
               Flexible(

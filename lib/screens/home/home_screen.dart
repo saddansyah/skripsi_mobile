@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:skripsi_mobile/repositories/collect_repository.dart';
+import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
 import 'package:skripsi_mobile/shared/dialog/flashcard_dialog.dart';
+import 'package:skripsi_mobile/utils/string.dart';
 import 'package:vector_math/vector_math.dart' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -69,7 +72,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       },
       transitionBuilder: (ctx, a1, a2, child) {
         final curvedAnimation =
-            CurvedAnimation(parent: a1, curve: Curves.easeOutCirc);
+            CurvedAnimation(parent: a1, curve: Curves.easeOutBack);
         return FadeTransition(
           opacity: curvedAnimation,
           child: Transform.rotate(
@@ -116,12 +119,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final my = ref.watch(profileProvider);
     final quizStatus = ref.watch(quizStatusProvider);
+    final summary = ref.watch(collectSummaryProvider);
 
     return Scaffold(
+      appBar: StyledAppBar.main(title: '♻️ Skripsi-Mobile'),
       body: RefreshIndicator(
         onRefresh: () async {
           await ref.refresh(quizStatusProvider.future);
           await ref.refresh(profileProvider.future);
+          await ref.refresh(collectSummaryProvider.future);
         },
         child: SingleChildScrollView(
           child: Padding(
@@ -143,7 +149,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Skripsi-Mobile ♻️',
+                        'Halo, ${my.value?.name.split(' ')[0] ?? 'User'} 👋',
                         style: Fonts.bold18.copyWith(
                             color: AppColors.greenPrimary, fontSize: 24),
                       ),
@@ -222,7 +228,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                               SizedBox(height: 9),
                               Text(
-                                '12',
+                                '${summary.value?.dailyCollectCount ?? '...'}',
                                 style: Fonts.bold18.copyWith(
                                     fontSize: 60, color: Colors.green[700]),
                               ),
@@ -262,7 +268,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   height: 60),
                               SizedBox(height: 6),
                               Text(
-                                'Daur Ulang',
+                                summary.value?.mostCollectType == null
+                                    ? 'Tidak Ada'
+                                    : summary.value?.mostCollectType?.value
+                                            .split('_')
+                                            .map((l) => l.capitalize())
+                                            .join(' ') ??
+                                        '...',
                                 style: Fonts.regular14
                                     .copyWith(color: Colors.lightBlue[900]),
                                 textAlign: TextAlign.center,
@@ -284,9 +296,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: Text('Ayo kumpul sampah sekarang!',
-                            style: Fonts.semibold16
-                                .copyWith(color: AppColors.white)),
+                        child: Text(
+                          'Kumpulkan ${my.value?.nextPoint ?? '-'} ⭐ lagi untuk menjadi ${my.value?.nextRank ?? '-'}!',
+                          style:
+                              Fonts.semibold14.copyWith(color: AppColors.white),
+                        ),
                       ),
                       SizedBox(width: 12),
                       TextButton(
@@ -437,7 +451,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           style: Fonts.bold16,
                                         ),
                                         const SizedBox(width: 12),
-                                        AddedPointPill(point: 5)
+                                        AddedPointPill(point: 3)
                                       ],
                               ),
                             ),
@@ -457,7 +471,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: Text('Buka #LebihTahu Hari Ini',
+                        child: Text('Tambah ilmu dengan #LebihTahu!',
                             style: Fonts.semibold16
                                 .copyWith(color: Colors.lightBlue[900])),
                       ),
