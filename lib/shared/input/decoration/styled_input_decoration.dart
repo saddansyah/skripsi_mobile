@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:skripsi_mobile/theme.dart';
 
 class StyledInputDecoration {
@@ -11,17 +10,17 @@ class StyledInputDecoration {
           borderRadius: BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(width: 0, style: BorderStyle.none)),
       focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(
               width: 2,
               style: BorderStyle.solid,
               color: AppColors.greenPrimary)),
       errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(
               width: 2, style: BorderStyle.solid, color: AppColors.red)),
       focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(
               width: 2,
               style: BorderStyle.solid,

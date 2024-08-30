@@ -1,3 +1,4 @@
+// ignore: unused_import
 import 'package:skripsi_mobile/models/user.dart';
 
 class Session {

@@ -89,8 +89,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (flashcardTimer != null) return;
     flashcardTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
-        final now = DateTime.now();
-        flashcardCountdownDuration = nextTime.difference(now);
+        final now = DateTime.now().toLocal();
+        flashcardCountdownDuration = nextTime.toLocal().difference(now);
         isFlashcardReady = now.isAfter(nextTime);
 
         if (flashcardCountdownDuration.isNegative) {
@@ -137,13 +137,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 // Greeting
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                       gradient: LinearGradient(colors: [
                         AppColors.white,
                         Colors.green[100]!,
                       ]),
-                      borderRadius: BorderRadius.all(Radius.circular(24)),
+                      borderRadius: const BorderRadius.all(Radius.circular(24)),
                       border: Border.all(width: 1, color: Colors.green[200]!)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +153,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         style: Fonts.bold18.copyWith(
                             color: AppColors.greenPrimary, fontSize: 24),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
                         'Buat pengalaman mengelola sampahmu menjadi menyenangkan!',
                         style: Fonts.regular14.copyWith(color: AppColors.dark2),
@@ -203,12 +203,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Expanded(
                         child: Container(
                           width: double.infinity,
-                          padding: EdgeInsets.all(24),
+                          padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
                               border: Border.all(
                                   width: 2, color: AppColors.greenSecondary),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(24)),
+                                  const BorderRadius.all(Radius.circular(24)),
                               gradient: LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -226,7 +226,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     .copyWith(color: Colors.green[900]),
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(height: 9),
+                              const SizedBox(height: 9),
                               Text(
                                 '${summary.value?.dailyCollectCount ?? '...'}',
                                 style: Fonts.bold18.copyWith(
@@ -240,11 +240,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Expanded(
                         child: Container(
                           width: double.infinity,
-                          padding: EdgeInsets.all(24),
+                          padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
                             border: Border.all(
                                 width: 2, color: AppColors.blueSecondary),
-                            borderRadius: BorderRadius.all(Radius.circular(24)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(24)),
                             gradient: LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
@@ -263,10 +264,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     .copyWith(color: Colors.lightBlue[900]),
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(height: 12),
+                              const SizedBox(height: 12),
                               SvgPicture.asset('assets/svgs/container_icon.svg',
                                   height: 60),
-                              SizedBox(height: 6),
+                              const SizedBox(height: 6),
                               Text(
                                 summary.value?.mostCollectType == null
                                     ? 'Tidak Ada'
@@ -297,12 +298,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          'Kumpulkan ${my.value?.nextPoint ?? '-'} ⭐ lagi untuk menjadi ${my.value?.nextRank ?? '-'}!',
+                          'Kumpulkan ⭐${my.value?.nextPoint ?? '-'} lagi untuk menjadi ${my.value?.nextRank ?? '-'}!',
                           style:
                               Fonts.semibold14.copyWith(color: AppColors.white),
                         ),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       TextButton(
                         style: TextButton.styleFrom(
                             elevation: 0,
@@ -324,14 +325,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Container(
-                  padding: EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(24),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     border:
                         Border.all(width: 2, color: AppColors.blueSecondary),
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                    borderRadius: const BorderRadius.all(Radius.circular(24)),
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -352,12 +353,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   .copyWith(color: Colors.lightBlue[900]),
                             ),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Container(
-                            padding: EdgeInsets.fromLTRB(6, 3, 9, 3),
+                            padding: const EdgeInsets.fromLTRB(6, 3, 9, 3),
                             decoration: BoxDecoration(
                               color: AppColors.bluePrimary,
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(24),
                               ),
                             ),
@@ -365,7 +366,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               children: [
                                 Icon(Icons.timer_rounded,
                                     color: AppColors.white),
-                                SizedBox(width: 6),
+                                const SizedBox(width: 6),
                                 Text(
                                   '30s',
                                   style: Fonts.semibold14
@@ -376,7 +377,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       // Quiz Button
                       quizStatus.when(
                         loading: () => Center(
@@ -388,7 +389,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           height: 60,
                           decoration: BoxDecoration(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(24)),
+                                  const BorderRadius.all(Radius.circular(24)),
                               color: AppColors.bluePrimary.withOpacity(0.2)),
                           width: double.infinity,
                           child: GestureDetector(
@@ -404,8 +405,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                         ),
                         data: (d) {
-                          final isQuizReady =
-                              DateTime.now().isAfter(d.nextDate);
+                          final isQuizReady = DateTime.now()
+                              .toLocal()
+                              .isAfter(d.nextDate.toLocal());
 
                           // startQuizCountdown based on boolean values
                           startQuizCountdown(isQuizReady, d.nextDate);
@@ -451,7 +453,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           style: Fonts.bold16,
                                         ),
                                         const SizedBox(width: 12),
-                                        AddedPointPill(point: 3)
+                                        const AddedPointPill(point: 3)
                                       ],
                               ),
                             ),
@@ -461,7 +463,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
@@ -475,7 +477,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             style: Fonts.semibold16
                                 .copyWith(color: Colors.lightBlue[900])),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       TextButton(
                         style: TextButton.styleFrom(
                             foregroundColor: AppColors.white,
@@ -493,7 +495,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             : () {
                                 showFlashcard();
 
-                                startFlashcardCountdown(DateTime.now()
+                                startFlashcardCountdown(DateTime.now().toLocal()
                                     .add(const Duration(seconds: 30)));
                               },
                         child: Text(

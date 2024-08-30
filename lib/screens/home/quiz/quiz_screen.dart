@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skripsi_mobile/controller/auth_controller.dart';
 import 'package:skripsi_mobile/controller/quiz_controller.dart';
 import 'package:skripsi_mobile/controller/timer_controller.dart';
 import 'package:skripsi_mobile/models/quiz.dart';
 import 'package:skripsi_mobile/models/ui/input_card.dart';
-import 'package:skripsi_mobile/repositories/auth_repository.dart';
 import 'package:skripsi_mobile/repositories/quiz_repository.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/shared/bottom_sheet/alert_bottom_sheet.dart';
 import 'package:skripsi_mobile/shared/bottom_sheet/confirmation_bottom_sheet.dart';
-import 'package:skripsi_mobile/shared/image/image_error.dart';
 import 'package:skripsi_mobile/shared/image/image_with_token.dart';
 import 'package:skripsi_mobile/shared/input/quiz_select_input.dart';
 import 'package:skripsi_mobile/shared/pills/added_point.pill.dart';
@@ -50,6 +47,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     controller.resetTimer();
     Navigator.of(context, rootNavigator: true)
         .popUntil((route) => route.isFirst);
+    ref.invalidate(quizStatusProvider);
     setState(() {
       isStarted = false;
     });
@@ -88,6 +86,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           });
     } else {
       Navigator.of(context, rootNavigator: true).pop();
+      ref.invalidate(quizStatusProvider);
     }
   }
 
@@ -150,28 +149,30 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         toolbarHeight: 72,
         title: Text('Daily Quiz', style: Fonts.semibold16),
         leading: IconButton(
-            onPressed: () {
-              handleExit(timerController);
-            },
-            icon: Icon(Icons.arrow_back_rounded)),
+            onPressed: state.isLoading
+                ? null
+                : () {
+                    handleExit(timerController);
+                  },
+            icon: const Icon(Icons.arrow_back_rounded)),
         actions: [
           Container(
-            padding: EdgeInsets.fromLTRB(9, 6, 12, 6),
+            padding: const EdgeInsets.fromLTRB(9, 6, 12, 6),
             decoration: BoxDecoration(
               color: timer > 10
                   ? AppColors.bluePrimary
                   : timer > 0 && timer < 10
                       ? AppColors.amber
                       : AppColors.red,
-              borderRadius: BorderRadius.all(
-                Radius.circular(24),
+              borderRadius: const BorderRadius.all(
+                const Radius.circular(24),
               ),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(Icons.timer_rounded, color: AppColors.white, size: 27),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Text(
                   timer > 9 ? '00:$timer' : '00:0$timer',
                   style: Fonts.semibold16
@@ -180,7 +181,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
               ],
             ),
           ),
-          SizedBox(width: 24)
+          const SizedBox(width: 24)
         ],
         centerTitle: false,
       ),
@@ -194,16 +195,16 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                     height: 120,
                     width: 120,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(24)),
+                      borderRadius: const BorderRadius.all(Radius.circular(24)),
                       color: AppColors.amber,
                     ),
                   ),
-                  SizedBox(height: 36),
+                  const SizedBox(height: 36),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text('Selamat Datang di Daily Quiz', style: Fonts.bold18),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
                         'Kamu akan diberikan pertanyaan dan diharuskan untuk menjawab jawaban yang benar untuk mendapatkan poin',
                         style: Fonts.regular14,
@@ -211,7 +212,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 36),
+                  const SizedBox(height: 36),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         elevation: 0,
@@ -266,10 +267,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                     child: Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.all(24),
+                          padding: const EdgeInsets.all(24),
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                               Radius.circular(18),
                             ),
                             color: AppColors.bluePrimary,
@@ -284,24 +285,24 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                                     style: Fonts.bold18
                                         .copyWith(color: AppColors.white),
                                   ),
-                                  SizedBox(width: 12),
-                                  AddedPointPill(point: 3),
+                                  const SizedBox(width: 12),
+                                  const AddedPointPill(point: 3),
                                 ],
                               ),
-                              SizedBox(height: 12),
+                              const SizedBox(height: 12),
                               Container(
                                 width: double.infinity,
                                 height: 180,
                                 decoration: BoxDecoration(
                                   color:
                                       AppColors.blueSecondary.withOpacity(0.3),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(12)),
                                 ),
                                 clipBehavior: Clip.hardEdge,
                                 child: ImageWithToken(q.img),
                               ),
-                              SizedBox(height: 12),
+                              const SizedBox(height: 12),
                               Text(
                                 q.question,
                                 style: Fonts.semibold14
@@ -310,11 +311,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         Container(
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                               Radius.circular(24),
                             ),
                             border:
@@ -337,7 +338,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               elevation: 0,
@@ -355,7 +356,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                                   handleSubmit(q);
                                 },
                           child: Container(
-                            padding: EdgeInsets.all(24),
+                            padding: const EdgeInsets.all(24),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,

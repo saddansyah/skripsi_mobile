@@ -19,12 +19,12 @@ class NotFoundScreen extends StatelessWidget {
             width: 120,
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(24)),
+              borderRadius: const BorderRadius.all(Radius.circular(24)),
               color: AppColors.lightGrey,
             ),
             child: SvgPicture.asset('assets/svgs/container_icon.svg'),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           Wrap(
             direction: Axis.vertical,
             crossAxisAlignment: WrapCrossAlignment.center,

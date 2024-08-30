@@ -1,6 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 
 class Location {
+  /// Distance in M
   static double getDistance(double startLatitude, double startLongitude,
       double endLatitude, double endLongitude) {
     return Geolocator.distanceBetween(

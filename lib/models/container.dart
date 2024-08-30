@@ -5,6 +5,7 @@ class Container {
   final String name;
   final ContainerType type;
   final num rating;
+  final int ratingCount;
   final num lat;
   final num long;
   final Status status;
@@ -17,6 +18,7 @@ class Container {
     required this.name,
     required this.type,
     required this.rating,
+    required this.ratingCount,
     required this.status,
     required this.lat,
     required this.long,
@@ -31,6 +33,7 @@ class Container {
       name: json['name'],
       type: ContainerType.values.firstWhere((v) => v.value == json['type']),
       rating: json['rating'],
+      ratingCount: json['rating_count'],
       lat: json['lat'],
       long: json['long'],
       status: Status.values.firstWhere((v) => v.value == json['status']),
@@ -53,6 +56,7 @@ class DetailedContainer extends Container {
     required super.name,
     required super.type,
     required super.rating,
+    required super.ratingCount,
     required super.status,
     required super.clusterId,
     required super.clusterName,
@@ -73,6 +77,7 @@ class DetailedContainer extends Container {
       type: ContainerType.values.firstWhere((v) => v.value == json['type']),
       status: Status.values.firstWhere((v) => v.value == json['status']),
       rating: json['rating'],
+      ratingCount: json['rating_count'],
       maxKg: json['max_kg'],
       maxVol: json['max_vol'],
       lat: json['lat'],
@@ -122,6 +127,8 @@ class NearestContainer {
   final int id;
   final String name;
   final num distance;
+  final num rating;
+  final int ratingCount;
   final num lat;
   final num long;
 
@@ -129,6 +136,8 @@ class NearestContainer {
     required this.id,
     required this.name,
     required this.distance,
+    required this.rating,
+    required this.ratingCount,
     required this.lat,
     required this.long,
   });
@@ -138,6 +147,8 @@ class NearestContainer {
       id: json['id'],
       name: json['name'],
       distance: json['distance'],
+      rating: json['rating'],
+      ratingCount: json['rating_count'],
       lat: json['lat'],
       long: json['long'],
     );

@@ -30,7 +30,7 @@ SnackBar popSnackbar(String message, SnackBarType type,
                 ),
           ),
         ),
-        SizedBox(width: 18),
+        const SizedBox(width: 18),
         Expanded(
           child: Text(
             message,
@@ -39,7 +39,7 @@ SnackBar popSnackbar(String message, SnackBarType type,
         ),
       ],
     ),
-    shape: RoundedRectangleBorder(
+    shape: const RoundedRectangleBorder(
         side: BorderSide.none,
         borderRadius: BorderRadius.all(Radius.circular(12))),
     elevation: 24,

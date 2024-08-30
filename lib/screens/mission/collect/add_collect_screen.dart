@@ -1,19 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:skripsi_mobile/controller/collect_controller.dart';
 import 'package:skripsi_mobile/models/collect.dart';
 import 'package:skripsi_mobile/models/container.dart' as model;
 import 'package:skripsi_mobile/models/ui/input_card.dart';
 import 'package:skripsi_mobile/repositories/collect_repository.dart';
 import 'package:skripsi_mobile/repositories/container_repository.dart';
-import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/screens/mission/collect/map_container_select_screen.dart';
-import 'package:skripsi_mobile/shared/card/nearest_container_card.dart';
 import 'package:skripsi_mobile/shared/input/decoration/styled_input_decoration.dart';
 import 'package:skripsi_mobile/shared/input/image_picker_input.dart';
 import 'package:skripsi_mobile/shared/input/card_input.dart';
@@ -47,8 +43,24 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
   final kgController = TextEditingController();
   final infoController = TextEditingController();
 
-  model.NearestContainer selectedContainer =
-      model.NearestContainer(id: 1, name: '-', distance: 0, lat: 0, long: 0);
+  model.NearestContainer selectedContainer = model.NearestContainer(
+      id: 1,
+      name: '-',
+      distance: 0,
+      lat: 0,
+      long: 0,
+      rating: 0,
+      ratingCount: 0);
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.container != null) {
+      selectedContainer = widget.container!;
+    }
+  }
+
   void updateContainer(model.NearestContainer container) {
     setState(() {
       selectedContainer = container;
@@ -111,7 +123,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
     final state = ref.watch(collectControllerProvider);
     final nearestContainer = ref.watch(nearestContainerProvider(50));
 
-    ref.listen(nearestContainerProvider(50), (_, s) {
+    ref.listen(nearestContainerProvider(50), (b, s) {
       if (s.hasValue) {
         setState(() {
           selectedContainer =
@@ -120,13 +132,17 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
       }
     });
 
-    ref.listen<AsyncValue>(collectControllerProvider, (_, state) {
-      if (state.isLoading) {
-        state.showLoadingSnackbar(context, 'Menambah data');
+    ref.listen<AsyncValue>(collectControllerProvider, (_, s) {
+      if (s.hasError && !s.isLoading) {
+        s.showErrorSnackbar(context);
       }
 
-      if (!state.hasError && !state.isLoading) {
-        state.showSnackbar(context,
+      if (s.isLoading) {
+        s.showLoadingSnackbar(context, 'Menambah data');
+      }
+
+      if (!s.hasError && !s.isLoading) {
+        s.showSnackbar(context,
             'Asyik! Poin akan kamu dapatkan ketika laporanmu disetujui Admin 🤩');
         Navigator.of(context, rootNavigator: true).pop();
         ref.invalidate(collectsProvider);
@@ -138,11 +154,19 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
         toolbarHeight: 72,
         title: Text('Input Kumpul Sampah', style: Fonts.semibold16),
         centerTitle: false,
+        leading: IconButton(
+          onPressed: state.isLoading
+              ? null
+              : () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+          icon: const Icon(Icons.arrow_back_rounded),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         child: SingleChildScrollView(
-          physics: ScrollPhysics(),
+          physics: const ScrollPhysics(),
           child: Form(
             key: formKey,
             child: Column(
@@ -159,7 +183,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Depo/Tong*', style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Row(
                         children: [
                           Flexible(
@@ -172,7 +196,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                               keyboardType: TextInputType.text,
                             ),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           nearestContainer.when(
                             data: (data) {
                               return CircleAvatar(
@@ -222,51 +246,51 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                           )
                         ],
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
                         widget.container != null
                             ? 'Default: Depo/Tong terpilih'
                             : 'Default: Depo/Tong terdekat',
                         style: Fonts.regular12.copyWith(color: AppColors.grey),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text('Volume (L)*', style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: volController,
                         textAlignVertical: TextAlignVertical.center,
                         style: Fonts.regular14,
                         decoration: StyledInputDecoration.basic('Contoh: 1.2',
                             const Icon(Icons.unfold_more_rounded)),
-                        keyboardType: TextInputType.numberWithOptions(
+                        keyboardType: const TextInputType.numberWithOptions(
                             signed: false, decimal: true),
                         validator: (value) => textfieldValidator(
                           value,
                           message: 'Mohon input volume yang valid',
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text('Berat (kg)*', style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: kgController,
                         textAlignVertical: TextAlignVertical.center,
                         style: Fonts.regular14,
                         decoration: StyledInputDecoration.basic('Contoh: 1.2',
                             const Icon(Icons.unfold_more_rounded)),
-                        keyboardType: TextInputType.numberWithOptions(
+                        keyboardType: const TextInputType.numberWithOptions(
                             signed: false, decimal: true),
                         validator: (value) => textfieldValidator(
                           value,
                           message: 'Mohon input berat yang valid',
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text('Tipe Sampah*', style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       GridView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: wasteTypeInputCards.length,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
@@ -281,30 +305,30 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                             isSelected:
                                 selectedType == wasteTypeInputCards[i].value),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
                         wasteTypeInputCards
                             .firstWhere((w) => w.value == selectedType)
                             .description,
                         style: Fonts.regular12.copyWith(color: AppColors.grey),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text('Sisipkan Foto*', style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       ImagePickerInput(
                           selectedImage: selectedImage,
                           pickImage: pickImageFromGallery,
                           removeSelectedImage: removeSelectedImage),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text('Pelapor*', style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 12),
                         decoration: BoxDecoration(
                             color: AppColors.lightGrey,
                             borderRadius:
-                                BorderRadius.all(Radius.circular(12))),
+                                const BorderRadius.all(Radius.circular(12))),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton(
                             isDense: true,
@@ -327,9 +351,9 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text('Informasi Tambahan*', style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: infoController,
                         textAlignVertical: TextAlignVertical.center,
@@ -347,7 +371,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -387,7 +411,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                                   style: Fonts.bold16,
                                 ),
                                 const SizedBox(width: 9),
-                                AddedPointPill(point: 5)
+                                const AddedPointPill(point: 5)
                               ],
                       ),
                     ),

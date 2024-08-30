@@ -1,8 +1,6 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skripsi_mobile/repositories/auth_repository.dart';
 import 'package:skripsi_mobile/controller/auth_controller.dart';
 import 'package:skripsi_mobile/repositories/profile_repository.dart';
 import 'package:skripsi_mobile/shared/image/image_error.dart';
@@ -45,7 +43,7 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
                 height: 72,
                 width: 72,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(99)),
+                    borderRadius: const BorderRadius.all(Radius.circular(99)),
                     color: AppColors.amber),
                 clipBehavior: Clip.hardEdge,
                 child: Center(
@@ -101,7 +99,7 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(24)),
+                          borderRadius: const BorderRadius.all(Radius.circular(24)),
                           gradient: LinearGradient(
                             colors: [
                               AppColors.amber,
@@ -147,7 +145,7 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(Icons.logout_rounded),
-                        SizedBox(width: 6, height: 48),
+                        const SizedBox(width: 6, height: 48),
                         Text('Keluar Akun',
                             style: Fonts.semibold16
                                 .copyWith(color: AppColors.white)),

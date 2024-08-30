@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:skripsi_mobile/models/user.dart';
 import 'package:skripsi_mobile/utils/api.dart';
 import 'package:skripsi_mobile/utils/storage.dart';
@@ -25,7 +26,13 @@ class ProfileDioRepository implements ProfileRepository {
 
       storage.write(
           'profile', jsonEncode(response.data as Map<String, dynamic>));
-      return User.fromMap(response.data['data'][0]);
+
+      final user = User.fromMap(response.data['data'][0]);
+
+      // Subscribing notification channel with user id
+      OneSignal.login(user.id);
+
+      return user;
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {

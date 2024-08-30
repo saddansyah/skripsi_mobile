@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/repositories/collect_repository.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/exception/not_found_screen.dart';
-import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
 import 'package:skripsi_mobile/shared/dropdown/dropdown.dart';
 import 'package:skripsi_mobile/shared/card/collect_card.dart';
 import 'package:skripsi_mobile/theme.dart';
@@ -59,7 +58,6 @@ class _CollectListScreenState extends ConsumerState<CollectListScreen> {
   @override
   Widget build(BuildContext context) {
     final collects = ref.watch(collectsProvider(contenatedFilterQuery()));
-    final collectsCount = collects.value?.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -68,7 +66,7 @@ class _CollectListScreenState extends ConsumerState<CollectListScreen> {
             onChanged: onChanged,
             decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 hintText: 'Cari berdasarkan ID',
                 hintStyle: Fonts.semibold14.copyWith(color: AppColors.grey),
                 labelText: 'Cari sampah',
@@ -81,11 +79,11 @@ class _CollectListScreenState extends ConsumerState<CollectListScreen> {
                         width: 2,
                         style: BorderStyle.solid,
                         color: AppColors.greenPrimary),
-                    borderRadius: BorderRadius.all(Radius.circular(24))),
+                    borderRadius: const BorderRadius.all(Radius.circular(24))),
                 enabledBorder: OutlineInputBorder(
                     borderSide:
                         BorderSide(color: AppColors.grey.withOpacity(0)),
-                    borderRadius: BorderRadius.all(Radius.circular(24)))),
+                    borderRadius: const BorderRadius.all(Radius.circular(24)))),
           ),
         ]),
       ),
@@ -112,7 +110,7 @@ class _CollectListScreenState extends ConsumerState<CollectListScreen> {
                               setState(() => selectedSort = newValue),
                           selectedValue: selectedSort),
 
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
 
                       Dropdown(
                           hint: 'Tipe',
@@ -121,7 +119,7 @@ class _CollectListScreenState extends ConsumerState<CollectListScreen> {
                               setState(() => selectedType = newValue),
                           selectedValue: selectedType),
 
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
 
                       Dropdown(
                           hint: 'Status',
@@ -131,18 +129,18 @@ class _CollectListScreenState extends ConsumerState<CollectListScreen> {
                           selectedValue: selectedStatus),
                     ],
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text('Hasil Pencarian', style: Fonts.bold16),
-                      Text('${collects.value?.length ?? 'Menghitung'} Hasil',
+                      Text('${collects.hasError ? 'Tidak Ada Hasil' : collects.value?.length ?? 'Menghitung'} Hasil',
                           style: Fonts.regular12),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       collects.when(
                         data: (c) => c.isEmpty
-                            ? NotFoundScreen(message: 'Tidak ada data')
+                            ? const NotFoundScreen(message: 'Tidak ada data')
                             : ListView.builder(
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,

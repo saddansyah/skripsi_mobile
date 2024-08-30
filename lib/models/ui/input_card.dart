@@ -1,3 +1,4 @@
+// ignore: unused_import
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skripsi_mobile/utils/constants/enums.dart';
 
@@ -13,11 +14,11 @@ class InputCard<T> extends Input<T> {
   String img;
 
   InputCard(
-    T value,
-    String title,
+    super.value,
+    super.title,
     this.description,
     this.img,
-  ) : super(value, title);
+  );
 }
 
 final List<InputCard<ContainerType>> containerTypeInputCards = [

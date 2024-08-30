@@ -60,7 +60,7 @@ class _ImagePickerInputState extends State<ImagePickerInput> {
                   textAlign: TextAlign.center,
                 ),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         widget.selectedImage != null
             ? Center(
                 child: Text(
@@ -70,13 +70,13 @@ class _ImagePickerInputState extends State<ImagePickerInput> {
               )
             : ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(21),
+                    padding: const EdgeInsets.all(21),
                     elevation: 0,
                     backgroundColor: AppColors.lightGrey,
                     foregroundColor: AppColors.grey,
                     shape: RoundedRectangleBorder(
                       side: BorderSide(width: 2, color: Colors.grey[350]!),
-                      borderRadius: BorderRadius.all(Radius.circular(24)),
+                      borderRadius: const BorderRadius.all(Radius.circular(24)),
                     )),
                 onPressed: () => widget.pickImage(ImageSource.camera),
                 child: Container(

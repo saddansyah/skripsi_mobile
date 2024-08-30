@@ -8,8 +8,6 @@ import 'package:skripsi_mobile/repositories/container_repository.dart';
 import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/exception/loading_screen.dart';
-import 'package:skripsi_mobile/screens/mission/container/container_detail_screen.dart';
-import 'package:skripsi_mobile/shared/card/nearest_container_card.dart';
 import 'package:skripsi_mobile/theme.dart';
 
 class MapContainerSelectScreen extends ConsumerStatefulWidget {
@@ -88,7 +86,7 @@ class _MapContainerSelectScreenState
                 mapController: controller,
                 options: MapOptions(
                     interactionOptions:
-                        InteractionOptions(flags: InteractiveFlag.all),
+                        const InteractionOptions(flags: InteractiveFlag.all),
                     backgroundColor: AppColors.lightGrey,
                     initialCenter: LatLng(
                         currentPosition.value?.latitude ??
@@ -121,22 +119,22 @@ class _MapContainerSelectScreenState
                         ],
                       ),
                     ),
-                    ...c.map((_c) {
+                    ...c.map((c) {
                       return Marker(
                         width: 150,
                         height: 150,
                         rotate: true,
-                        point: LatLng(_c.lat.toDouble(), _c.long.toDouble()),
+                        point: LatLng(c.lat.toDouble(), c.long.toDouble()),
                         child: GestureDetector(
                           onTap: () {
-                            updateLocalSelected(_c);
+                            updateLocalSelected(c);
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                _c.name,
+                                c.name,
                                 style: Fonts.semibold14.copyWith(fontSize: 12),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
@@ -145,7 +143,7 @@ class _MapContainerSelectScreenState
                               const SizedBox(height: 3),
                               Container(
                                 decoration: BoxDecoration(
-                                    boxShadow: selected.id == _c.id
+                                    boxShadow: selected.id == c.id
                                         ? [
                                             BoxShadow(
                                               color: AppColors.greenSecondary,
@@ -158,12 +156,12 @@ class _MapContainerSelectScreenState
                                     'assets/svgs/container_icon.svg'),
                               ),
                               const SizedBox(height: 3),
-                              selected.id == _c.id
+                              selected.id == c.id
                                   ? Container(
-                                      padding: EdgeInsets.all(3),
+                                      padding: const EdgeInsets.all(3),
                                       decoration: BoxDecoration(
                                         color: AppColors.greenPrimary,
-                                        borderRadius: BorderRadius.all(
+                                        borderRadius: const BorderRadius.all(
                                           Radius.circular(12),
                                         ),
                                       ),

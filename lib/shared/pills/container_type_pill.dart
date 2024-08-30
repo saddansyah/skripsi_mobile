@@ -13,14 +13,14 @@ class ContainerTypePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
         color: switch (type) {
           ContainerType.depo => AppColors.greenAccent,
           ContainerType.tong => AppColors.blueAccent,
           ContainerType.other => AppColors.lightGrey,
         },
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
       child: Wrap(
         spacing: 3,

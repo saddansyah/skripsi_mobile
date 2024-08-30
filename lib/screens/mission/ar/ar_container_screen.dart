@@ -46,7 +46,7 @@ class _ArContainerScreenState extends ConsumerState<ArContainerScreen> {
                 localhostServer.close().then(
                     (_) => Navigator.of(context, rootNavigator: true).pop());
               },
-              icon: Icon(Icons.arrow_back_rounded)),
+              icon: const Icon(Icons.arrow_back_rounded)),
           toolbarHeight: 72,
           title: Text('Cari Depo/Tong (AR)', style: Fonts.semibold16),
           centerTitle: false,
@@ -88,7 +88,7 @@ class _ArContainerScreenState extends ConsumerState<ArContainerScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           color: AppColors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(24)),
+                          borderRadius: const BorderRadius.all(Radius.circular(24)),
                         ),
                         child: ListTile(
                           title: Text(
@@ -155,11 +155,11 @@ class _ArContainerScreenState extends ConsumerState<ArContainerScreen> {
                 height: 120,
                 width: 120,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(24)),
+                  borderRadius: const BorderRadius.all(Radius.circular(24)),
                   color: AppColors.amber,
                 ),
               ),
-              SizedBox(height: 36),
+              const SizedBox(height: 36),
               Wrap(
                 direction: Axis.vertical,
                 crossAxisAlignment: WrapCrossAlignment.center,
@@ -169,7 +169,7 @@ class _ArContainerScreenState extends ConsumerState<ArContainerScreen> {
                   Text('...', style: Fonts.regular14),
                 ],
               ),
-              SizedBox(height: 36),
+              const SizedBox(height: 36),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     elevation: 0,
@@ -199,7 +199,7 @@ class _ArContainerScreenState extends ConsumerState<ArContainerScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                     side: BorderSide(width: 1, color: AppColors.greenPrimary),

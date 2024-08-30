@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/models/quiz.dart';
 import 'package:skripsi_mobile/repositories/quiz_repository.dart';
 
-class QuizController extends AsyncNotifier<ResponseQuiz> {
+class QuizController extends AutoDisposeAsyncNotifier<ResponseQuiz> {
   @override
   ResponseQuiz build() {
+    ref.keepAlive();
     return ResponseQuiz(isCorrect: false, message: '');
   }
 
@@ -18,4 +19,5 @@ class QuizController extends AsyncNotifier<ResponseQuiz> {
 }
 
 final quizControllerProvider =
-    AsyncNotifierProvider<QuizController, ResponseQuiz>(QuizController.new);
+    AutoDisposeAsyncNotifierProvider<QuizController, ResponseQuiz>(
+        QuizController.new);

@@ -4,9 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/models/container.dart';
 import 'package:skripsi_mobile/repositories/container_repository.dart';
 
-class ContainerController extends AsyncNotifier<void> {
+class ContainerController extends AutoDisposeAsyncNotifier<void> {
   @override
-  FutureOr<void> build() {}
+  FutureOr<void> build() {
+    ref.keepAlive();
+  }
 
   Future<void> addContainer(PayloadContainer container) async {
     state = const AsyncValue.loading();
@@ -29,4 +31,5 @@ class ContainerController extends AsyncNotifier<void> {
 }
 
 final containerControllerProvider =
-    AsyncNotifierProvider<ContainerController, void>(ContainerController.new);
+    AutoDisposeAsyncNotifierProvider<ContainerController, void>(
+        ContainerController.new);

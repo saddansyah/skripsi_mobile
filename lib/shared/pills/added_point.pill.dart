@@ -9,12 +9,12 @@ class AddedPointPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: 6,
         vertical: 3,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(24)),
+        borderRadius: const BorderRadius.all(Radius.circular(24)),
         gradient: LinearGradient(
           colors: [AppColors.amber, AppColors.amber.withOpacity(0.8)],
         ),

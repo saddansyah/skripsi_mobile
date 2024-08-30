@@ -17,12 +17,12 @@ class LoadingScreen extends StatelessWidget {
             height: 120,
             width: 120,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(24)),
+              borderRadius: const BorderRadius.all(Radius.circular(24)),
               color: AppColors.amber,
             ),
             child: CircularProgressIndicator(color: AppColors.greenPrimary),
           ),
-          SizedBox(height: 36),
+          const SizedBox(height: 36),
           Wrap(
             direction: Axis.vertical,
             crossAxisAlignment: WrapCrossAlignment.center,

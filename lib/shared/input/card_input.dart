@@ -22,7 +22,7 @@ class CardInput<T> extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected ? AppColors.greenAccent : AppColors.white,
           border: Border.all(width: 2, color: Colors.grey[350]!),
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+          borderRadius: const BorderRadius.all(Radius.circular(24)),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -33,7 +33,7 @@ class CardInput<T> extends StatelessWidget {
               height: 48,
               width: 48,
             ),
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
             Text(type.title, style: Fonts.regular12)
           ],
         ),

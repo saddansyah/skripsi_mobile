@@ -1,8 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:skripsi_mobile/repositories/auth_repository.dart';
 import 'package:skripsi_mobile/screens/mission/collect/collect_detail_screen.dart';
 import 'package:skripsi_mobile/models/collect.dart';
 import 'package:skripsi_mobile/shared/image/image_with_token.dart';
@@ -24,9 +22,9 @@ class CollectCard extends ConsumerWidget {
               builder: (_) => CollectDetailScreen(id: collect.id)));
         },
         child: Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(24)),
+            borderRadius: const BorderRadius.all(Radius.circular(24)),
             border: Border.all(color: Colors.grey[350]!, width: 1),
           ),
           child: Row(
@@ -36,11 +34,11 @@ class CollectCard extends ConsumerWidget {
                 width: 72,
                 clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    borderRadius: const BorderRadius.all(Radius.circular(12)),
                     color: AppColors.lightGrey),
                 child: ImageWithToken(collect.img),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Flexible(
                 child: Wrap(
                   direction: Axis.vertical,
@@ -52,14 +50,14 @@ class CollectCard extends ConsumerWidget {
                       children: [
                         Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                              const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                           decoration: BoxDecoration(
                             color: switch (collect.status) {
                               Status.accepted => AppColors.greenAccent,
                               Status.pending => AppColors.lightGrey,
                               Status.rejected => AppColors.red,
                             },
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            borderRadius: const BorderRadius.all(Radius.circular(12)),
                           ),
                           child: Text(
                             collect.status.value,

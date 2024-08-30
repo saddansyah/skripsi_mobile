@@ -29,7 +29,7 @@ class _AppBarImageState extends ConsumerState<AppBarImage> {
         height: widget.height,
         width: widget.width,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(99)),
+            borderRadius: const BorderRadius.all(Radius.circular(99)),
             color: AppColors.white),
         clipBehavior: Clip.hardEdge,
         child: profile.when(

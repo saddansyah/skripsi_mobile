@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:skripsi_mobile/models/session.dart';
 import 'package:skripsi_mobile/utils/api.dart';
 import 'package:skripsi_mobile/utils/storage.dart';
@@ -86,6 +83,7 @@ class HttpAuthRepository implements AuthRepository {
     try {
       await fetcher.post('${Api.baseUrl}/auth/signout');
       storage.delete('refreshToken');
+      OneSignal.logout();
       return null;
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionTimeout ||

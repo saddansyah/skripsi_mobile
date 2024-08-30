@@ -21,7 +21,7 @@ class FlashcardDialog extends ConsumerWidget {
               width: 540,
               decoration: BoxDecoration(
                 color: AppColors.lightGrey,
-                borderRadius: BorderRadius.all(Radius.circular(24)),
+                borderRadius: const BorderRadius.all(Radius.circular(24)),
               ),
             )
           : Text(

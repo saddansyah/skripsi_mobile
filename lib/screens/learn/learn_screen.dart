@@ -1,13 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/repositories/learn_repository.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/exception/not_found_screen.dart';
-import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
 import 'package:skripsi_mobile/shared/dropdown/dropdown.dart';
 import 'package:skripsi_mobile/shared/card/learn_card.dart';
 import 'package:skripsi_mobile/theme.dart';
@@ -56,7 +53,6 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
   @override
   Widget build(BuildContext context) {
     final learns = ref.watch(learnsProvider(contenatedFilterQuery()));
-    final learnCount = learns.value?.length ?? 0;
 
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +62,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
               onChanged: onChanged,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 hintText: 'Contoh: Memilah Sampah',
                 hintStyle: Fonts.semibold14.copyWith(color: AppColors.grey),
                 labelText: 'Cari artikel',
@@ -79,11 +75,11 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                         width: 2,
                         style: BorderStyle.solid,
                         color: AppColors.greenPrimary),
-                    borderRadius: BorderRadius.all(Radius.circular(24))),
+                    borderRadius: const BorderRadius.all(Radius.circular(24))),
                 enabledBorder: OutlineInputBorder(
                     borderSide:
                         BorderSide(color: AppColors.grey.withOpacity(0)),
-                    borderRadius: BorderRadius.all(Radius.circular(24))),
+                    borderRadius: const BorderRadius.all(Radius.circular(24))),
               ),
             ),
           ],
@@ -100,7 +96,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                     onChanged: (String? newValue) =>
                         setState(() => selectedSort = newValue),
                     selectedValue: selectedSort),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Dropdown(
                     hint: 'Kategori',
                     data: DropdownLearnCategory.values,
@@ -113,16 +109,16 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: SingleChildScrollView(
-          physics: ScrollPhysics(),
+          physics: const ScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Hasil Pencarian', style: Fonts.bold16),
               Text('${learns.value?.length ?? 'Menghitung'} Hasil',
                   style: Fonts.regular12),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               learns.when(
                 data: (l) {
                   return l.isEmpty

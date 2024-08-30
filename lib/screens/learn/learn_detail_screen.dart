@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,7 +26,7 @@ class _LearnDetailScreenState extends ConsumerState<LearnDetailScreen> {
       body: learn.when(
         error: (e, s) => ErrorScreen(message: e.toString()),
         loading: () =>
-            LoadingScreen(message: 'Data artikel sedang dimuat nih..'),
+            const LoadingScreen(message: 'Data artikel sedang dimuat nih..'),
         data: (l) {
           return CustomScrollView(
             slivers: [
@@ -66,36 +65,57 @@ class _LearnDetailScreenState extends ConsumerState<LearnDetailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Admin - ${DateFormat('yyyy/MM/dd - hh:mm:ss').format(l.createdAt.toLocal())}',
-                            style:
-                                Fonts.regular12.copyWith(color: AppColors.grey),
-                          ),
-                          SizedBox(height: 6),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(l.title, style: Fonts.bold18),
-                              ),
-                              SizedBox(width: 12),
-                            ],
-                          ),
-                          SizedBox(height: 12),
                           Container(
-                            padding: EdgeInsets.all(18),
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(18),
+                            clipBehavior: Clip.hardEdge,
                             decoration: BoxDecoration(
-                              color: AppColors.greenAccent,
+                              gradient: LinearGradient(colors: [
+                                AppColors.greenPrimary,
+                                Colors.green[800]!
+                              ]),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(18)),
+                                  const BorderRadius.all(Radius.circular(24)),
                             ),
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(l.excerpt, style: Fonts.regular14),
+                                Text(
+                                  '#learn${l.id} - Admin - ${DateFormat('yyyy/MM/dd - hh:mm:ss').format(l.createdAt.toLocal())}',
+                                  style: Fonts.regular12.copyWith(
+                                      color: AppColors.greenSecondary),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  l.title,
+                                  style: Fonts.bold18.copyWith(
+                                      color: AppColors.white, fontSize: 21),
+                                ),
+                                const SizedBox(height: 12),
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(12)),
+                                      color: AppColors.dark1.withOpacity(0.1)),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        l.excerpt,
+                                        style: Fonts.regular14
+                                            .copyWith(color: AppColors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
                               ],
                             ),
                           ),
-                          SizedBox(height: 12),
+                          const SizedBox(height: 12),
                           Container(
+                            padding: const EdgeInsets.all(3),
                             width: double.infinity,
                             child: MarkdownBody(
                                 imageBuilder: (uri, title, alt) {
@@ -120,9 +140,9 @@ class _LearnDetailScreenState extends ConsumerState<LearnDetailScreen> {
                                     p: Fonts.regular14),
                                 data: l.content.trim()),
                           ),
-                          SizedBox(height: 12),
-                          Divider(),
-                          SizedBox(height: 12),
+                          const SizedBox(height: 12),
+                          const Divider(),
+                          const SizedBox(height: 12),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -131,14 +151,14 @@ class _LearnDetailScreenState extends ConsumerState<LearnDetailScreen> {
                                 style: Fonts.regular14
                                     .copyWith(color: AppColors.grey),
                               ),
-                              SizedBox(width: 12),
+                              const SizedBox(width: 12),
                               Container(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 6, vertical: 3),
                                 decoration: BoxDecoration(
                                   color: AppColors.lightGrey,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(12)),
                                 ),
                                 child: Text(l.category, style: Fonts.regular14),
                               )

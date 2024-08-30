@@ -21,7 +21,7 @@ class QuizSelectInput<T> extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.all(6),
+            padding: const EdgeInsets.all(6),
             side: BorderSide(
                 width: 2,
                 color: isSelected ? AppColors.greenPrimary : Colors.grey[350]!),
@@ -48,7 +48,7 @@ class QuizSelectInput<T> extends StatelessWidget {
                         isSelected ? AppColors.white : AppColors.bluePrimary),
               ),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
                 input.title,

@@ -27,11 +27,11 @@ class ErrorScreen extends StatelessWidget {
             height: 120,
             width: 120,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(24)),
+              borderRadius: const BorderRadius.all(const Radius.circular(24)),
               color: AppColors.amber,
             ),
           ),
-          SizedBox(height: 36),
+          const SizedBox(height: 36),
           Wrap(
             direction: Axis.vertical,
             crossAxisAlignment: WrapCrossAlignment.center,
@@ -41,7 +41,7 @@ class ErrorScreen extends StatelessWidget {
               Text(message, style: Fonts.regular14),
             ],
           ),
-          SizedBox(height: 36),
+          const SizedBox(height: 36),
           isButton
               ? ElevatedButton(
                   style: ElevatedButton.styleFrom(

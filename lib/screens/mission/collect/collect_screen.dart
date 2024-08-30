@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart' hide Card;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skripsi_mobile/screens/layout/main_layout.dart';
 import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
 import 'package:skripsi_mobile/shared/card/card.dart';
 import 'package:skripsi_mobile/models/ui/menu.dart';
@@ -12,7 +10,17 @@ class CollectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: StyledAppBar.main(title: 'Kumpul Sampah'),
+      appBar: AppBar(
+        toolbarHeight: 72,
+        title: Row(
+          children: [
+            const SizedBox(width: 6),
+            Text('Kumpul Sampah',
+                style: Fonts.bold16.copyWith(color: AppColors.dark2)),
+          ],
+        ),
+        centerTitle: false,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         child: Column(

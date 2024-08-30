@@ -27,8 +27,8 @@ class _ViewOnlyMapScreenState extends State<ViewOnlyMapScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           controller.move(
-              LatLng(widget.container.lat.toDouble() ?? 0,
-                  widget.container.long.toDouble() ?? 0),
+              LatLng(widget.container.lat.toDouble(),
+                  widget.container.long.toDouble()),
               18);
         },
         foregroundColor: AppColors.white,
@@ -42,7 +42,7 @@ class _ViewOnlyMapScreenState extends State<ViewOnlyMapScreen> {
       body: FlutterMap(
         mapController: controller,
         options: MapOptions(
-            interactionOptions: InteractionOptions(flags: InteractiveFlag.all),
+            interactionOptions: const InteractionOptions(flags: InteractiveFlag.all),
             backgroundColor: AppColors.lightGrey,
             initialCenter: LatLng(widget.container.lat.toDouble(),
                 widget.container.long.toDouble()),

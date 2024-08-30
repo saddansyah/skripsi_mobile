@@ -1,7 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:skripsi_mobile/models/learn.dart';
 import 'package:skripsi_mobile/screens/learn/learn_detail_screen.dart';
@@ -23,9 +20,9 @@ class LearnCard extends StatelessWidget {
               MaterialPageRoute(builder: (_) => LearnDetailScreen(id: learn.id)));
         },
         child: Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(24)),
+            borderRadius: const BorderRadius.all(Radius.circular(24)),
             border: Border.all(color: Colors.grey[350]!, width: 1),
           ),
           child: Row(
@@ -36,7 +33,7 @@ class LearnCard extends StatelessWidget {
                 clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(
                   color: AppColors.lightGrey,
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
                 ),
                 child: Image.network(
                   learn.img,
@@ -56,7 +53,7 @@ class LearnCard extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,20 +68,20 @@ class LearnCard extends StatelessWidget {
                           maxLines: 1,
                           softWrap: true,
                         )),
-                        SizedBox(width: 6),
+                        const SizedBox(width: 6),
                         Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                              const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                           decoration: BoxDecoration(
                             color: AppColors.lightGrey,
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            borderRadius: const BorderRadius.all(Radius.circular(12)),
                           ),
                           child: Text(learn.category,
                               style: Fonts.regular12.copyWith(fontSize: 10)),
                         )
                       ],
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     Row(
                       children: [
                         Expanded(
@@ -98,7 +95,7 @@ class LearnCard extends StatelessWidget {
                         )
                       ],
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     Row(
                       children: [
                         Expanded(

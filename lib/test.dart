@@ -26,7 +26,7 @@ class _TestState extends ConsumerState<Test> {
           session.when(
               data: (data) {
                 if (data == null) {
-                  return Text('Login Page');
+                  return const Text('Login Page');
                 }
                 return Text(data.refreshToken);
               },

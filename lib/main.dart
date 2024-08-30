@@ -1,8 +1,7 @@
-import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:skripsi_mobile/controller/auth_controller.dart';
 import 'package:skripsi_mobile/screens/auth/sign_in_screen.dart';
@@ -10,7 +9,6 @@ import 'package:skripsi_mobile/screens/layout/main_layout.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/exception/loading_screen.dart';
 import 'package:skripsi_mobile/theme.dart';
-import 'package:skripsi_mobile/utils/api.dart';
 import 'package:skripsi_mobile/utils/extension.dart';
 import 'package:skripsi_mobile/utils/keys.dart';
 
@@ -19,6 +17,10 @@ void main() async {
 
   print(await Permission.camera.isGranted);
   print(await Permission.location.isGranted);
+
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  OneSignal.initialize("1dc3f11d-5e6f-4710-ae7b-2dc3c379e07f");
+  OneSignal.Notifications.requestPermission(true);
 
   runApp(const ProviderScope(child: MyApp()));
 }

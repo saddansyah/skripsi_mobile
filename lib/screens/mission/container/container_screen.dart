@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart' hide Container;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:skripsi_mobile/models/container.dart';
 import 'package:skripsi_mobile/repositories/container_repository.dart';
 import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/repositories/profile_repository.dart';
@@ -69,9 +67,6 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
     final profile = ref.watch(profileProvider);
     final currentPosition = ref.watch(currentPositionProvider);
 
-    final containerCountByUserId =
-        containers.value?.where((d) => d.userId == profile.value?.id).length;
-    final containerCount = containers.value?.length;
 
     ref.listen<AsyncValue>(containersProvider(contenatedFilterQuery()), (_, s) {
       if (s.hasError && !s.isLoading) {
@@ -202,7 +197,7 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text('Hasil Pencarian', style: Fonts.bold16),
-                          Text('${containerCount ?? 'Menghitung'} Hasil',
+                          Text('${containers.hasError ? 'Tidak Ada' : containers.value?.length ?? 'Menghitung'} Hasil',
                               style: Fonts.regular12),
                           const SizedBox(height: 12),
                           containers.when(
@@ -269,7 +264,7 @@ class _ContainerScreenState extends ConsumerState<ContainerScreen> {
                         children: [
                           Text('Hasil Pencarian', style: Fonts.bold16),
                           Text(
-                              '${containerCountByUserId ?? 'Menghitung'} Hasil',
+                              '${containers.hasError ? 'Tidak Ada Hasil' : containers.value?.where((d) => d.userId == profile.value?.id).length ?? 'Menghitung'} Hasil',
                               style: Fonts.regular12),
                           const SizedBox(height: 12),
                           containers.when(

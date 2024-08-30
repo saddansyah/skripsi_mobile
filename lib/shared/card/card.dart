@@ -14,7 +14,7 @@ class Card extends StatelessWidget {
       onTap: () => Navigator.of(context, rootNavigator: isRootNavigator)
           .push(MaterialPageRoute(builder: (_) => menu.to)),
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(24)),
         ),
         clipBehavior: Clip.hardEdge,
@@ -27,7 +27,7 @@ class Card extends StatelessWidget {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(12),
+              padding: const EdgeInsets.all(12),
               color: AppColors.greenPrimary,
               child: Center(
                   child: Text(menu.title,

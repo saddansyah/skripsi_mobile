@@ -5,9 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/repositories/collect_repository.dart';
 import 'package:skripsi_mobile/models/collect.dart';
 
-class CollectController extends AsyncNotifier<void> {
+class CollectController extends AutoDisposeAsyncNotifier<void> {
   @override
-  FutureOr<void> build() {}
+  FutureOr<void> build() {
+    ref.keepAlive();
+  }
 
   Future<void> addMyCollect(PayloadCollect collect, File localImageFile) async {
     state = const AsyncValue.loading();
@@ -24,4 +26,5 @@ class CollectController extends AsyncNotifier<void> {
 }
 
 final collectControllerProvider =
-    AsyncNotifierProvider<CollectController, void>(CollectController.new);
+    AutoDisposeAsyncNotifierProvider<CollectController, void>(
+        CollectController.new);

@@ -3,7 +3,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:skripsi_mobile/models/container.dart' as model;
 import 'package:skripsi_mobile/repositories/container_repository.dart';
 import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
@@ -60,7 +59,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 style: Fonts.semibold14,
               ),
             ),
-            SizedBox(width: 6),
+            const SizedBox(width: 6),
             FloatingActionButton(
               heroTag: 'myLocation',
               onPressed: () {
@@ -86,7 +85,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 mapController: controller,
                 options: MapOptions(
                     interactionOptions:
-                        InteractionOptions(flags: InteractiveFlag.all),
+                        const InteractionOptions(flags: InteractiveFlag.all),
                     backgroundColor: AppColors.lightGrey,
                     initialCenter: LatLng(currentPosition.value!.latitude,
                         currentPosition.value!.longitude),
@@ -112,7 +111,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           height: 24,
                           decoration: BoxDecoration(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(99)),
+                                  const BorderRadius.all(Radius.circular(99)),
                               color: AppColors.greenPrimary,
                               boxShadow: [
                                 BoxShadow(
@@ -129,10 +128,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         ),
                       ),
                     ),
-                    ...c.map((_c) {
+                    ...c.map((c) {
                       return Marker(
                         rotate: true,
-                        point: LatLng(_c.lat.toDouble(), _c.long.toDouble()),
+                        point: LatLng(c.lat.toDouble(), c.long.toDouble()),
                         width: 90,
                         height: 90,
                         child: GestureDetector(
@@ -140,14 +139,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                             Navigator.of(context, rootNavigator: true).push(
                                 MaterialPageRoute(
                                     builder: (_) =>
-                                        ContainerDetailScreen(id: _c.id)));
+                                        ContainerDetailScreen(id: c.id)));
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                _c.name,
+                                c.name,
                                 style: Fonts.semibold14.copyWith(fontSize: 12),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,

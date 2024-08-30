@@ -36,8 +36,7 @@ class ContainerDioRepository implements ContainerRepository {
           e.type == DioExceptionType.receiveTimeout) {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
-        print(e);
-        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+        throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }
@@ -54,7 +53,7 @@ class ContainerDioRepository implements ContainerRepository {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
         print(e);
-        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+        throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }

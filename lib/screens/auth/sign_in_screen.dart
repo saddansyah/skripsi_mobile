@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/controller/auth_controller.dart';
-import 'package:skripsi_mobile/repositories/auth_repository.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/extension.dart';
 

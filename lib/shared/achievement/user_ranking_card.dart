@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/models/user.dart';
-import 'package:skripsi_mobile/repositories/auth_repository.dart';
 import 'package:skripsi_mobile/repositories/profile_repository.dart';
 import 'package:skripsi_mobile/theme.dart';
 
@@ -20,9 +19,9 @@ class UserRankingCard extends ConsumerWidget {
       child: GestureDetector(
         onTap: () {},
         child: Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(24)),
+            borderRadius: const BorderRadius.all(Radius.circular(24)),
             border: me.value?.id == user.id
                 ? Border.all(color: AppColors.greenSecondary, width: 2)
                 : Border.all(color: Colors.grey[350]!, width: 1),
@@ -39,12 +38,12 @@ class UserRankingCard extends ConsumerWidget {
                 },
                 child: Text(ranking.toString(), style: Fonts.regular14),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               CircleAvatar(
                 backgroundImage: NetworkImage(user.img),
                 backgroundColor: AppColors.lightGrey,
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,16 +62,16 @@ class UserRankingCard extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     Row(
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 6,
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(24)),
+                            borderRadius: const BorderRadius.all(Radius.circular(24)),
                             gradient: LinearGradient(
                               colors: [
                                 AppColors.greenSecondary,

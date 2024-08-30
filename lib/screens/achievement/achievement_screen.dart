@@ -29,7 +29,7 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         child: SingleChildScrollView(
-          physics: ScrollPhysics(),
+          physics: const ScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -37,7 +37,7 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
               Container(
                 padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
+                  borderRadius: const BorderRadius.all(
                     Radius.circular(24),
                   ),
                   gradient: LinearGradient(colors: [
@@ -52,7 +52,7 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                         Text('Poin kamu:',
                             style: Fonts.semibold16
                                 .copyWith(color: AppColors.white)),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
                           onPressed: () {},
                           icon: Icon(Icons.keyboard_arrow_right_rounded,
@@ -63,12 +63,13 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                     Row(
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 18,
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(24)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(24)),
                             gradient: LinearGradient(
                               colors: [
                                 AppColors.amber,
@@ -84,7 +85,7 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                                 color: AppColors.dark2,
                                 size: 36,
                               ),
-                              SizedBox(width: 6),
+                              const SizedBox(width: 6),
                               Text(
                                 my.value?.totalPoint.toString() ?? '0',
                                 style: Fonts.bold18.copyWith(
@@ -98,11 +99,11 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
+                  borderRadius: const BorderRadius.all(
                     Radius.circular(24),
                   ),
                   gradient: LinearGradient(colors: [
@@ -121,14 +122,14 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
                         SvgPicture.asset(
                           'assets/svgs/container_icon.svg',
                           height: 60,
                         ),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             my.value?.rank ?? 'Title Kamu',
@@ -138,27 +139,46 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                         )
                       ],
                     ),
-                    SizedBox(height: 12),
-                    Row(
+                    const SizedBox(height: 24),
+                    Column(
                       children: [
-                        Expanded(
-                          child: Text(
-                            'Kumpulkan ${my.value?.nextPoint ?? '-'} poin lagi untuk menjadi ${my.value?.nextRank ?? '-'}!',
-                            style: Fonts.regular12
-                                .copyWith(color: AppColors.white),
-                          ),
-                        )
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '⭐${my.hasError ? '-' : (my.value?.totalPoint ?? 0)}/⭐${my.hasError ? '-' : (my.value?.nextPoint ?? 0) + (my.value?.totalPoint ?? 0)}',
+                              style: Fonts.semibold14
+                                  .copyWith(color: AppColors.white),
+                            ),
+                            Text(
+                              my.hasError ? '-' : my.value?.nextRank ?? '...',
+                              style: Fonts.semibold14
+                                  .copyWith(color: AppColors.white),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        LinearProgressIndicator(
+                          minHeight: 20,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(24)),
+                          backgroundColor: AppColors.amber.withOpacity(0.2),
+                          color: AppColors.amberAccent,
+                          value: (my.value?.totalPoint ?? 0) /
+                              ((my.value?.nextPoint ?? 0) +
+                                  (my.value?.totalPoint ?? 0)),
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               Container(
                 padding: const EdgeInsets.fromLTRB(24, 12, 24, 12),
                 decoration: BoxDecoration(
                     color: AppColors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                    borderRadius: const BorderRadius.all(Radius.circular(24)),
                     border: Border.all(color: Colors.grey[350]!)),
                 child: Column(
                   children: [
@@ -167,7 +187,7 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                         Text('Capaian Terbaru',
                             style: Fonts.semibold16
                                 .copyWith(color: AppColors.dark2)),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true).push(
@@ -181,14 +201,14 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                         )
                       ],
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     myAchievements.when(
                       data: (a) {
                         return a.isEmpty
-                            ? NotFoundScreen(message: 'Tidak ada data')
+                            ? const NotFoundScreen(message: 'Tidak ada data')
                             : GridView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: a.length,
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
@@ -197,14 +217,14 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                                         mainAxisSpacing: 12,
                                         mainAxisExtent: 160),
                                 itemBuilder: (c, i) => Padding(
-                                  padding: EdgeInsets.all(12),
+                                  padding: const EdgeInsets.all(12),
                                   child: Column(
                                     children: [
                                       CircleAvatar(
                                           radius: 36,
                                           backgroundImage:
                                               NetworkImage(a[i].img)),
-                                      SizedBox(height: 6),
+                                      const SizedBox(height: 6),
                                       Text(
                                         a[i].name,
                                         style: Fonts.regular12,
@@ -231,16 +251,16 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               Text(
                 'Ranking',
                 style: Fonts.semibold16,
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               leaderboardUsers.when(
                 data: (l) {
                   return l.isEmpty
-                      ? NotFoundScreen(message: 'Tidak ada data')
+                      ? const NotFoundScreen(message: 'Tidak ada data')
                       : ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,

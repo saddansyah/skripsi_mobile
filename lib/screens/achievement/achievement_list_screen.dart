@@ -20,15 +20,15 @@ class AchievementListScreen extends ConsumerWidget {
         centerTitle: false,
       ),
       body: Padding(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: SingleChildScrollView(
-          physics: ScrollPhysics(),
+          physics: const ScrollPhysics(),
           child: Column(
             children: [
               myAchievements.when(
                 data: (a) {
                   return a.isEmpty
-                      ? NotFoundScreen(message: 'Tidak ada data')
+                      ? const NotFoundScreen(message: 'Tidak ada data')
                       : ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
@@ -39,10 +39,10 @@ class AchievementListScreen extends ConsumerWidget {
                               child: GestureDetector(
                                 onTap: () {},
                                 child: Container(
-                                  padding: EdgeInsets.all(12),
+                                  padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(24)),
+                                        const BorderRadius.all(Radius.circular(24)),
                                     border: Border.all(
                                         color: Colors.grey[350]!, width: 1),
                                   ),
@@ -51,13 +51,13 @@ class AchievementListScreen extends ConsumerWidget {
                                       Text(a[i].id.toString(),
                                           style: Fonts.regular14
                                               .copyWith(color: AppColors.grey)),
-                                      SizedBox(width: 12),
+                                      const SizedBox(width: 12),
                                       CircleAvatar(
                                         radius: 30,
                                         backgroundImage: NetworkImage(a[i].img),
                                         backgroundColor: AppColors.white,
                                       ),
-                                      SizedBox(width: 12),
+                                      const SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -78,7 +78,7 @@ class AchievementListScreen extends ConsumerWidget {
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(height: 6),
+                                            const SizedBox(height: 6),
                                             Row(
                                               children: [
                                                 Expanded(
@@ -93,7 +93,7 @@ class AchievementListScreen extends ConsumerWidget {
                                                 )
                                               ],
                                             ),
-                                            SizedBox(height: 6),
+                                            const SizedBox(height: 6),
                                             Row(
                                               children: [
                                                 Expanded(

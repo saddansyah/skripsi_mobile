@@ -28,10 +28,10 @@ class NearestContainerCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Container(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppColors.white,
-            borderRadius: BorderRadius.all(Radius.circular(24)),
+            borderRadius: const BorderRadius.all(Radius.circular(24)),
             border: Border.all(color: Colors.grey[350]!),
           ),
           child: Column(
@@ -39,15 +39,15 @@ class NearestContainerCard extends StatelessWidget {
             children: [
               Text('Depo/Tong Terdekat',
                   style: Fonts.semibold14.copyWith(color: AppColors.dark2)),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(),
+                    padding: const EdgeInsets.symmetric(),
                     elevation: 0,
                     backgroundColor: AppColors.white,
                     shape: RoundedRectangleBorder(
                       side: BorderSide(width: 1, color: Colors.grey[350]!),
-                      borderRadius: BorderRadius.all(Radius.circular(24)),
+                      borderRadius: const BorderRadius.all(Radius.circular(24)),
                     )),
                 onPressed: () {
                   controller.fitCamera(
@@ -64,9 +64,18 @@ class NearestContainerCard extends StatelessWidget {
                     container.name,
                     style: Fonts.semibold14,
                   ),
-                  subtitle: Text(
-                    '${container.distance.toStringAsFixed(2)} km',
-                    style: Fonts.regular14,
+                  subtitle: Row(
+                    children: [
+                      Text(
+                        '${container.distance.toStringAsFixed(2)} km',
+                        style: Fonts.regular14,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        '⭐' * container.rating.toInt(),
+                        style: Fonts.regular14,
+                      ),
+                    ],
                   ),
                   trailing:
                       Icon(Icons.location_pin, color: AppColors.greenPrimary),

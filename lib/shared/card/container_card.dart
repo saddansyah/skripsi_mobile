@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:skripsi_mobile/models/container.dart' as model;
 import 'package:skripsi_mobile/screens/mission/container/container_detail_screen.dart';
 import 'package:skripsi_mobile/shared/pills/container_type_pill.dart';
 import 'package:skripsi_mobile/theme.dart';
 import 'package:skripsi_mobile/utils/constants/enums.dart';
-import 'package:skripsi_mobile/utils/location.dart';
 
 class ContainerCard extends StatelessWidget {
   const ContainerCard({
@@ -30,26 +28,26 @@ class ContainerCard extends StatelessWidget {
               builder: (_) => ContainerDetailScreen(id: container.id)));
         },
         child: Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(24)),
+            borderRadius: const BorderRadius.all(Radius.circular(24)),
             border: Border.all(color: Colors.grey[350]!, width: 1),
           ),
           child: Row(
             children: [
               Container(
-                padding: EdgeInsets.all(6),
+                padding: const EdgeInsets.all(6),
                 height: 72,
                 width: 72,
                 clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
                 child: SvgPicture.asset(
                   'assets/svgs/container_icon.svg',
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Wrap(
                 direction: Axis.vertical,
                 spacing: 6,
@@ -62,10 +60,10 @@ class ContainerCard extends StatelessWidget {
                   Row(
                     children: [
                       ContainerTypePill(type: container.type),
-                      SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       isStatusShowed
                           ? Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 3),
                               decoration: BoxDecoration(
                                 color: switch (container.status) {
@@ -74,7 +72,7 @@ class ContainerCard extends StatelessWidget {
                                   Status.rejected => AppColors.red,
                                 },
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
+                                    const BorderRadius.all(Radius.circular(12)),
                               ),
                               child: Text(
                                 container.status.value,
@@ -102,13 +100,13 @@ class ContainerCard extends StatelessWidget {
                             color: AppColors.amber,
                           ),
                           Text(
-                            '${container.rating} (1xx)',
+                            '${container.rating} (${container.ratingCount})',
                             style: Fonts.regular14
                                 .copyWith(fontSize: 12, color: AppColors.grey),
                           )
                         ],
                       ),
-                      SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       Wrap(
                         spacing: 3,
                         crossAxisAlignment: WrapCrossAlignment.center,

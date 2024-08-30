@@ -43,16 +43,16 @@ class _SelectButtomSheetState<T extends HasId>
   @override
   void initState() {
     super.initState();
-    _selected = widget.initialValue as T;
+    _selected = widget.initialValue;
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: Padding(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Container(
-          padding: EdgeInsets.only(top: 12),
+          padding: const EdgeInsets.only(top: 12),
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -63,7 +63,7 @@ class _SelectButtomSheetState<T extends HasId>
                     style: Fonts.bold18,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   Text(
                     widget.message,
                     style: Fonts.regular12,
@@ -71,34 +71,34 @@ class _SelectButtomSheetState<T extends HasId>
                   ),
                 ],
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               Expanded(
                 child: Container(
                   height: 100,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: AppColors.lightGrey,
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                    borderRadius: const BorderRadius.all(Radius.circular(24)),
                   ),
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
                         ListView.builder(
-                          physics: ScrollPhysics(),
+                          physics: const ScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: widget.data.length,
                           itemBuilder: (c, i) => GestureDetector(
                             onTap: () {
-                              updateSelected(widget.data[i] as T);
+                              updateSelected(widget.data[i]);
                             },
                             child: Container(
-                              margin: EdgeInsets.fromLTRB(6, 6, 6, 0),
-                              padding: EdgeInsets.all(18),
+                              margin: const EdgeInsets.fromLTRB(6, 6, 6, 0),
+                              padding: const EdgeInsets.all(18),
                               decoration: BoxDecoration(
                                 color: _selected.id == widget.data[i].id
                                     ? AppColors.greenAccent
                                     : AppColors.white,
-                                borderRadius: BorderRadius.all(
+                                borderRadius: const BorderRadius.all(
                                   Radius.circular(18),
                                 ),
                                 border: Border.all(
@@ -110,7 +110,7 @@ class _SelectButtomSheetState<T extends HasId>
                                     widget.data[i].name,
                                     style: Fonts.semibold14,
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Icon(
                                     Icons.location_city_rounded,
                                     color: AppColors.bluePrimary,
@@ -125,7 +125,7 @@ class _SelectButtomSheetState<T extends HasId>
                   ),
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     elevation: 0,

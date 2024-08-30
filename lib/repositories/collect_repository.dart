@@ -69,7 +69,7 @@ class CollectDioRepository implements CollectRepository {
       final response =
           await fetcher.post('${Api.baseUrl}/image/collect', data: formData);
       final imgPath =
-          'https://gqukwmsjfyupbgvhdjob.supabase.co/storage/v1/object/authenticated/images/${response.data['data'][0]['path'] as String}';
+          '${Api.supabaseUrl}/storage/v1/object/authenticated/images/${response.data['data'][0]['path'] as String}';
 
       // Assign uploaded image path
       final payload = collect.toMap();

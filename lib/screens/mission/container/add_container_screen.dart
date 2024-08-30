@@ -28,6 +28,11 @@ class AddContanierScreen extends ConsumerStatefulWidget {
 
 class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     maxVolController.dispose();
     maxKgController.dispose();
@@ -56,7 +61,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
   }
 
   // TODO -> replaced by current user location
-  LatLng selectedLocation = LatLng(-7.764655, 110.371049);
+  LatLng? selectedLocation;
   void updateLocation(LatLng newLocation) {
     setState(() {
       selectedLocation = newLocation;
@@ -94,7 +99,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
 
   // Submit
   void handleSubmit() {
-    if (!formKey.currentState!.validate()) {
+    if (!formKey.currentState!.validate() && selectedLocation == null) {
       ScaffoldMessenger.of(context).showSnackBar(popSnackbar(
           'Input data tidak lengkap/invalid. Mohon isi dengan benar',
           SnackBarType.error));
@@ -106,8 +111,8 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
         name: nameController.text.trim(),
         maxKg: double.parse(maxKgController.text.trim()),
         maxVol: double.parse(maxVolController.text.trim()),
-        lat: selectedLocation.latitude,
-        long: selectedLocation.longitude,
+        lat: selectedLocation!.latitude,
+        long: selectedLocation!.longitude,
         type: selectedType,
         clusterId: selectedCluster.id);
 
@@ -125,15 +130,15 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
         s.showErrorSnackbar(context);
       }
 
-      if (state.isLoading) {
-        state.showLoadingSnackbar(context, 'Menambah data');
+      if (s.isLoading) {
+        s.showLoadingSnackbar(context, 'Menambah data');
       }
 
-      if (!state.hasError && !state.isLoading) {
-        state.showSnackbar(context,
+      if (!s.hasError && !s.isLoading) {
+        s.showSnackbar(context,
             'Asyik! Poin akan kamu dapatkan ketika laporanmu disetujui Admin 🤩');
-        ref.invalidate(containersProvider);
         Navigator.of(context, rootNavigator: true).pop();
+        ref.invalidate(containersProvider);
       }
     });
 
@@ -142,11 +147,19 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
         toolbarHeight: 72,
         title: Text('Tambah Depo/Tong Baru', style: Fonts.semibold16),
         centerTitle: false,
+        leading: IconButton(
+          onPressed: state.isLoading
+              ? null
+              : () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+          icon: const Icon(Icons.arrow_back_rounded),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         child: SingleChildScrollView(
-          physics: ScrollPhysics(),
+          physics: const ScrollPhysics(),
           child: Form(
             key: formKey,
             child: Column(
@@ -163,7 +176,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Nama Depo/Tong', style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: nameController,
                         textAlignVertical: TextAlignVertical.center,
@@ -176,12 +189,12 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                           message: 'Mohon input nama depo/tong yang valid',
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text('Tipe Depo/Tong*', style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       GridView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: containerTypeInputCards.length,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
@@ -196,17 +209,17 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                             isSelected: selectedType ==
                                 containerTypeInputCards[i].value),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
                         containerTypeInputCards
                             .firstWhere((w) => w.value == selectedType)
                             .description,
                         style: Fonts.regular12.copyWith(color: AppColors.grey),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text('Kapasitas Volume Maks (L)*',
                           style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: maxVolController,
                         textAlignVertical: TextAlignVertical.center,
@@ -215,17 +228,17 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                           'Contoh: 2000 (dalam L)',
                           const Icon(Icons.unfold_more_rounded),
                         ),
-                        keyboardType: TextInputType.numberWithOptions(
+                        keyboardType: const TextInputType.numberWithOptions(
                             signed: false, decimal: true),
                         validator: (value) => textfieldValidator(
                           value,
                           message: 'Mohon input maksimum volume yang valid',
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text('Kapasitas Berat Maks (kg)*',
                           style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: maxKgController,
                         textAlignVertical: TextAlignVertical.center,
@@ -233,16 +246,16 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                         decoration: StyledInputDecoration.basic(
                             'Contoh: 1000 (dalam kg)',
                             const Icon(Icons.unfold_more_rounded)),
-                        keyboardType: TextInputType.numberWithOptions(
+                        keyboardType: const TextInputType.numberWithOptions(
                             signed: false, decimal: true),
                         validator: (value) => textfieldValidator(
                           value,
                           message: 'Mohon input maksimum berat yang valid',
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text('Lokasi*', style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       OutlinedButton(
                         style: OutlinedButton.styleFrom(
                             side: BorderSide(
@@ -255,19 +268,21 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                         onPressed: state.isLoading
                             ? null
                             : () {
-                                updateLocation(
-                                  LatLng(
-                                      currentPosition.value?.latitude ??
-                                          selectedLocation.latitude,
-                                      currentPosition.value?.latitude ??
-                                          selectedLocation.longitude),
-                                );
+                                // Default value = user coordinate
+                                if (selectedLocation == null &&
+                                    !currentPosition.hasError &&
+                                    !currentPosition.isLoading &&
+                                    currentPosition.hasValue) {
+                                  selectedLocation = LatLng(
+                                      currentPosition.value?.latitude ?? 0,
+                                      currentPosition.value?.longitude ?? 0);
+                                }
 
                                 Navigator.of(context, rootNavigator: true).push(
                                   MaterialPageRoute(
                                     builder: (_) => MapSelectScreen(
                                       updateCoord: updateLocation,
-                                      initialCoord: selectedLocation,
+                                      initialCoord: selectedLocation!,
                                     ),
                                   ),
                                 );
@@ -288,15 +303,15 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
-                        'Koordinat [${selectedLocation.latitude}, ${selectedLocation.longitude}]',
+                        'Koordinat [${selectedLocation?.latitude ?? '-'}, ${selectedLocation?.longitude ?? '-'}]',
                         style: Fonts.semibold14
                             .copyWith(fontSize: 12, color: AppColors.grey),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text('Klaster', style: Fonts.semibold14),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Row(
                         children: [
                           Flexible(
@@ -309,7 +324,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                                   selectedCluster.name),
                             ),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           clusters.when(
                             data: (data) => CircleAvatar(
                               backgroundColor: AppColors.greenPrimary,
@@ -346,7 +361,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 6),
+                      const SizedBox(height: 6),
                       Text(
                         'Pilih sesuai klaster yang ada',
                         style: Fonts.regular12.copyWith(color: AppColors.grey),
@@ -354,7 +369,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -394,7 +409,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                                   style: Fonts.bold16,
                                 ),
                                 const SizedBox(width: 9),
-                                AddedPointPill(point: 5)
+                                const AddedPointPill(point: 5)
                               ],
                       ),
                     ),

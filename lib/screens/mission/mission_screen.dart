@@ -2,7 +2,6 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart' hide ServiceStatus;
-import 'package:skripsi_mobile/repositories/container_repository.dart';
 import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/layout/main_layout.dart';
@@ -10,7 +9,6 @@ import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
 import 'package:skripsi_mobile/shared/card/card.dart';
 import 'package:skripsi_mobile/models/ui/menu.dart';
 import 'package:skripsi_mobile/theme.dart';
-import 'package:skripsi_mobile/utils/location.dart';
 
 class MissionScreen extends ConsumerStatefulWidget {
   const MissionScreen({super.key});
@@ -66,11 +64,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                         height: 120,
                         width: 120,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(24)),
+                          borderRadius: const BorderRadius.all(Radius.circular(24)),
                           color: AppColors.amber,
                         ),
                       ),
-                      SizedBox(height: 36),
+                      const SizedBox(height: 36),
                       Column(
                         children: [
                           Text('Oops, Tunggu Dulu 🤔', style: Fonts.bold18),
@@ -82,7 +80,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 36),
+                      const SizedBox(height: 36),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             elevation: 0,
@@ -121,7 +119,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                             AppColors.greenPrimary,
                             Colors.green[800]!
                           ]),
-                          borderRadius: BorderRadius.all(Radius.circular(24)),
+                          borderRadius: const BorderRadius.all(Radius.circular(24)),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -130,18 +128,18 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                             Text('#learn1',
                                 style: Fonts.regular14
                                     .copyWith(color: AppColors.white)),
-                            SizedBox(height: 6),
+                            const SizedBox(height: 6),
                             Text(
                               'Pemilahan Sampah 101',
                               style: Fonts.bold18.copyWith(
                                   color: AppColors.white, fontSize: 21),
                             ),
-                            SizedBox(height: 12),
+                            const SizedBox(height: 12),
                             Container(
-                              padding: EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
+                                      const BorderRadius.all(Radius.circular(12)),
                                   color: AppColors.dark1.withOpacity(0.1)),
                               child: Text(
                                 'Sebelum kamu memulai misi Kumpul Sampah!, ada baiknya kamu belajar pemilahan sampah secara singkat dulu ya..',
@@ -149,7 +147,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                                     .copyWith(color: AppColors.white),
                               ),
                             ),
-                            SizedBox(height: 12),
+                            const SizedBox(height: 12),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   elevation: 0,
@@ -188,7 +186,7 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Flexible(
                         child: GridView.builder(
                           itemCount: missionMenu.length,

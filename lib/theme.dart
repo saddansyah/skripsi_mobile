@@ -15,7 +15,7 @@ class AppColors {
   static Color dark2 = const Color(0xFF4A4A4A);
   static Color lightGrey = Colors.grey[300]!;
   static Color grey = const Color(0xFF999798);
-  static Color white = Color.fromARGB(255, 241, 241, 241);
+  static Color white = const Color.fromARGB(255, 241, 241, 241);
 }
 
 class Fonts {

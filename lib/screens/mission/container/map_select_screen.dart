@@ -21,8 +21,8 @@ class _MapSelectScreenState extends State<MapSelectScreen> {
 
   @override
   void initState() {
-    super.initState();
     selectedCoord = widget.initialCoord;
+    super.initState();
   }
 
   @override
@@ -55,12 +55,13 @@ class _MapSelectScreenState extends State<MapSelectScreen> {
                   setState(() {
                     selectedCoord = point;
                   });
-          
+
                   widget.updateCoord(selectedCoord);
                 },
-                interactionOptions: InteractionOptions(flags: InteractiveFlag.all),
+                interactionOptions:
+                    const InteractionOptions(flags: InteractiveFlag.all),
                 backgroundColor: AppColors.lightGrey,
-                initialCenter: widget.initialCoord,
+                initialCenter: selectedCoord,
                 initialZoom: 18),
             children: [
               TileLayer(

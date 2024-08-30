@@ -21,11 +21,11 @@ class Dropdown<T extends DropdownData> extends StatelessWidget {
       flex: 3,
       fit: FlexFit.tight,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         height: 36,
         decoration: BoxDecoration(
             color: AppColors.greenAccent,
-            borderRadius: BorderRadius.all(Radius.circular(12))),
+            borderRadius: const BorderRadius.all(Radius.circular(12))),
         child: DropdownButtonHideUnderline(
           child: DropdownButton(
             hint: Text(hint,
