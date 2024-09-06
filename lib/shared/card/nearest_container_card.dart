@@ -52,9 +52,7 @@ class NearestContainerCard extends StatelessWidget {
                 onPressed: () {
                   controller.fitCamera(
                     // Fit to nearest container against my location
-                    CameraFit.insideBounds(
-                      maxZoom: 16,
-                      minZoom: 16,
+                    CameraFit.bounds(
                       bounds: bound,
                     ),
                   );

@@ -118,7 +118,7 @@ class _ArContainerScreenState extends ConsumerState<ArContainerScreen> {
                     child: Transform(
                       transform: Matrix4.identity()..rotateX(math.pi / 4),
                       child: AnimatedRotation(
-                        duration: const Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 0),
                         turns: (heading.value! -
                                 Location.getBearing(
                                     currentPosition.value?.latitude ?? 0,

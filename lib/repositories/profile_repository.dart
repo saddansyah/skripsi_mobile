@@ -39,8 +39,11 @@ class ProfileDioRepository implements ProfileRepository {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
         print(e);
-        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+        throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
+    }
+    catch(e){
+      rethrow;
     }
   }
 }

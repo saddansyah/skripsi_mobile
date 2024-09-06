@@ -59,15 +59,12 @@ class _MapContainerSelectScreenState
                     LatLng(currentPosition.value?.latitude ?? 0,
                         currentPosition.value?.longitude ?? 0),
                     18);
-                controller.fitCamera(CameraFit.insideBounds(
-                    maxZoom: 17,
-                    minZoom: 17,
+                controller.fitCamera(CameraFit.bounds(
                     bounds: LatLngBounds(
-                      LatLng(nearestContainers.value?.first.lat.toDouble() ?? 0,
-                          nearestContainers.value?.first.long.toDouble() ?? 0),
-                      LatLng(currentPosition.value?.latitude.toDouble() ?? 0,
-                          currentPosition.value?.longitude.toDouble() ?? 0),
-                    )));
+                  LatLng(selected.lat.toDouble(), selected.long.toDouble()),
+                  LatLng(currentPosition.value?.latitude.toDouble() ?? 0,
+                      currentPosition.value?.longitude.toDouble() ?? 0),
+                )));
               },
               foregroundColor: AppColors.white,
               backgroundColor: AppColors.bluePrimary,

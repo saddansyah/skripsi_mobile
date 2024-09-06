@@ -87,7 +87,7 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                my.value?.totalPoint.toString() ?? '0',
+                                '${my.hasError ? '-' : (my.value?.totalPoint ?? 0)}',
                                 style: Fonts.bold18.copyWith(
                                     color: AppColors.dark2, fontSize: 24),
                               ),

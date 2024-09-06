@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skripsi_mobile/controller/auth_controller.dart';
@@ -99,7 +98,8 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(24)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(24)),
                           gradient: LinearGradient(
                             colors: [
                               AppColors.amber,
@@ -118,10 +118,7 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
                             ),
                             const SizedBox(width: 3),
                             Text(
-                              profile.whenOrNull(
-                                      data: (data) =>
-                                          data.totalPoint.toString()) ??
-                                  '-',
+                              '${profile.hasError ? '-' : (profile.value?.totalPoint ?? 0)}',
                               style:
                                   Fonts.bold16.copyWith(color: AppColors.dark2),
                             )

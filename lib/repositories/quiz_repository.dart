@@ -36,7 +36,7 @@ class QuizDioRepository implements QuizRepository {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
         print(e);
-        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+        throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }
@@ -52,7 +52,7 @@ class QuizDioRepository implements QuizRepository {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
         print(e);
-        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+        throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }
@@ -61,14 +61,15 @@ class QuizDioRepository implements QuizRepository {
   Future<QuizStatus> checkQuizStatus() async {
     try {
       final response = await fetcher.get('${Api.baseUrl}/quiz/status');
-      return QuizStatus.fromMap(response.data['data'][0]);
+
+      return QuizStatus.fromMap(response.data['data']?[0]);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
         print(e);
-        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+        throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }

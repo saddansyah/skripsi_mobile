@@ -30,7 +30,7 @@ class ClusterDioRepository implements ClusterRepository {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
         print(e);
-        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+        throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }
@@ -47,7 +47,7 @@ class ClusterDioRepository implements ClusterRepository {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
         print(e);
-        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+        throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }

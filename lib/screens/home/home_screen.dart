@@ -60,6 +60,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  
+  void resetQuizCountdown() {
+    quizTimer?.cancel();
+    quizTimer = null;
+  }
+
   // Flashcard
   Timer? flashcardTimer;
   Duration flashcardCountdownDuration = const Duration();
@@ -103,6 +109,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
+  void resetFlashcardCountdown() {
+    flashcardTimer?.cancel();
+    flashcardTimer = null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -128,6 +139,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           await ref.refresh(quizStatusProvider.future);
           await ref.refresh(profileProvider.future);
           await ref.refresh(collectSummaryProvider.future);
+          resetFlashcardCountdown();
+          resetQuizCountdown();
         },
         child: SingleChildScrollView(
           child: Padding(
@@ -495,7 +508,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             : () {
                                 showFlashcard();
 
-                                startFlashcardCountdown(DateTime.now().toLocal()
+                                startFlashcardCountdown(DateTime.now()
+                                    .toLocal()
                                     .add(const Duration(seconds: 30)));
                               },
                         child: Text(

@@ -88,13 +88,14 @@ class UserRankingCard extends ConsumerWidget {
                                 size: 18,
                               ),
                               Text(
-                                user.totalPoint.toString(),
+                                '${user.totalPoint ?? 0}',
                                 style: Fonts.semibold14
                                     .copyWith(color: AppColors.dark2),
                               ),
                             ],
                           ),
                         ),
+                        // Text(user.),
                       ],
                     )
                   ],

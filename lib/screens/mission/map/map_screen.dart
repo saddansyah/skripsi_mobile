@@ -104,7 +104,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       width: 48,
                       height: 48,
                       child: AnimatedRotation(
-                        duration: const Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 0),
                         turns: heading.value! / 360,
                         child: Container(
                           width: 24,

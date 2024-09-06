@@ -35,7 +35,7 @@ class AchievementDioRepository implements AchievementRepository {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
         print(e);
-        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+        throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }
@@ -64,7 +64,7 @@ class LeaderboardDioRepository implements LeaderboardRepository {
         throw 'Koneksi timeout. Terjadi kesalahan di server';
       } else {
         print(e);
-        throw throw 'Terjadi galat pada server (${e.response?.statusCode})';
+        throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
   }
