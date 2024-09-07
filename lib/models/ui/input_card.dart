@@ -46,31 +46,31 @@ final List<InputCard<WasteType>> wasteTypeInputCards = [
   InputCard(
     WasteType.b3,
     'B3',
-    'Contoh sampah B3: ...',
+    'Contoh sampah B3: limbah elektronik, limbah atau kemasan produk mengandung B3 (cairan korosif, dll), dll',
     'assets/svgs/container_icon.svg',
   ),
   InputCard(
     WasteType.daurUlang,
     'Daur Ulang',
-    'Contoh sampah Daur Ulang: ...',
+    'Contoh sampah Daur Ulang: plastik, kertas, logam, kaca, karet, tekstil, dll',
     'assets/svgs/container_icon.svg',
   ),
   InputCard(
     WasteType.gunaUlang,
     'Guna Ulang',
-    'Contoh sampah Guna Ulang: ...',
+    'Contoh sampah Guna Ulang: plastik, kertas, logam, kaca, karet, tekstil, dll',
     'assets/svgs/container_icon.svg',
   ),
   InputCard(
     WasteType.residu,
     'Residu',
-    'Contoh sampah Residu: ...',
+    'Contoh sampah Residu: popok, plastik kemasan kopi, sterefoam, dll',
     'assets/svgs/container_icon.svg',
   ),
   InputCard(
     WasteType.organik,
     'Organik',
-    'Contoh sampah Organik: ...',
+    'Contoh sampah Organik: sisa makanan, serasah, limbah mudah terurai lainnya',
     'assets/svgs/container_icon.svg',
   ),
   InputCard(

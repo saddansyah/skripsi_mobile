@@ -225,7 +225,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                         textAlignVertical: TextAlignVertical.center,
                         style: Fonts.regular14,
                         decoration: StyledInputDecoration.basic(
-                          'Contoh: 2000 (dalam L)',
+                          'Contoh: 25 (dalam L)',
                           const Icon(Icons.unfold_more_rounded),
                         ),
                         keyboardType: const TextInputType.numberWithOptions(
@@ -234,6 +234,11 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                           value,
                           message: 'Mohon input maksimum volume yang valid',
                         ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Biasanya, kapasitas tong untuk 1 KK (3-4 orang) adalah 10-40L sedangkan kapasitas depo untuk 40-80 KK adalah 500-1000L',
+                        style: Fonts.regular12.copyWith(color: AppColors.grey),
                       ),
                       const SizedBox(height: 24),
                       Text('Kapasitas Berat Maks (kg)*',
@@ -244,7 +249,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                         textAlignVertical: TextAlignVertical.center,
                         style: Fonts.regular14,
                         decoration: StyledInputDecoration.basic(
-                            'Contoh: 1000 (dalam kg)',
+                            'Contoh: 9 (dalam kg)',
                             const Icon(Icons.unfold_more_rounded)),
                         keyboardType: const TextInputType.numberWithOptions(
                             signed: false, decimal: true),
@@ -252,6 +257,11 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                           value,
                           message: 'Mohon input maksimum berat yang valid',
                         ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Biasanya, kapasitas tong untuk 1 KK (3-4 orang) adalah 0.6-2.3 kg sedangkan kapasitas depo untuk 40-80 KK adalah 10-35 kg',
+                        style: Fonts.regular12.copyWith(color: AppColors.grey),
                       ),
                       const SizedBox(height: 24),
                       Text('Lokasi*', style: Fonts.semibold14),
@@ -409,7 +419,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                                   style: Fonts.bold16,
                                 ),
                                 const SizedBox(width: 9),
-                                const AddedPointPill(point: 5)
+                                const AddedPointPill(point: '5')
                               ],
                       ),
                     ),

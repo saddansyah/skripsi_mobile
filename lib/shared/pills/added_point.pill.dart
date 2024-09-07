@@ -4,7 +4,7 @@ import 'package:skripsi_mobile/theme.dart';
 class AddedPointPill extends StatelessWidget {
   const AddedPointPill({super.key, required this.point});
 
-  final int point;
+  final String point;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class AddedPointPill extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            '+$point',
+            point,
             style: Fonts.semibold14.copyWith(color: AppColors.dark2),
           ),
           Icon(

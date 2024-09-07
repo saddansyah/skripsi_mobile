@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:skripsi_mobile/controller/daily_sign_in_controller.dart';
 import 'package:skripsi_mobile/repositories/collect_repository.dart';
+import 'package:skripsi_mobile/repositories/daily_sign_in_repository.dart';
 import 'package:skripsi_mobile/shared/appbar/styled_appbar.dart';
 import 'package:skripsi_mobile/shared/dialog/flashcard_dialog.dart';
+import 'package:skripsi_mobile/utils/extension.dart';
 import 'package:skripsi_mobile/utils/string.dart';
 import 'package:vector_math/vector_math.dart' as math;
 import 'package:flutter/material.dart';
@@ -29,6 +32,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final seconds = twoDigits(duration.inSeconds.remainder(60));
 
     return '$hours:$minutes:$seconds';
+  }
+
+  // Daily Sign In
+  Timer? dailySignInTimer;
+  Duration dailySignInCountdownDuration = const Duration();
+  void startDailySignInCountdown(bool isDailySignInReady, DateTime nextDate) {
+    if (dailySignInTimer != null) return;
+
+    if (isDailySignInReady) {
+      dailySignInTimer?.cancel();
+      dailySignInTimer = null;
+      return;
+    }
+
+    if (!isDailySignInReady) {
+      dailySignInTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+        setState(() {
+          dailySignInCountdownDuration =
+              nextDate.toLocal().difference(DateTime.now().toLocal());
+
+          if (dailySignInCountdownDuration.isNegative) {
+            dailySignInTimer?.cancel();
+            dailySignInTimer = null;
+            dailySignInCountdownDuration = const Duration();
+            return;
+          }
+        });
+      });
+    }
+  }
+
+  void resetDailySignInCountdown() {
+    dailySignInTimer?.cancel();
+    dailySignInTimer = null;
   }
 
   // Quiz
@@ -60,7 +97,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  
   void resetQuizCountdown() {
     quizTimer?.cancel();
     quizTimer = null;
@@ -115,22 +151,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
+    super.dispose();
+    quizTimer?.cancel();
+    quizTimer = null;
     flashcardTimer?.cancel();
     flashcardTimer = null;
-    super.dispose();
+    dailySignInTimer?.cancel();
+    dailySignInTimer = null;
   }
 
   @override
   Widget build(BuildContext context) {
     final my = ref.watch(profileProvider);
     final quizStatus = ref.watch(quizStatusProvider);
+    final dailySignInStatus = ref.watch(dailySignInStatusProvider);
+    final dailySignInStreak = ref.watch(dailySignInStreakProvider);
+    final dailySignInState = ref.watch(dailySignInControllerProvider);
     final summary = ref.watch(collectSummaryProvider);
+
+    ref.listen<AsyncValue>(dailySignInControllerProvider, (_, s) {
+      if (s.hasError && !s.isLoading) {
+        s.showErrorSnackbar(context);
+      }
+
+      if (s.isLoading) {
+        s.showLoadingSnackbar(context, 'Melakukan klaim signin');
+      }
+
+      if (!s.hasError && !s.isLoading) {
+        s.showSnackbar(
+            context, 'Asyik! Kamu berhasil klaim signin/streak kamu!');
+        ref.invalidate(dailySignInStatusProvider);
+        ref.invalidate(dailySignInStreakProvider);
+      }
+    });
 
     return Scaffold(
       appBar: StyledAppBar.main(title: '♻️ Skripsi-Mobile'),
@@ -139,8 +194,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           await ref.refresh(quizStatusProvider.future);
           await ref.refresh(profileProvider.future);
           await ref.refresh(collectSummaryProvider.future);
-          resetFlashcardCountdown();
+          await ref.refresh(dailySignInStatusProvider.future);
+          await ref.refresh(dailySignInStreakProvider.future);
           resetQuizCountdown();
+          resetDailySignInCountdown();
         },
         child: SingleChildScrollView(
           child: Padding(
@@ -172,6 +229,148 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         style: Fonts.regular14.copyWith(color: AppColors.dark2),
                       ),
                     ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(24),
+                      ),
+                      color: AppColors.bluePrimary),
+                  child: Column(
+                    children: dailySignInStatus.when(
+                      error: (e, s) => [
+                        Expanded(
+                          child: Text('Terjadi galat saat memuat status',
+                              style: Fonts.semibold16
+                                  .copyWith(color: AppColors.white)),
+                        ),
+                      ],
+                      loading: () => [
+                        Center(
+                            child: CircularProgressIndicator(
+                                color: AppColors.blueAccent))
+                      ],
+                      data: (s) {
+                        final isDailySignInReady = DateTime.now()
+                            .toLocal()
+                            .isAfter(s.nextDate.toLocal());
+
+                        startDailySignInCountdown(
+                            isDailySignInReady, s.nextDate);
+
+                        return [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: !isDailySignInReady
+                                    ? Text(
+                                        'Klaim dalam ${formatCountdown(dailySignInCountdownDuration)}',
+                                        style: Fonts.semibold16
+                                            .copyWith(color: AppColors.white))
+                                    : Text('Klaim daily sign in kamu!',
+                                        style: Fonts.semibold16
+                                            .copyWith(color: AppColors.white)),
+                              ),
+                              const SizedBox(width: 6),
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                    disabledBackgroundColor:
+                                        AppColors.dark2.withOpacity(0.2),
+                                    disabledForegroundColor:
+                                        AppColors.bluePrimary,
+                                    elevation: 0,
+                                    backgroundColor:
+                                        AppColors.dark2.withOpacity(0.3),
+                                    foregroundColor: AppColors.white,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(72)),
+                                    )),
+                                onPressed: !isDailySignInReady ||
+                                        dailySignInState.isLoading
+                                    ? null
+                                    : () {
+                                        ref
+                                            .read(dailySignInControllerProvider
+                                                .notifier)
+                                            .claimDailySignInStatus();
+                                      },
+                                child: Text(
+                                  'Klaim',
+                                  style: Fonts.semibold14,
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          dailySignInStreak.when(
+                            error: (e, s) => Expanded(
+                              child: Text('Terjadi galat saat memuat streak',
+                                  style: Fonts.semibold16
+                                      .copyWith(color: AppColors.white)),
+                            ),
+                            loading: () => Center(
+                                child: CircularProgressIndicator(
+                                    color: AppColors.blueAccent)),
+                            data: (streak) {
+                              return ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    disabledBackgroundColor: AppColors
+                                        .blueSecondary
+                                        .withOpacity(0.3),
+                                    disabledForegroundColor:
+                                        AppColors.blueSecondary,
+                                    elevation: 0,
+                                    backgroundColor: AppColors.blueSecondary
+                                        .withOpacity(0.3),
+                                    foregroundColor: AppColors.white,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(12)),
+                                    )),
+                                onPressed: streak.weeklyStreakRemaining > 0
+                                    ? null
+                                    : () {
+                                        ref
+                                            .read(dailySignInControllerProvider
+                                                .notifier)
+                                            .claimDailySignInStreak();
+                                      },
+                                child: SizedBox(
+                                  height: 60,
+                                  width: double.infinity,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: streak.weeklyStreakRemaining > 0
+                                        ? [
+                                            Text(
+                                              '${streak.weeklyStreakRemaining} klaim lagi untuk streak',
+                                              style: Fonts.bold16.copyWith(
+                                                  color: AppColors.white),
+                                            )
+                                          ]
+                                        : [
+                                            Text(
+                                              'Klaim streak',
+                                              style: Fonts.bold16,
+                                            ),
+                                            const SizedBox(width: 12),
+                                            const AddedPointPill(point: '7')
+                                          ],
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        ];
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -466,7 +665,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           style: Fonts.bold16,
                                         ),
                                         const SizedBox(width: 12),
-                                        const AddedPointPill(point: 3)
+                                        const AddedPointPill(point: '1-10')
                                       ],
                               ),
                             ),

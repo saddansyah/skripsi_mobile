@@ -260,7 +260,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                         controller: volController,
                         textAlignVertical: TextAlignVertical.center,
                         style: Fonts.regular14,
-                        decoration: StyledInputDecoration.basic('Contoh: 1.2',
+                        decoration: StyledInputDecoration.basic('Contoh: 0.3',
                             const Icon(Icons.unfold_more_rounded)),
                         keyboardType: const TextInputType.numberWithOptions(
                             signed: false, decimal: true),
@@ -269,6 +269,11 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                           message: 'Mohon input volume yang valid',
                         ),
                       ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Tiap harinya, satu orang memproduksi sekitar 0.3 L sampah',
+                        style: Fonts.regular12.copyWith(color: AppColors.grey),
+                      ),
                       const SizedBox(height: 24),
                       Text('Berat (kg)*', style: Fonts.semibold14),
                       const SizedBox(height: 12),
@@ -276,7 +281,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                         controller: kgController,
                         textAlignVertical: TextAlignVertical.center,
                         style: Fonts.regular14,
-                        decoration: StyledInputDecoration.basic('Contoh: 1.2',
+                        decoration: StyledInputDecoration.basic('Contoh: 0.05',
                             const Icon(Icons.unfold_more_rounded)),
                         keyboardType: const TextInputType.numberWithOptions(
                             signed: false, decimal: true),
@@ -284,6 +289,11 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                           value,
                           message: 'Mohon input berat yang valid',
                         ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Tiap harinya, satu orang memproduksi sekitar 0.17 kg sampah',
+                        style: Fonts.regular12.copyWith(color: AppColors.grey),
                       ),
                       const SizedBox(height: 24),
                       Text('Tipe Sampah*', style: Fonts.semibold14),
@@ -411,7 +421,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                                   style: Fonts.bold16,
                                 ),
                                 const SizedBox(width: 9),
-                                const AddedPointPill(point: 5)
+                                const AddedPointPill(point: '5')
                               ],
                       ),
                     ),

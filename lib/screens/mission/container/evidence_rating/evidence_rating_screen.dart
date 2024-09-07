@@ -264,7 +264,7 @@ class _EvidenceRatingScreenState extends ConsumerState<EvidenceRatingScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children: false
+                        children: state.isLoading
                             ? [
                                 CircularProgressIndicator(
                                     color: AppColors.white)
@@ -281,7 +281,7 @@ class _EvidenceRatingScreenState extends ConsumerState<EvidenceRatingScreen> {
                                   style: Fonts.bold16,
                                 ),
                                 const SizedBox(width: 9),
-                                const AddedPointPill(point: 5)
+                                const AddedPointPill(point: '5')
                               ],
                       ),
                     ),

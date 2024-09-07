@@ -18,6 +18,7 @@ import 'package:skripsi_mobile/screens/exception/error_screen.dart';
 import 'package:skripsi_mobile/screens/exception/loading_screen.dart';
 import 'package:skripsi_mobile/screens/mission/ar/ar_container_screen.dart';
 import 'package:skripsi_mobile/screens/mission/collect/add_collect_screen.dart';
+import 'package:skripsi_mobile/screens/mission/container/evidence_rating/evidence_rating_list_screen.dart';
 import 'package:skripsi_mobile/screens/mission/container/evidence_rating/evidence_rating_screen.dart';
 import 'package:skripsi_mobile/screens/mission/map/view_only_map_screen.dart';
 import 'package:skripsi_mobile/shared/bottom_sheet/confirmation_bottom_sheet.dart';
@@ -242,7 +243,7 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                               const SizedBox(width: 6),
                               d.status == Status.accepted &&
                                       d.userId == profile.value?.id
-                                  ? AddedPointPill(point: d.point)
+                                  ? AddedPointPill(point: d.point.toString())
                                   : const SizedBox(width: 0),
                               const SizedBox(width: 6),
                             ],
@@ -516,7 +517,7 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                                           padding: const EdgeInsets.all(24),
                                           child: Center(
                                             child: Text(
-                                              'Tidak ada data rating',
+                                              'Ratingmu belum ada',
                                               style: Fonts.semibold14.copyWith(
                                                   color: AppColors.grey),
                                             ),
@@ -584,7 +585,43 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                                         child: CircularProgressIndicator()),
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: 6),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    padding: const EdgeInsets.all(0),
+                                    elevation: 0,
+                                  ),
+                                  onPressed: ratingState.isLoading
+                                      ? null
+                                      : () {
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .push(
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  EvidenceRatingListScreen(
+                                                      container: d),
+                                            ),
+                                          );
+                                        },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 48,
+                                    width: double.infinity,
+                                    child: Center(
+                                      child: ratingState.isLoading
+                                          ? CircularProgressIndicator(
+                                              color: AppColors.greenPrimary)
+                                          : Text(
+                                              'Lihat Semua Rating',
+                                              style: Fonts.semibold14.copyWith(
+                                                  color:
+                                                      AppColors.greenPrimary),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
                                 rating.when(
                                   error: (e, s) => ListTile(
                                     title: Text(
@@ -645,7 +682,7 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
                                             ),
                                           );
                                   },
-                                )
+                                ),
                               ],
                             ),
                           ),

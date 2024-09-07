@@ -5,15 +5,16 @@ import 'package:skripsi_mobile/repositories/container_repository.dart';
 import 'package:skripsi_mobile/utils/api.dart';
 
 abstract class EvidenceRatingRepository {
+  Future<List<EvidenceRating>> getMyEvidenceRatings(int containerId);
   Future<EvidenceRating?> getMyEvidenceRatingByContainerId(int containerId);
   Future<void> addContainerRating(PayloadEvidenceRating rating);
   Future<void> deleteContainerRating(int containerId);
 }
 
-class EvidenceRatingRepositoryImpl implements EvidenceRatingRepository {
+class EvidenceRatingDioRepository implements EvidenceRatingRepository {
   final Dio fetcher;
 
-  EvidenceRatingRepositoryImpl({required this.fetcher});
+  EvidenceRatingDioRepository({required this.fetcher});
 
   @override
   Future<void> addContainerRating(PayloadEvidenceRating rating) async {
@@ -68,11 +69,44 @@ class EvidenceRatingRepositoryImpl implements EvidenceRatingRepository {
       }
     }
   }
+
+  @override
+  Future<List<EvidenceRating>> getMyEvidenceRatings(int containerId) async {
+    try {
+      final response =
+          await fetcher.get('${Api.baseUrl}/rating/container/public/$containerId');
+
+      
+
+      // {message: string, data: []}
+      final List<EvidenceRating> collects =
+          (response.data['data'] as List<dynamic>)
+              .map((d) => EvidenceRating.fromMap(d as Map<String, dynamic>))
+              .toList();
+
+      return collects;
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw 'Koneksi timeout. Terjadi kesalahan di server';
+      } else {
+        print(e);
+        throw 'Terjadi galat pada server (${e.response?.statusCode})';
+      }
+    }
+  }
 }
 
 final evidenceRatingRepositoryProvider =
     Provider.autoDispose<EvidenceRatingRepository>((ref) {
-  return EvidenceRatingRepositoryImpl(fetcher: ref.watch(dioProvider));
+  return EvidenceRatingDioRepository(fetcher: ref.watch(dioProvider));
+});
+
+final evidenceRatingsProvider = FutureProvider.family
+    .autoDispose<List<EvidenceRating>, int>((ref, containerId) {
+  return ref
+      .watch(evidenceRatingRepositoryProvider)
+      .getMyEvidenceRatings(containerId);
 });
 
 final evidenceRatingProvider =

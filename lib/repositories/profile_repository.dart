@@ -42,9 +42,6 @@ class ProfileDioRepository implements ProfileRepository {
         throw 'Terjadi galat pada server (${e.response?.statusCode})';
       }
     }
-    catch(e){
-      rethrow;
-    }
   }
 }
 

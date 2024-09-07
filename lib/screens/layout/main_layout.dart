@@ -63,7 +63,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
               });
             },
             children: const [
-              KeepAlivePageView(child: HomeNavigation()),
+              HomeNavigation(),
               MilestoneNavigation(),
               MissionNavigation(),
               LearnNavigation(),

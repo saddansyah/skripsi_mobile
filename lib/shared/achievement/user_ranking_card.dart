@@ -5,10 +5,9 @@ import 'package:skripsi_mobile/repositories/profile_repository.dart';
 import 'package:skripsi_mobile/theme.dart';
 
 class UserRankingCard extends ConsumerWidget {
-  const UserRankingCard({super.key, required this.ranking, required this.user});
+  const UserRankingCard({super.key, required this.user});
 
   final LeaderboardUser user;
-  final int ranking;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,13 +29,13 @@ class UserRankingCard extends ConsumerWidget {
             children: [
               CircleAvatar(
                 radius: 12,
-                backgroundColor: switch (ranking) {
+                backgroundColor: switch (user.rankNumber) {
                   1 => AppColors.amber,
                   2 => AppColors.lightGrey,
                   3 => Colors.amber[700],
                   _ => AppColors.white
                 },
-                child: Text(ranking.toString(), style: Fonts.regular14),
+                child: Text(user.rankNumber.toString(), style: Fonts.regular14),
               ),
               const SizedBox(width: 12),
               CircleAvatar(
@@ -62,6 +61,21 @@ class UserRankingCard extends ConsumerWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 3),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            user.rank,
+                            style: Fonts.regular12.copyWith(color: AppColors.grey, fontSize: 10),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: true,
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 6),
                     Row(
                       children: [
@@ -71,7 +85,8 @@ class UserRankingCard extends ConsumerWidget {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(24)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(24)),
                             gradient: LinearGradient(
                               colors: [
                                 AppColors.greenSecondary,

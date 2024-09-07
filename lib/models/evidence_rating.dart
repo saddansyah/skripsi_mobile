@@ -6,15 +6,20 @@ class EvidenceRating {
   final DateTime createdAt;
   final int containerId;
   final String userId;
+  final String userName;
+  final String userImage;
 
-  EvidenceRating(
-      {required this.value,
-      required this.isAnonim,
-      required this.info,
-      required this.point,
-      required this.createdAt,
-      required this.containerId,
-      required this.userId});
+  EvidenceRating({
+    required this.value,
+    required this.isAnonim,
+    required this.info,
+    required this.point,
+    required this.createdAt,
+    required this.containerId,
+    required this.userId,
+    required this.userName,
+    required this.userImage,
+  });
 
   factory EvidenceRating.fromMap(Map<String, dynamic> json) {
     return EvidenceRating(
@@ -25,6 +30,8 @@ class EvidenceRating {
       createdAt: DateTime.parse(json['created_at']),
       containerId: json['container_id'],
       userId: json['user_id'],
+      userName: json['user_name'],
+      userImage: json['user_img'],
     );
   }
 }

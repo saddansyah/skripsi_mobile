@@ -28,7 +28,7 @@ class QuizDioRepository implements QuizRepository {
             message: 'Sayang sekali, jawaban kamu belum benar..');
       } else {
         return ResponseQuiz(
-            isCorrect: true, message: 'Selamat! Jawaban kamu benar!');
+            isCorrect: true, message: response.data['message'] as String);
       }
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionTimeout ||

@@ -42,10 +42,10 @@ class User {
       fullname: rawUserMetaData['full_name'],
       avatarUrl: rawUserMetaData['avatar_url'],
       isAdmin: json['is_admin'],
-      totalPoint: json['total_points'],
-      rank: json['rank'],
+      totalPoint: json['total_point'],
+      rank: json['current_rank'],
+      nextPoint: json['current_max_point'],
       nextRank: json['next_rank'],
-      nextPoint: json['next_point'],
     );
   }
 }
@@ -55,12 +55,17 @@ class LeaderboardUser {
   final String name;
   final String img;
   final int totalPoint;
+  final String rank;
+  final int rankNumber;
 
-  LeaderboardUser(
-      {required this.id,
-      required this.name,
-      required this.img,
-      required this.totalPoint});
+  LeaderboardUser({
+    required this.id,
+    required this.name,
+    required this.img,
+    required this.totalPoint,
+    required this.rank,
+    required this.rankNumber,
+  });
 
   factory LeaderboardUser.fromMap(Map<String, dynamic> json) {
     return LeaderboardUser(
@@ -68,6 +73,8 @@ class LeaderboardUser {
       name: json['name'],
       img: json['img'],
       totalPoint: json['total_point'],
+      rank: json['current_rank'],
+      rankNumber: json['rank_number'],
     );
   }
 }

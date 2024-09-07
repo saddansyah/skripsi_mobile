@@ -109,11 +109,13 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
       if (!s.hasError && !s.isLoading) {
         if (s.value!.isCorrect) {
+          // When right answer
           s.showSnackbar(context, s.value?.message ?? '-');
           exitToHome(timerController);
         } else {
+          // When wrong answer
           s.showErrorSnackbar(context, s.value?.message ?? '-');
-          exitToDailyQuiz(timerController);
+          exitToHome(timerController);
         }
       }
     });
@@ -286,7 +288,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                                         .copyWith(color: AppColors.white),
                                   ),
                                   const SizedBox(width: 12),
-                                  const AddedPointPill(point: 3),
+                                  const AddedPointPill(point: '1-10'),
                                 ],
                               ),
                               const SizedBox(height: 12),

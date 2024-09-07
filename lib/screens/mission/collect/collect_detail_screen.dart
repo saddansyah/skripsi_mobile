@@ -158,7 +158,7 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                       ),
                                       const SizedBox(width: 6),
                                       d.status == Status.accepted
-                                          ? AddedPointPill(point: d.point)
+                                          ? AddedPointPill(point: d.point.toString())
                                           : const SizedBox(width: 0),
                                     ],
                                   ),
