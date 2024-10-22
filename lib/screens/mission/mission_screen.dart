@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart' hide ServiceStatus;
 import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
@@ -60,15 +61,11 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        height: 120,
-                        width: 120,
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(24)),
-                          color: AppColors.amber,
-                        ),
+                      SvgPicture.asset(
+                        'assets/svgs/icon_maskot-when-request.svg',
+                        height: 180,
                       ),
-                      const SizedBox(height: 36),
+                      const SizedBox(height: 12),
                       Column(
                         children: [
                           Text('Oops, Tunggu Dulu 🤔', style: Fonts.bold18),
@@ -119,7 +116,8 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                             AppColors.greenPrimary,
                             Colors.green[800]!
                           ]),
-                          borderRadius: const BorderRadius.all(Radius.circular(24)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(24)),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -138,8 +136,8 @@ class _MissionScreenState extends ConsumerState<MissionScreen> {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                  borderRadius:
-                                      const BorderRadius.all(Radius.circular(12)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(12)),
                                   color: AppColors.dark1.withOpacity(0.1)),
                               child: Text(
                                 'Sebelum kamu memulai misi Kumpul Sampah!, ada baiknya kamu belajar pemilahan sampah secara singkat dulu ya..',

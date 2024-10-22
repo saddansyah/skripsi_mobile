@@ -18,11 +18,15 @@ class LoadingScreen extends StatelessWidget {
             width: 120,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(24)),
-              color: AppColors.amber,
+              color: AppColors.white,
             ),
-            child: CircularProgressIndicator(color: AppColors.greenPrimary),
+            clipBehavior: Clip.hardEdge,
+            child: Image.asset(
+              'assets/gifs/loading.gif',
+              fit: BoxFit.cover,
+            ),
           ),
-          const SizedBox(height: 36),
+          const SizedBox(height: 24),
           Wrap(
             direction: Axis.vertical,
             crossAxisAlignment: WrapCrossAlignment.center,

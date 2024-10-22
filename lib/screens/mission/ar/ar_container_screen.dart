@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:skripsi_mobile/models/container.dart' as model;
 import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
 import 'package:skripsi_mobile/theme.dart';
@@ -88,7 +89,8 @@ class _ArContainerScreenState extends ConsumerState<ArContainerScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           color: AppColors.white,
-                          borderRadius: const BorderRadius.all(Radius.circular(24)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(24)),
                         ),
                         child: ListTile(
                           title: Text(
@@ -151,22 +153,18 @@ class _ArContainerScreenState extends ConsumerState<ArContainerScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                height: 120,
-                width: 120,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(24)),
-                  color: AppColors.amber,
-                ),
-              ),
-              const SizedBox(height: 36),
-              Wrap(
-                direction: Axis.vertical,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 6,
+              SvgPicture.asset('assets/svgs/icon_maskot-AR.svg', height: 160),
+              const SizedBox(height: 24),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text('Selamat Datang di Fitur AR', style: Fonts.bold18),
-                  Text('...', style: Fonts.regular14),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Kamu bisa mengarahkan gawaimu untuk melihat dan menavigasi depo atau tong yang kamu pilih secara imersif menggunakan AR',
+                    style: Fonts.regular14,
+                    textAlign: TextAlign.center,
+                  ),
                 ],
               ),
               const SizedBox(height: 36),

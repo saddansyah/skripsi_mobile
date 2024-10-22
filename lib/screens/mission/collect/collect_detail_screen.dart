@@ -428,7 +428,7 @@ class _CollectDetailScreenState extends ConsumerState<CollectDetailScreen> {
                                               title: StepperText(
                                                 d.status == Status.rejected
                                                     ? "Laporan ditolak Admin"
-                                                    : "Laporan disetujui Admin (+5 ⭐)",
+                                                    : "Laporan disetujui Admin (+10 ⭐)",
                                                 textStyle: Fonts.semibold14,
                                               ),
                                               subtitle: StepperText(

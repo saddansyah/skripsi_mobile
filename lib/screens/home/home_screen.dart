@@ -209,24 +209,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
+                      image: const DecorationImage(
+                        image: AssetImage('assets/images/home_screen.png'),
+                        fit: BoxFit.cover,
+                      ),
                       gradient: LinearGradient(colors: [
                         AppColors.white,
                         Colors.green[100]!,
                       ]),
                       borderRadius: const BorderRadius.all(Radius.circular(24)),
-                      border: Border.all(width: 1, color: Colors.green[200]!)),
+                      border: Border.all(
+                          width: 1,
+                          color: const Color.fromARGB(255, 165, 214, 167))),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Halo, ${my.value?.name.split(' ')[0] ?? 'User'} 👋',
-                        style: Fonts.bold18.copyWith(
-                            color: AppColors.greenPrimary, fontSize: 24),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Halo, ${my.value?.name.split(' ')[0] ?? 'User'} 👋',
+                              style: Fonts.bold18.copyWith(
+                                  color: AppColors.greenPrimary, fontSize: 24),
+                            ),
+                          ),
+                          const SizedBox(width: 90),
+                        ],
                       ),
                       const SizedBox(height: 12),
-                      Text(
-                        'Buat pengalaman mengelola sampahmu menjadi menyenangkan!',
-                        style: Fonts.regular14.copyWith(color: AppColors.dark2),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Buat pengalaman mengelola sampahmu menjadi menyenangkan bersama Dika!',
+                              style: Fonts.semibold14
+                                  .copyWith(color: AppColors.dark2),
+                            ),
+                          ),
+                          const SizedBox(width: 90),
+                        ],
                       ),
                     ],
                   ),
@@ -349,18 +370,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         CrossAxisAlignment.center,
                                     children: streak.weeklyStreakRemaining > 0
                                         ? [
-                                            Text(
-                                              '${streak.weeklyStreakRemaining} klaim lagi untuk streak',
-                                              style: Fonts.bold16.copyWith(
-                                                  color: AppColors.white),
-                                            )
+                                            Expanded(
+                                              child: Text(
+                                                '${streak.weeklyStreakRemaining} klaim lagi untuk streak',
+                                                style: Fonts.bold16.copyWith(
+                                                    color: AppColors.white),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 6),
+                                            const AddedPointPill(point: '7')
                                           ]
                                         : [
-                                            Text(
-                                              'Klaim streak',
-                                              style: Fonts.bold16,
+                                            Expanded(
+                                              child: Text(
+                                                'Klaim streak',
+                                                style: Fonts.bold16,
+                                              ),
                                             ),
-                                            const SizedBox(width: 12),
+                                            const SizedBox(width: 6),
                                             const AddedPointPill(point: '7')
                                           ],
                                   ),
@@ -433,7 +460,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                'Jumlah Kumpul Sampah hari ini',
+                                'Kumpul Sampah 24 Jam Terakhir',
                                 style: Fonts.semibold14
                                     .copyWith(color: Colors.green[900]),
                                 textAlign: TextAlign.center,
@@ -510,7 +537,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          'Kumpulkan ⭐${my.value?.nextPoint ?? '-'} lagi untuk menjadi ${my.value?.nextRank ?? '-'}!',
+                          'Kumpulkan ⭐${my.hasError ? '-' : ((my.value?.nextPoint ?? 0) - (my.value?.totalPoint ?? 0))} lagi untuk menjadi ${my.hasError ? '-' : (my.value?.nextRank ?? '-')}!',
                           style:
                               Fonts.semibold14.copyWith(color: AppColors.white),
                         ),

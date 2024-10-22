@@ -56,7 +56,7 @@ class _ContainerDetailScreenState extends ConsumerState<ContainerDetailScreen> {
             Navigator.of(context).pop();
           },
           title: 'Apakah kamu yakin akan menghapus rating?',
-          message: 'Poin kamu akan berkurang 5⭐ apabila rating kamu dihapus',
+          message: 'Poin kamu akan berkurang 10⭐ apabila rating kamu dihapus',
           color: AppColors.red,
           yes: 'Ya, hapus',
           no: 'Tidak jadi deh',

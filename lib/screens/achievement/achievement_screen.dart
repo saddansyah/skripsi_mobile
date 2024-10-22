@@ -43,6 +43,11 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                 Container(
                   padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
                   decoration: BoxDecoration(
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/point.png'),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter
+                    ),
                     borderRadius: const BorderRadius.all(
                       Radius.circular(24),
                     ),
@@ -132,8 +137,8 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                       Row(
                         children: [
                           SvgPicture.asset(
-                            'assets/svgs/container_icon.svg',
-                            height: 60,
+                            'assets/svgs/icon_maskot-head.svg',
+                            height: 48,
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -171,8 +176,7 @@ class _AchievementScreenState extends ConsumerState<AchievementScreen> {
                             backgroundColor: AppColors.amber.withOpacity(0.2),
                             color: AppColors.amberAccent,
                             value: (my.value?.totalPoint ?? 0) /
-                                ((my.value?.nextPoint ?? 0) +
-                                    (my.value?.totalPoint ?? 0)),
+                                (my.value?.nextPoint ?? 0),
                           ),
                         ],
                       ),

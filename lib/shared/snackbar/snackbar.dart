@@ -24,7 +24,9 @@ SnackBar popSnackbar(String message, SnackBarType type,
             child: leading ??
                 // TODO -> Change SVG
                 SvgPicture.asset(
-                  'assets/svgs/container_icon.svg',
+                  type == SnackBarType.error
+                      ? 'assets/svgs/icon_maskot-not-found.svg'
+                      : 'assets/svgs/icon_maskot-head.svg',
                   height: 36,
                   width: 36,
                 ),

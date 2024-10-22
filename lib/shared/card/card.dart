@@ -22,8 +22,11 @@ class Card extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              child: Container(
-                color: menu.fallbackColor,
+              child: Image.asset(
+                menu.img,
+                colorBlendMode: BlendMode.color,
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
               ),
             ),
             Container(

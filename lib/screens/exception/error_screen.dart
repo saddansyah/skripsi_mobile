@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skripsi_mobile/theme.dart';
 
 class ErrorScreen extends StatelessWidget {
@@ -23,13 +24,9 @@ class ErrorScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            height: 120,
-            width: 120,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(const Radius.circular(24)),
-              color: AppColors.amber,
-            ),
+          SvgPicture.asset(
+            'assets/svgs/icon_maskot-when-error.svg',
+            height: 160,
           ),
           const SizedBox(height: 36),
           Wrap(

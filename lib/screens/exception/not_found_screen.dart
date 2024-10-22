@@ -14,15 +14,9 @@ class NotFoundScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            height: 120,
-            width: 120,
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(24)),
-              color: AppColors.lightGrey,
-            ),
-            child: SvgPicture.asset('assets/svgs/container_icon.svg'),
+          SvgPicture.asset(
+            'assets/svgs/icon_maskot-not-found.svg',
+            height: 160,
           ),
           const SizedBox(height: 24),
           Wrap(

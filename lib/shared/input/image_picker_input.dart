@@ -92,7 +92,7 @@ class _ImagePickerInputState extends State<ImagePickerInput> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'Unggah Gambar',
+                        'Unggah Gambar Di Sini',
                         style: Fonts.semibold14,
                       ),
                     ],

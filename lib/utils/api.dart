@@ -5,7 +5,7 @@ import 'package:skripsi_mobile/models/session.dart';
 
 class Api {
   // static String baseUrl = 'http://10.0.2.2:8000/api';
-  static String baseUrl = 'https://skripsi-be-local.saddansyah.my.id/api';
+  static String baseUrl = 'https://skripsi-be-local.seterangmerawang.site/api';
   static String supabaseUrl = 'https://lkrrautkotvuligmtgih.supabase.co';
 
   static BaseOptions dioOptions = BaseOptions(

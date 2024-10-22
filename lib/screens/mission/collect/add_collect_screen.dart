@@ -9,6 +9,8 @@ import 'package:skripsi_mobile/models/container.dart' as model;
 import 'package:skripsi_mobile/models/ui/input_card.dart';
 import 'package:skripsi_mobile/repositories/collect_repository.dart';
 import 'package:skripsi_mobile/repositories/container_repository.dart';
+import 'package:skripsi_mobile/screens/learn/learn_detail_screen.dart';
+import 'package:skripsi_mobile/screens/learn/learn_screen.dart';
 import 'package:skripsi_mobile/screens/mission/collect/map_container_select_screen.dart';
 import 'package:skripsi_mobile/shared/input/decoration/styled_input_decoration.dart';
 import 'package:skripsi_mobile/shared/input/image_picker_input.dart';
@@ -124,6 +126,10 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
     final nearestContainer = ref.watch(nearestContainerProvider(50));
 
     ref.listen(nearestContainerProvider(50), (b, s) {
+      if (s.hasError && !s.isLoading) {
+        s.showErrorSnackbar(context, 'Lokasi belum dinyalakan');
+      }
+
       if (s.hasValue) {
         setState(() {
           selectedContainer =
@@ -216,18 +222,18 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                                       );
                                     },
                                     icon: Icon(
-                                      Icons.map_rounded,
+                                      Icons.add_rounded,
                                       color: AppColors.white,
                                     )),
                               );
                             },
                             error: (error, stackTrace) => CircleAvatar(
-                              backgroundColor: AppColors.greenPrimary,
+                              backgroundColor: AppColors.lightGrey,
                               child: IconButton(
                                 onPressed: null,
                                 color: AppColors.grey,
                                 icon: Icon(
-                                  Icons.map_rounded,
+                                  Icons.add_rounded,
                                   color: AppColors.white,
                                 ),
                               ),
@@ -322,7 +328,33 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                             .description,
                         style: Fonts.regular12.copyWith(color: AppColors.grey),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 6),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.all(0),
+                          elevation: 0,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute(
+                              builder: (_) => const LearnDetailScreen(id: 4),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 48,
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Masih bingung memilah? Buka panduan.',
+                              style: Fonts.semibold14
+                                  .copyWith(color: AppColors.greenPrimary),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
                       Text('Sisipkan Foto*', style: Fonts.semibold14),
                       const SizedBox(height: 12),
                       ImagePickerInput(
@@ -411,7 +443,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                               ]
                             : [
                                 Icon(
-                                  Icons.edit_rounded,
+                                  Icons.add_rounded,
                                   color: AppColors.white,
                                   weight: 100,
                                 ),
@@ -421,7 +453,7 @@ class _AddCollectScreenState extends ConsumerState<AddCollectScreen> {
                                   style: Fonts.bold16,
                                 ),
                                 const SizedBox(width: 9),
-                                const AddedPointPill(point: '5')
+                                const AddedPointPill(point: '10')
                               ],
                       ),
                     ),

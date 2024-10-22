@@ -83,7 +83,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
             },
             selectedIndex: selectedIndex,
             backgroundColor: AppColors.white,
-            labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
             destinations: destinations.map((Destination destination) {
               return NavigationDestination(
                 selectedIcon:

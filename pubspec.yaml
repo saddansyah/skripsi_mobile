@@ -39,6 +39,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+  - assets/gifs/
   - assets/images/
   - assets/svgs/
   - assets/htmls/

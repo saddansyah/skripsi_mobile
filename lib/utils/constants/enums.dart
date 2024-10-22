@@ -137,7 +137,7 @@ enum DropdownLearnCategory implements DropdownData {
   reuse('Reuse', 'category=Reuse'),
   reduce('Reduce', 'category=Reduce'),
   recycle('Recycle', 'category=Recycle'),
-  wasteSorting('Pemilahan Sampah', 'category=Pemilahan+Sampah');
+  wasteSorting('Pemilahan', 'category=Pemilahan');
 
   const DropdownLearnCategory(this.title, this.query);
 

@@ -35,7 +35,11 @@ class _MainDrawerState extends ConsumerState<MainDrawer> {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: AppColors.greenPrimary,
+              image: const DecorationImage(
+                image: AssetImage('assets/images/home_screen.png'),
+                fit: BoxFit.cover,
+              ),
+              color: AppColors.blueSecondary,
             ),
             child: Center(
               child: Container(

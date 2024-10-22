@@ -8,6 +8,7 @@ import 'package:skripsi_mobile/models/ui/input_card.dart';
 import 'package:skripsi_mobile/repositories/cluster_repository.dart';
 import 'package:skripsi_mobile/repositories/container_repository.dart';
 import 'package:skripsi_mobile/repositories/geolocation_repository.dart';
+import 'package:skripsi_mobile/screens/learn/learn_detail_screen.dart';
 import 'package:skripsi_mobile/screens/mission/container/map_select_screen.dart';
 import 'package:skripsi_mobile/shared/bottom_sheet/select_bottom_sheet.dart';
 import 'package:skripsi_mobile/shared/input/decoration/styled_input_decoration.dart';
@@ -49,7 +50,7 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
 
   late Cluster selectedCluster = Cluster(
     id: 1,
-    name: 'Teknik',
+    name: 'FEB',
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
   );
@@ -216,7 +217,33 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                             .description,
                         style: Fonts.regular12.copyWith(color: AppColors.grey),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 6),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.all(0),
+                          elevation: 0,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute(
+                              builder: (_) => const LearnDetailScreen(id: 5),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 48,
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Masih bingung membedakan tong? Buka panduan.',
+                              style: Fonts.semibold14
+                                  .copyWith(color: AppColors.greenPrimary),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
                       Text('Kapasitas Volume Maks (L)*',
                           style: Fonts.semibold14),
                       const SizedBox(height: 12),
@@ -341,18 +368,18 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                               child: IconButton(
                                 onPressed: () => showClusters(data),
                                 icon: Icon(
-                                  Icons.location_city_rounded,
+                                  Icons.add_rounded,
                                   color: AppColors.white,
                                 ),
                               ),
                             ),
                             error: (error, stackTrace) => CircleAvatar(
-                              backgroundColor: AppColors.greenPrimary,
+                              backgroundColor: AppColors.lightGrey,
                               child: IconButton(
                                 onPressed: null,
                                 color: AppColors.grey,
                                 icon: Icon(
-                                  Icons.location_city_rounded,
+                                  Icons.add_rounded,
                                   color: AppColors.white,
                                 ),
                               ),
@@ -409,16 +436,16 @@ class _AddContanierScreenState extends ConsumerState<AddContanierScreen> {
                               ]
                             : [
                                 Icon(
-                                  Icons.edit_rounded,
+                                  Icons.add_rounded,
                                   color: AppColors.white,
                                   weight: 100,
                                 ),
                                 const SizedBox(width: 9),
                                 Text(
-                                  'Tambah Laporan',
+                                  'Tambah Depo/Tong',
                                   style: Fonts.bold16,
                                 ),
-                                const SizedBox(width: 9),
+                                const SizedBox(width: 6),
                                 const AddedPointPill(point: '5')
                               ],
                       ),

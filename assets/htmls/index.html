@@ -76,11 +76,9 @@
         const id = parseInt(query.get("id"));
 
         el.addEventListener("gps-camera-update-position", async (e) => {
-            alert('AR siap!');
-
             if (!downloaded) {
                 try {
-                    const url = `https://skripsi-be-local.saddansyah.my.id/api/container/public/${isNaN(id) ? 1 : id}`;
+                    const url = `https://skripsi-be-local.seterangmerawang.site/api/container/public/${isNaN(id) ? 1 : id}`;
                     console.log(url);
                     const response = await axios.get(url);
 
@@ -100,7 +98,7 @@
                             compoundEntity.setAttribute("look-at", "[gps-new-camera]");
 
                             // Icon
-                            const iconSize = 75;
+                            const iconSize = 50;
                             const icon = document.createElement("a-image");
                             icon.setAttribute("src", "#container_icon");
                             icon.setAttribute("height", iconSize);
@@ -114,7 +112,7 @@
 
                             // Text
                             const text = document.createElement("a-text");
-                            const textScale = 50;
+                            const textScale = 25;
                             text.setAttribute("scale", {
                                 x: textScale,
                                 y: textScale,

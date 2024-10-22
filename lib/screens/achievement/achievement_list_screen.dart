@@ -41,8 +41,8 @@ class AchievementListScreen extends ConsumerWidget {
                                 child: Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                        const BorderRadius.all(Radius.circular(24)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(24)),
                                     border: Border.all(
                                         color: Colors.grey[350]!, width: 1),
                                   ),
@@ -85,10 +85,6 @@ class AchievementListScreen extends ConsumerWidget {
                                                   child: Text(
                                                     a[i].description,
                                                     style: Fonts.regular12,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                    softWrap: true,
                                                   ),
                                                 )
                                               ],

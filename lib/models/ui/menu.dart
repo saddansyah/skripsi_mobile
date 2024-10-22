@@ -16,13 +16,13 @@ class Menu {
 }
 
 List<Menu> missionMenu = [
-  Menu('Kumpul Sampah', '-', const CollectScreen()),
-  Menu('Temuan Sampah', '-', const CollectScreen()),
-  Menu('Cari Depo/Tong', '-', const MapScreen()),
-  Menu('Data Depo/Tong', '-', const ContainerScreen()),
+  Menu('Entri Sampah', 'assets/images/icon-kumpul-sampah.png', const CollectScreen()),
+  Menu('Temuan Sampah', 'assets/images/icon-lapor-sampah.png', const CollectScreen()),
+  Menu('Peta Depo/Tong', 'assets/images/icon-cari-sampah.png', const MapScreen()),
+  Menu('Data Depo/Tong', 'assets/images/icon-data-depo.png', const ContainerScreen()),
 ];
 
 List<Menu> collectMenu = [
-  Menu('Input Sampah', '-', const AddCollectScreen()),
-  Menu('Data Kumpul Sampah', '-', const CollectListScreen()),
+  Menu('Entri Sampah', 'assets/images/icon-kumpul-sampah.png', const AddCollectScreen()),
+  Menu('Data Kumpul Sampah', 'assets/images/icon-data-depo.png', const CollectListScreen()),
 ];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:skripsi_mobile/controller/quiz_controller.dart';
 import 'package:skripsi_mobile/controller/timer_controller.dart';
 import 'package:skripsi_mobile/models/quiz.dart';
@@ -193,13 +194,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    height: 120,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(24)),
-                      color: AppColors.amber,
-                    ),
+                  SvgPicture.asset(
+                    'assets/svgs/icon_maskot-quiz.svg',
+                    height: 160,
                   ),
                   const SizedBox(height: 36),
                   Column(
